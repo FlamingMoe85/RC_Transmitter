@@ -1,0 +1,743 @@
+
+ExtIOsimple.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000002  00800100  00000476  0000050a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000476  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          0000001c  00800102  00800102  0000050c  2**0
+                  ALLOC
+  3 .debug_aranges 00000020  00000000  00000000  0000050c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_pubnames 00000160  00000000  00000000  0000052c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000340  00000000  00000000  0000068c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000001bc  00000000  00000000  000009cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000041f  00000000  00000000  00000b88  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000000c0  00000000  00000000  00000fa8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    0000017b  00000000  00000000  00001068  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000004f  00000000  00000000  000011e3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 46 00 	jmp	0x8c	; 0x8c <__ctors_end>
+   4:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+   8:	0c 94 e9 01 	jmp	0x3d2	; 0x3d2 <__vector_2>
+   c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  10:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  14:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  18:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  1c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  20:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  24:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  28:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  2c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  30:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  34:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  38:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  3c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  40:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  44:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  48:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  4c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  50:	0c 94 f5 01 	jmp	0x3ea	; 0x3ea <__vector_20>
+  54:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  58:	0c 94 2f 02 	jmp	0x45e	; 0x45e <__vector_22>
+  5c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  60:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  64:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  68:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  6c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  70:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  74:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  78:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  7c:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  80:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  84:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+  88:	0c 94 65 00 	jmp	0xca	; 0xca <__bad_interrupt>
+
+0000008c <__ctors_end>:
+  8c:	11 24       	eor	r1, r1
+  8e:	1f be       	out	0x3f, r1	; 63
+  90:	cf ef       	ldi	r28, 0xFF	; 255
+  92:	d0 e4       	ldi	r29, 0x40	; 64
+  94:	de bf       	out	0x3e, r29	; 62
+  96:	cd bf       	out	0x3d, r28	; 61
+
+00000098 <__do_copy_data>:
+  98:	11 e0       	ldi	r17, 0x01	; 1
+  9a:	a0 e0       	ldi	r26, 0x00	; 0
+  9c:	b1 e0       	ldi	r27, 0x01	; 1
+  9e:	e6 e7       	ldi	r30, 0x76	; 118
+  a0:	f4 e0       	ldi	r31, 0x04	; 4
+  a2:	00 e0       	ldi	r16, 0x00	; 0
+  a4:	0b bf       	out	0x3b, r16	; 59
+  a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
+  a8:	07 90       	elpm	r0, Z+
+  aa:	0d 92       	st	X+, r0
+  ac:	a2 30       	cpi	r26, 0x02	; 2
+  ae:	b1 07       	cpc	r27, r17
+  b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
+
+000000b2 <__do_clear_bss>:
+  b2:	11 e0       	ldi	r17, 0x01	; 1
+  b4:	a2 e0       	ldi	r26, 0x02	; 2
+  b6:	b1 e0       	ldi	r27, 0x01	; 1
+  b8:	01 c0       	rjmp	.+2      	; 0xbc <.do_clear_bss_start>
+
+000000ba <.do_clear_bss_loop>:
+  ba:	1d 92       	st	X+, r1
+
+000000bc <.do_clear_bss_start>:
+  bc:	ae 31       	cpi	r26, 0x1E	; 30
+  be:	b1 07       	cpc	r27, r17
+  c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
+  c2:	0e 94 1a 01 	call	0x234	; 0x234 <main>
+  c6:	0c 94 39 02 	jmp	0x472	; 0x472 <_exit>
+
+000000ca <__bad_interrupt>:
+  ca:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000ce <SendByteCntr>:
+#define SIG_BUSY 0b00010000
+
+/**/
+
+void SendByteCntr(char val)
+{ 
+  ce:	98 2f       	mov	r25, r24
+	while ( !( UCSR0A & (1<<UDRE0)) );
+  d0:	80 91 c0 00 	lds	r24, 0x00C0
+  d4:	85 ff       	sbrs	r24, 5
+  d6:	fc cf       	rjmp	.-8      	; 0xd0 <SendByteCntr+0x2>
+	UDR0 = val;
+  d8:	90 93 c6 00 	sts	0x00C6, r25
+	while ( !( UCSR0A & (1<<UDRE0)) );
+  dc:	80 91 c0 00 	lds	r24, 0x00C0
+  e0:	85 ff       	sbrs	r24, 5
+  e2:	fc cf       	rjmp	.-8      	; 0xdc <SendByteCntr+0xe>
+
+} 
+  e4:	08 95       	ret
+
+000000e6 <GetTick>:
+
+char GetTick()
+{
+	static unsigned int c1 = 0, c2 = 0;
+	c1++;
+  e6:	80 91 0e 01 	lds	r24, 0x010E
+  ea:	90 91 0f 01 	lds	r25, 0x010F
+  ee:	01 96       	adiw	r24, 0x01	; 1
+  f0:	90 93 0f 01 	sts	0x010F, r25
+  f4:	80 93 0e 01 	sts	0x010E, r24
+	if(c1 >= 1000)
+  f8:	88 5e       	subi	r24, 0xE8	; 232
+  fa:	93 40       	sbci	r25, 0x03	; 3
+  fc:	68 f0       	brcs	.+26     	; 0x118 <GetTick+0x32>
+	{
+		c1 = 0;
+  fe:	10 92 0f 01 	sts	0x010F, r1
+ 102:	10 92 0e 01 	sts	0x010E, r1
+		c2++; 
+ 106:	80 91 0c 01 	lds	r24, 0x010C
+ 10a:	90 91 0d 01 	lds	r25, 0x010D
+ 10e:	01 96       	adiw	r24, 0x01	; 1
+ 110:	90 93 0d 01 	sts	0x010D, r25
+ 114:	80 93 0c 01 	sts	0x010C, r24
+	} 
+	if(c2 >= 80)
+ 118:	80 91 0c 01 	lds	r24, 0x010C
+ 11c:	90 91 0d 01 	lds	r25, 0x010D
+ 120:	80 35       	cpi	r24, 0x50	; 80
+ 122:	91 05       	cpc	r25, r1
+ 124:	10 f4       	brcc	.+4      	; 0x12a <GetTick+0x44>
+ 126:	80 e0       	ldi	r24, 0x00	; 0
+ 128:	08 95       	ret
+	{
+		c2 = 0; 
+ 12a:	10 92 0d 01 	sts	0x010D, r1
+ 12e:	10 92 0c 01 	sts	0x010C, r1
+ 132:	81 e0       	ldi	r24, 0x01	; 1
+		return 1;
+	}
+	return 0;
+}
+ 134:	08 95       	ret
+
+00000136 <SignalCapa>:
+
+void SignalCapa(char sig)
+{
+	if(sig == RX_FREE)
+ 136:	88 23       	and	r24, r24
+ 138:	21 f4       	brne	.+8      	; 0x142 <SignalCapa+0xc>
+	{
+		
+		freeState = 1;
+ 13a:	81 e0       	ldi	r24, 0x01	; 1
+ 13c:	80 93 0b 01 	sts	0x010B, r24
+ 140:	08 95       	ret
+		//DDRD &= ~(0b00001000);  
+		}
+	else
+	{ 
+		DDRD |= SIG_BUSY; 
+ 142:	54 9a       	sbi	0x0a, 4	; 10
+ 144:	08 95       	ret
+
+00000146 <GET_RX_STATE>:
+	}
+}
+
+char GET_RX_STATE()
+{ 
+	if((PIND & TX_FREE) == TX_FREE) return RX_FREE;
+ 146:	89 b1       	in	r24, 0x09	; 9
+ 148:	86 95       	lsr	r24
+ 14a:	86 95       	lsr	r24
+ 14c:	86 95       	lsr	r24
+ 14e:	80 95       	com	r24
+	else return RX_BUSY;
+}
+ 150:	81 70       	andi	r24, 0x01	; 1
+ 152:	08 95       	ret
+
+00000154 <UartRx>:
+
+void UartRx()
+{
+char tmpChar;
+	
+rxFlag = 0;
+ 154:	10 92 03 01 	sts	0x0103, r1
+
+ 	
+	tmpChar = UDR0;
+ 158:	20 91 c6 00 	lds	r18, 0x00C6
+	byteArr[head++] = tmpChar;
+ 15c:	80 91 07 01 	lds	r24, 0x0107
+ 160:	90 91 08 01 	lds	r25, 0x0108
+ 164:	fc 01       	movw	r30, r24
+ 166:	ef 5e       	subi	r30, 0xEF	; 239
+ 168:	fe 4f       	sbci	r31, 0xFE	; 254
+ 16a:	20 83       	st	Z, r18
+ 16c:	01 96       	adiw	r24, 0x01	; 1
+ 16e:	90 93 08 01 	sts	0x0108, r25
+ 172:	80 93 07 01 	sts	0x0107, r24
+	
+	if(head == 2) head = 0;
+ 176:	80 91 07 01 	lds	r24, 0x0107
+ 17a:	90 91 08 01 	lds	r25, 0x0108
+ 17e:	02 97       	sbiw	r24, 0x02	; 2
+ 180:	21 f4       	brne	.+8      	; 0x18a <UartRx+0x36>
+ 182:	10 92 08 01 	sts	0x0108, r1
+ 186:	10 92 07 01 	sts	0x0107, r1
+	byteCntr++;
+ 18a:	80 91 02 01 	lds	r24, 0x0102
+ 18e:	8f 5f       	subi	r24, 0xFF	; 255
+ 190:	80 93 02 01 	sts	0x0102, r24
+	if((UCSR0A & 0b10000000) == 128)
+ 194:	80 91 c0 00 	lds	r24, 0x00C0
+ 198:	87 ff       	sbrs	r24, 7
+ 19a:	1e c0       	rjmp	.+60     	; 0x1d8 <UartRx+0x84>
+	{ 
+		tmpChar = UDR0;
+ 19c:	20 91 c6 00 	lds	r18, 0x00C6
+		byteArr[head++] = tmpChar; 
+ 1a0:	80 91 07 01 	lds	r24, 0x0107
+ 1a4:	90 91 08 01 	lds	r25, 0x0108
+ 1a8:	fc 01       	movw	r30, r24
+ 1aa:	ef 5e       	subi	r30, 0xEF	; 239
+ 1ac:	fe 4f       	sbci	r31, 0xFE	; 254
+ 1ae:	20 83       	st	Z, r18
+ 1b0:	01 96       	adiw	r24, 0x01	; 1
+ 1b2:	90 93 08 01 	sts	0x0108, r25
+ 1b6:	80 93 07 01 	sts	0x0107, r24
+		if(head == 2) head = 0;
+ 1ba:	80 91 07 01 	lds	r24, 0x0107
+ 1be:	90 91 08 01 	lds	r25, 0x0108
+ 1c2:	02 97       	sbiw	r24, 0x02	; 2
+ 1c4:	21 f4       	brne	.+8      	; 0x1ce <UartRx+0x7a>
+ 1c6:	10 92 08 01 	sts	0x0108, r1
+ 1ca:	10 92 07 01 	sts	0x0107, r1
+		byteCntr++;
+ 1ce:	80 91 02 01 	lds	r24, 0x0102
+ 1d2:	8f 5f       	subi	r24, 0xFF	; 255
+ 1d4:	80 93 02 01 	sts	0x0102, r24
+    }  
+
+	//currently only use of one expander which is trigegred by an 'a', 
+	// so the following is ok
+	byteCntr = 0;
+ 1d8:	10 92 02 01 	sts	0x0102, r1
+}
+ 1dc:	08 95       	ret
+
+000001de <Send>:
+void Send()
+{
+	
+
+	//if(byteCntr > 0)
+	if(byteCntr < 8)
+ 1de:	80 91 02 01 	lds	r24, 0x0102
+ 1e2:	88 30       	cpi	r24, 0x08	; 8
+ 1e4:	e0 f4       	brcc	.+56     	; 0x21e <Send+0x40>
+ 	{
+	
+
+// 		if((GET_RX_STATE() == RX_FREE) && ((UCSR0A & 64)==0))
+		if((UCSR0A & 64)==0)
+ 1e6:	80 91 c0 00 	lds	r24, 0x00C0
+ 1ea:	86 fd       	sbrc	r24, 6
+ 1ec:	18 c0       	rjmp	.+48     	; 0x21e <Send+0x40>
+ 		{ 
+			
+				PORTC |= 0b00100000;
+ 1ee:	45 9a       	sbi	0x08, 5	; 8
+ 			 	UDR0 = byteSendArr[byteCntr];
+ 1f0:	e0 91 02 01 	lds	r30, 0x0102
+ 1f4:	f0 e0       	ldi	r31, 0x00	; 0
+ 1f6:	ed 5e       	subi	r30, 0xED	; 237
+ 1f8:	fe 4f       	sbci	r31, 0xFE	; 254
+ 1fa:	80 81       	ld	r24, Z
+ 1fc:	80 93 c6 00 	sts	0x00C6, r24
+
+		 	if(tail == 2) tail = 0;
+ 200:	80 91 09 01 	lds	r24, 0x0109
+ 204:	90 91 0a 01 	lds	r25, 0x010A
+ 208:	02 97       	sbiw	r24, 0x02	; 2
+ 20a:	21 f4       	brne	.+8      	; 0x214 <Send+0x36>
+ 20c:	10 92 0a 01 	sts	0x010A, r1
+ 210:	10 92 09 01 	sts	0x0109, r1
+			//byteCntr--; 
+			byteCntr++;
+ 214:	80 91 02 01 	lds	r24, 0x0102
+ 218:	8f 5f       	subi	r24, 0xFF	; 255
+ 21a:	80 93 02 01 	sts	0x0102, r24
+		 }  
+		 
+ 	}  
+	if(byteCntr == 8)SignalCapa(RX_FREE);
+ 21e:	80 91 02 01 	lds	r24, 0x0102
+ 222:	88 30       	cpi	r24, 0x08	; 8
+ 224:	19 f4       	brne	.+6      	; 0x22c <Send+0x4e>
+void SignalCapa(char sig)
+{
+	if(sig == RX_FREE)
+	{
+		
+		freeState = 1;
+ 226:	81 e0       	ldi	r24, 0x01	; 1
+ 228:	80 93 0b 01 	sts	0x010B, r24
+ 22c:	08 95       	ret
+
+0000022e <UartTx>:
+	if(byteCntr == 8)SignalCapa(RX_FREE);
+}
+
+void UartTx()
+{
+txFlag = 0;
+ 22e:	10 92 04 01 	sts	0x0104, r1
+
+	//void Send();
+}
+ 232:	08 95       	ret
+
+00000234 <main>:
+int main(void)
+{ 
+
+
+/* Set baud rate  for 9600 Baud*/
+UBRR0H = (unsigned char)(0);
+ 234:	10 92 c5 00 	sts	0x00C5, r1
+UBRR0L = (unsigned char)52;
+ 238:	84 e3       	ldi	r24, 0x34	; 52
+ 23a:	80 93 c4 00 	sts	0x00C4, r24
+/* Enable receiver and transmitter */
+UCSR0B =  (1<<RXEN0)|(1<<TXEN0);//
+ 23e:	88 e1       	ldi	r24, 0x18	; 24
+ 240:	80 93 c1 00 	sts	0x00C1, r24
+//UCSR0B = (1<<RXEN0);
+/* Set frame format: 8data, 1stop bit */
+UCSR0C = (3<<UCSZ00);
+ 244:	86 e0       	ldi	r24, 0x06	; 6
+ 246:	80 93 c2 00 	sts	0x00C2, r24
+ 
+DDRD = 0b01000010;
+ 24a:	82 e4       	ldi	r24, 0x42	; 66
+ 24c:	8a b9       	out	0x0a, r24	; 10
+PORTD = TX_FREE;
+ 24e:	88 e0       	ldi	r24, 0x08	; 8
+ 250:	8b b9       	out	0x0b, r24	; 11
+
+EICRA = 0b00001000;
+ 252:	80 93 69 00 	sts	0x0069, r24
+EIFR = 0b00000010;
+ 256:	82 e0       	ldi	r24, 0x02	; 2
+ 258:	8c bb       	out	0x1c, r24	; 28
+EIMSK = 0b00000010;
+ 25a:	8d bb       	out	0x1d, r24	; 29
+//sei(); 
+
+ 
+ //PORTD |= 0b01000000;
+
+ sei(); 
+ 25c:	78 94       	sei
+
+PORTC = 0b11111111;
+ 25e:	8f ef       	ldi	r24, 0xFF	; 255
+ 260:	88 b9       	out	0x08, r24	; 8
+DDRD &= ~(SIG_BUSY);
+ 262:	54 98       	cbi	0x0a, 4	; 10
+while(1)
+{ 
+char dummy, sendBytes = 0;
+ 
+	switchBits = (PINC ^ 0b11111111);
+	byteSendArr[0] = 128;
+ 264:	e0 e8       	ldi	r30, 0x80	; 128
+UDR0 = byteSendArr[6];
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+UDR0 = byteSendArr[7];
+
+ADMUX = 0b01000000;
+ 266:	70 e4       	ldi	r23, 0x40	; 64
+ADCSRA = 0b11000111;
+ 268:	47 ec       	ldi	r20, 0xC7	; 199
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[3] = (adcVal & 0b0000000000111111);
+
+ADMUX = 0b01000001;
+ 26a:	61 e4       	ldi	r22, 0x41	; 65
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[5] = (adcVal & 0b0000000000111111);
+
+ADMUX = 0b01000010;
+ 26c:	52 e4       	ldi	r21, 0x42	; 66
+DDRD &= ~(SIG_BUSY);
+while(1)
+{ 
+char dummy, sendBytes = 0;
+ 
+	switchBits = (PINC ^ 0b11111111);
+ 26e:	96 b1       	in	r25, 0x06	; 6
+ 270:	90 95       	com	r25
+	byteSendArr[0] = 128;
+ 272:	e0 93 13 01 	sts	0x0113, r30
+	byteSendArr[0] |= (switchBits >> 2);
+ 276:	20 91 13 01 	lds	r18, 0x0113
+ 27a:	89 2f       	mov	r24, r25
+ 27c:	86 95       	lsr	r24
+ 27e:	86 95       	lsr	r24
+ 280:	82 2b       	or	r24, r18
+ 282:	80 93 13 01 	sts	0x0113, r24
+	byteSendArr[1] = 0;
+ 286:	10 92 14 01 	sts	0x0114, r1
+	byteSendArr[1] |= (switchBits & 3);
+ 28a:	20 91 14 01 	lds	r18, 0x0114
+ 28e:	89 2f       	mov	r24, r25
+ 290:	83 70       	andi	r24, 0x03	; 3
+ 292:	82 2b       	or	r24, r18
+ 294:	80 93 14 01 	sts	0x0114, r24
+
+
+	if(switchBits == 16)
+ 298:	90 31       	cpi	r25, 0x10	; 16
+ 29a:	11 f4       	brne	.+4      	; 0x2a0 <main+0x6c>
+	{
+		PORTD |= 64;
+ 29c:	5e 9a       	sbi	0x0b, 6	; 11
+ 29e:	01 c0       	rjmp	.+2      	; 0x2a2 <main+0x6e>
+	}
+	else
+	{
+		PORTD = PORTD & ~(64);
+ 2a0:	5e 98       	cbi	0x0b, 6	; 11
+	}
+	
+	dummy = UDR0;
+ 2a2:	80 91 c6 00 	lds	r24, 0x00C6
+	while((UCSR0A & 128) == 0);
+ 2a6:	80 91 c0 00 	lds	r24, 0x00C0
+ 2aa:	87 ff       	sbrs	r24, 7
+ 2ac:	fc cf       	rjmp	.-8      	; 0x2a6 <main+0x72>
+	UCSR0A |= 0b10000000;
+ 2ae:	80 91 c0 00 	lds	r24, 0x00C0
+ 2b2:	80 68       	ori	r24, 0x80	; 128
+ 2b4:	80 93 c0 00 	sts	0x00C0, r24
+	}
+*/
+	
+
+	/* Wait for empty transmit buffer */
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 2b8:	80 91 c0 00 	lds	r24, 0x00C0
+ 2bc:	85 ff       	sbrs	r24, 5
+ 2be:	fc cf       	rjmp	.-8      	; 0x2b8 <main+0x84>
+UDR0 = byteSendArr[0];
+ 2c0:	80 91 13 01 	lds	r24, 0x0113
+ 2c4:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 2c8:	80 91 c0 00 	lds	r24, 0x00C0
+ 2cc:	85 ff       	sbrs	r24, 5
+ 2ce:	fc cf       	rjmp	.-8      	; 0x2c8 <main+0x94>
+UDR0 = byteSendArr[1];
+ 2d0:	80 91 14 01 	lds	r24, 0x0114
+ 2d4:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 2d8:	80 91 c0 00 	lds	r24, 0x00C0
+ 2dc:	85 ff       	sbrs	r24, 5
+ 2de:	fc cf       	rjmp	.-8      	; 0x2d8 <main+0xa4>
+UDR0 = byteSendArr[2];
+ 2e0:	80 91 15 01 	lds	r24, 0x0115
+ 2e4:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 2e8:	80 91 c0 00 	lds	r24, 0x00C0
+ 2ec:	85 ff       	sbrs	r24, 5
+ 2ee:	fc cf       	rjmp	.-8      	; 0x2e8 <main+0xb4>
+UDR0 = byteSendArr[3];
+ 2f0:	80 91 16 01 	lds	r24, 0x0116
+ 2f4:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 2f8:	80 91 c0 00 	lds	r24, 0x00C0
+ 2fc:	85 ff       	sbrs	r24, 5
+ 2fe:	fc cf       	rjmp	.-8      	; 0x2f8 <main+0xc4>
+UDR0 = byteSendArr[4];
+ 300:	80 91 17 01 	lds	r24, 0x0117
+ 304:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 308:	80 91 c0 00 	lds	r24, 0x00C0
+ 30c:	85 ff       	sbrs	r24, 5
+ 30e:	fc cf       	rjmp	.-8      	; 0x308 <main+0xd4>
+UDR0 = byteSendArr[5];
+ 310:	80 91 18 01 	lds	r24, 0x0118
+ 314:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 318:	80 91 c0 00 	lds	r24, 0x00C0
+ 31c:	85 ff       	sbrs	r24, 5
+ 31e:	fc cf       	rjmp	.-8      	; 0x318 <main+0xe4>
+UDR0 = byteSendArr[6];
+ 320:	80 91 19 01 	lds	r24, 0x0119
+ 324:	80 93 c6 00 	sts	0x00C6, r24
+
+while ( !( UCSR0A & (1<<UDRE0)) );   
+ 328:	80 91 c0 00 	lds	r24, 0x00C0
+ 32c:	85 ff       	sbrs	r24, 5
+ 32e:	fc cf       	rjmp	.-8      	; 0x328 <main+0xf4>
+UDR0 = byteSendArr[7];
+ 330:	80 91 1a 01 	lds	r24, 0x011A
+ 334:	80 93 c6 00 	sts	0x00C6, r24
+
+ADMUX = 0b01000000;
+ 338:	70 93 7c 00 	sts	0x007C, r23
+ADCSRA = 0b11000111;
+ 33c:	40 93 7a 00 	sts	0x007A, r20
+while ((ADCSRA & 64) == 64);
+ 340:	80 91 7a 00 	lds	r24, 0x007A
+ 344:	86 fd       	sbrc	r24, 6
+ 346:	fc cf       	rjmp	.-8      	; 0x340 <main+0x10c>
+adcVal = ADC;
+ 348:	20 91 78 00 	lds	r18, 0x0078
+ 34c:	30 91 79 00 	lds	r19, 0x0079
+byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
+ 350:	c9 01       	movw	r24, r18
+ 352:	80 7c       	andi	r24, 0xC0	; 192
+ 354:	9f 70       	andi	r25, 0x0F	; 15
+ 356:	a6 e0       	ldi	r26, 0x06	; 6
+ 358:	96 95       	lsr	r25
+ 35a:	87 95       	ror	r24
+ 35c:	aa 95       	dec	r26
+ 35e:	e1 f7       	brne	.-8      	; 0x358 <main+0x124>
+ 360:	80 93 15 01 	sts	0x0115, r24
+byteSendArr[3] = (adcVal & 0b0000000000111111);
+ 364:	2f 73       	andi	r18, 0x3F	; 63
+ 366:	20 93 16 01 	sts	0x0116, r18
+
+ADMUX = 0b01000001;
+ 36a:	60 93 7c 00 	sts	0x007C, r22
+ADCSRA = 0b11000111;
+ 36e:	40 93 7a 00 	sts	0x007A, r20
+while ((ADCSRA & 64) == 64);
+ 372:	80 91 7a 00 	lds	r24, 0x007A
+ 376:	86 fd       	sbrc	r24, 6
+ 378:	fc cf       	rjmp	.-8      	; 0x372 <main+0x13e>
+adcVal = ADC;
+ 37a:	20 91 78 00 	lds	r18, 0x0078
+ 37e:	30 91 79 00 	lds	r19, 0x0079
+byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
+ 382:	c9 01       	movw	r24, r18
+ 384:	80 7c       	andi	r24, 0xC0	; 192
+ 386:	9f 70       	andi	r25, 0x0F	; 15
+ 388:	f6 e0       	ldi	r31, 0x06	; 6
+ 38a:	96 95       	lsr	r25
+ 38c:	87 95       	ror	r24
+ 38e:	fa 95       	dec	r31
+ 390:	e1 f7       	brne	.-8      	; 0x38a <main+0x156>
+ 392:	80 93 17 01 	sts	0x0117, r24
+byteSendArr[5] = (adcVal & 0b0000000000111111);
+ 396:	2f 73       	andi	r18, 0x3F	; 63
+ 398:	20 93 18 01 	sts	0x0118, r18
+
+ADMUX = 0b01000010;
+ 39c:	50 93 7c 00 	sts	0x007C, r21
+ADCSRA = 0b11000111;
+ 3a0:	40 93 7a 00 	sts	0x007A, r20
+while ((ADCSRA & 64) == 64);
+ 3a4:	80 91 7a 00 	lds	r24, 0x007A
+ 3a8:	86 fd       	sbrc	r24, 6
+ 3aa:	fc cf       	rjmp	.-8      	; 0x3a4 <main+0x170>
+adcVal = ADC;
+ 3ac:	20 91 78 00 	lds	r18, 0x0078
+ 3b0:	30 91 79 00 	lds	r19, 0x0079
+byteSendArr[6] = (adcVal & 0b0000111111000000)>>6;
+ 3b4:	c9 01       	movw	r24, r18
+ 3b6:	80 7c       	andi	r24, 0xC0	; 192
+ 3b8:	9f 70       	andi	r25, 0x0F	; 15
+ 3ba:	36 e0       	ldi	r19, 0x06	; 6
+ 3bc:	96 95       	lsr	r25
+ 3be:	87 95       	ror	r24
+ 3c0:	3a 95       	dec	r19
+ 3c2:	e1 f7       	brne	.-8      	; 0x3bc <main+0x188>
+ 3c4:	80 93 19 01 	sts	0x0119, r24
+byteSendArr[7] = ((adcVal & 0b0000000000111111)+64);
+ 3c8:	2f 73       	andi	r18, 0x3F	; 63
+ 3ca:	20 5c       	subi	r18, 0xC0	; 192
+ 3cc:	20 93 1a 01 	sts	0x011A, r18
+ 3d0:	4e cf       	rjmp	.-356    	; 0x26e <main+0x3a>
+
+000003d2 <__vector_2>:
+}
+}//main
+
+/**/
+SIGNAL (INT1_vect)
+{
+ 3d2:	1f 92       	push	r1
+ 3d4:	0f 92       	push	r0
+ 3d6:	0f b6       	in	r0, 0x3f	; 63
+ 3d8:	0f 92       	push	r0
+ 3da:	11 24       	eor	r1, r1
+	DDRD |= SIG_BUSY;
+ 3dc:	54 9a       	sbi	0x0a, 4	; 10
+	EIMSK = 0b00000000;
+ 3de:	1d ba       	out	0x1d, r1	; 29
+
+}
+ 3e0:	0f 90       	pop	r0
+ 3e2:	0f be       	out	0x3f, r0	; 63
+ 3e4:	0f 90       	pop	r0
+ 3e6:	1f 90       	pop	r1
+ 3e8:	18 95       	reti
+
+000003ea <__vector_20>:
+
+SIGNAL (USART0_RX_vect)//TIMER1_COMPA_vect) 
+{ 
+ 3ea:	1f 92       	push	r1
+ 3ec:	0f 92       	push	r0
+ 3ee:	0f b6       	in	r0, 0x3f	; 63
+ 3f0:	0f 92       	push	r0
+ 3f2:	0b b6       	in	r0, 0x3b	; 59
+ 3f4:	0f 92       	push	r0
+ 3f6:	11 24       	eor	r1, r1
+ 3f8:	2f 93       	push	r18
+ 3fa:	8f 93       	push	r24
+ 3fc:	9f 93       	push	r25
+ 3fe:	ef 93       	push	r30
+ 400:	ff 93       	push	r31
+	//SignalCapa(RX_BUSY); 
+	DDRD |= SIG_BUSY;
+ 402:	54 9a       	sbi	0x0a, 4	; 10
+	//UartRx();
+	
+rxFlag = 0;
+ 404:	10 92 03 01 	sts	0x0103, r1
+ 
+	byteArr[head++] = UDR0;
+ 408:	80 91 07 01 	lds	r24, 0x0107
+ 40c:	90 91 08 01 	lds	r25, 0x0108
+ 410:	20 91 c6 00 	lds	r18, 0x00C6
+ 414:	fc 01       	movw	r30, r24
+ 416:	ef 5e       	subi	r30, 0xEF	; 239
+ 418:	fe 4f       	sbci	r31, 0xFE	; 254
+ 41a:	20 83       	st	Z, r18
+ 41c:	01 96       	adiw	r24, 0x01	; 1
+ 41e:	90 93 08 01 	sts	0x0108, r25
+ 422:	80 93 07 01 	sts	0x0107, r24
+	
+	if(head == 2) head = 0;
+ 426:	80 91 07 01 	lds	r24, 0x0107
+ 42a:	90 91 08 01 	lds	r25, 0x0108
+ 42e:	02 97       	sbiw	r24, 0x02	; 2
+ 430:	21 f4       	brne	.+8      	; 0x43a <__vector_20+0x50>
+ 432:	10 92 08 01 	sts	0x0108, r1
+ 436:	10 92 07 01 	sts	0x0107, r1
+	//byteCntr++; 
+	//currently only use of one expander which is trigegred by an 'a', 
+	// so the following is ok
+	if(byteCntr == 8)byteCntr = 0;
+ 43a:	80 91 02 01 	lds	r24, 0x0102
+ 43e:	88 30       	cpi	r24, 0x08	; 8
+ 440:	11 f4       	brne	.+4      	; 0x446 <__vector_20+0x5c>
+ 442:	10 92 02 01 	sts	0x0102, r1
+
+}
+ 446:	ff 91       	pop	r31
+ 448:	ef 91       	pop	r30
+ 44a:	9f 91       	pop	r25
+ 44c:	8f 91       	pop	r24
+ 44e:	2f 91       	pop	r18
+ 450:	0f 90       	pop	r0
+ 452:	0b be       	out	0x3b, r0	; 59
+ 454:	0f 90       	pop	r0
+ 456:	0f be       	out	0x3f, r0	; 63
+ 458:	0f 90       	pop	r0
+ 45a:	1f 90       	pop	r1
+ 45c:	18 95       	reti
+
+0000045e <__vector_22>:
+
+SIGNAL (USART0_TX_vect)//TIMER1_COMPA_vect) 
+{  
+ 45e:	1f 92       	push	r1
+ 460:	0f 92       	push	r0
+ 462:	0f b6       	in	r0, 0x3f	; 63
+ 464:	0f 92       	push	r0
+ 466:	11 24       	eor	r1, r1
+}
+ 468:	0f 90       	pop	r0
+ 46a:	0f be       	out	0x3f, r0	; 63
+ 46c:	0f 90       	pop	r0
+ 46e:	1f 90       	pop	r1
+ 470:	18 95       	reti
+
+00000472 <_exit>:
+ 472:	f8 94       	cli
+
+00000474 <__stop_program>:
+ 474:	ff cf       	rjmp	.-2      	; 0x474 <__stop_program>

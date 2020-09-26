@@ -1,0 +1,5 @@
+Digital Trim
+Es werden an jedem der 4 Analog-Hauptkanäle zwei Taster Zwecks Trimm angebracht. Allerdings werden die nicht fest auf die 
+Analogkanäle angewandt, sondern über eigenständige "TrimmCalc" Blöcke erfasst.
+Nur so kann bei Anwendungen von Mischern trotzdem erreicht werden, jeden der gemischten Kanäle einzeln trimmen zu können. 
+Diese "TrimmCalc" Blöcke lassen nur eine Input-Wahl von 1 bis 8 zu, oder am besten direkt in paaren. An Invertrieung denken!

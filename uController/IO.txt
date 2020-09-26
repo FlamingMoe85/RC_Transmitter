@@ -1,0 +1,6 @@
+19k2 Baud => 0,053ms / bit => 0,53ms / byte
+
+1000 * 10 * byte / BAUD
+
+Mega8 at 8MHz -> 19k2 / 38k4 / 76k8 / 250k
+6 ADC´s 10 Bit / 12 DIGs => 14 Byte
