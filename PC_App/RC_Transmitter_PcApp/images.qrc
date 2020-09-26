@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/A.png</file>
+        <file>images/Ap.png</file>
+        <file>images/B.png</file>
+        <file>images/Bp.png</file>
+        <file>images/C.png</file>
+        <file>images/Cp.png</file>
+        <file>images/D.png</file>
+        <file>images/Dp.png</file>
+        <file>images/E.png</file>
+        <file>images/Ep.png</file>
+        <file>images/F.png</file>
+        <file>images/Fp.png</file>
+        <file>images/G.png</file>
+        <file>images/Gp.png</file>
+        <file>images/Gray.png</file>
+        <file>images/Trash.png</file>
+        <file>images/add.png</file>
+        <file>images/mult.png</file>
+        <file>images/Matruschka.png</file>
+        <file>images/junction.png</file>
+        <file>images/multiSw.png</file>
+        <file>images/channel.png</file>
+        <file>images/channelSel.png</file>
+        <file>images/switch.png</file>
+        <file>images/blinker.png</file>
+        <file>images/scaleSwitch.png</file>
+        <file>images/default.png</file>
+        <file>images/quantizer.png</file>
+        <file>images/rakete.png</file>
+        <file>images/Knop.png</file>
+    </qresource>
+</RCC>
