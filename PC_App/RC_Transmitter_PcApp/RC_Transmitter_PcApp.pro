@@ -58,8 +58,9 @@ SOURCES += \
     ../../share/Visitor_InternTrim.cpp \
     ../../share/std/Graph_Itt.cpp \
     Save_Load_Ui.cpp \
+    UIs/Base_Quadlet_Ui.cpp \
+    UIs/Helper/Helper_Quadlet_Item.cpp \
     Utils_Qt.cpp \
-    VertCustomSlider.cpp \
     UIs/Helper/Origin.cpp \
     UIs/Helper/Scroll_Pool.cpp \
     UIs/Helper/ScrollAreaVert.cpp \
@@ -144,8 +145,9 @@ HEADERS += \
     ../../share/std/graph_leaf.hpp \
     ../../share/std/graph_node.h \
     Save_Load_Ui.h \
+    UIs/Base_Quadlet_Ui.h \
+    UIs/Helper/Helper_Quadlet_Item.h \
     Utils_Qt.h \
-    VertCustomSlider.h \
     ../../share/UIs/Ui_Visitor_I.hpp \
     UIs/Helper/Origin.h \
     UIs/Helper/Scroll_Pool.h \
@@ -189,8 +191,9 @@ HEADERS += \
 
 FORMS += \
     Save_Load_Ui.ui \
+    UIs/Base_Quadlet_Ui.ui \
+    UIs/Helper/Helper_Quadlet_Item.ui \
     widget.ui \
-    VertCustomSlider.ui \
     UIs/Base_PoolFac_Ui.ui \
     UIs/Helper/ScrollAreaVert.ui \
     UIs/Helper/Origin.ui \
