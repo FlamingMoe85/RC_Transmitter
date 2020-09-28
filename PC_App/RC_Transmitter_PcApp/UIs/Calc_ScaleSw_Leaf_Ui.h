@@ -2,10 +2,10 @@
 #define CALC_SCALESW_LEAF_UI_H
 
 #include <QObject>
-#include "Base_Triplet_Ui.h"
+#include "Base_Quadlet_Ui.h"
 #include "../../share/Graph_App/Calc_ScaleSw_Leaf.h"
 
-class Calc_ScaleSw_Leaf_Ui : public Base_Triplet_Ui
+class Calc_ScaleSw_Leaf_Ui : public Base_Quadlet_Ui
 {
     Q_OBJECT
 public:
