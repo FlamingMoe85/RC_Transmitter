@@ -47,7 +47,7 @@ static char valArrBelRis[] = "        ";
 static char valArrBelFal[] = "        ";
 static char valArrNulPoi[] = "        ";
 
-static uint16_t selLookUp[] = {0, 1, 4, 2, 3};
+static uint16_t selLookUp[] = {0, 1, 4, 2, 3, 5};
 
 TimeCalc_Ramp_Leaf_UI::TimeCalc_Ramp_Leaf_UI() {
 	// TODO Auto-generated constructor stub
@@ -67,8 +67,8 @@ void TimeCalc_Ramp_Leaf_UI::SetTimeCalc_Ramp_Ref(TimeCalc_Ramp_Leaf* ref)
 	WidgetPaint((tWidget *)&calcRampCov_1);
 		WidgetPaint((tWidget *)&calcRampCov_2);
 		WidgetPaint((tWidget *)&nameBannerRamp);
-		PaintVal();
 		MarkSelected();
+		PaintVal();
 }
 
 void TimeCalc_Ramp_Leaf_UI::PaintVal()
@@ -138,6 +138,19 @@ void TimeCalc_Ramp_Leaf_UI::MarkSelected()
 		CanvasFillColorSet(&valueBelowFalCan,UNSELCTED_PNT);
 		CanvasFillColorSet(&nullPointCan,SELECTED_PNT);
 	}
+
+	else if(selLookUp[sel] == 5)
+	{
+		CanvasFillColorSet(&valueAboveRisCan,SELECTED_PNT);
+		CanvasFillColorSet(&valueAboveFalCan,SELECTED_PNT);
+		CanvasFillColorSet(&valueBelowRisCan,SELECTED_PNT);
+		CanvasFillColorSet(&valueBelowFalCan,SELECTED_PNT);
+		CanvasFillColorSet(&nullPointCan,UNSELCTED_PNT);
+	}
+}
+
+void TimeCalc_Ramp_Leaf_UI::PaintSelected()
+{
 	WidgetPaint((tWidget *)&valueAboveRisCan);
 	WidgetPaint((tWidget *)&valueAboveFalCan);
 	WidgetPaint((tWidget *)&valueBelowRisCan);
@@ -174,6 +187,13 @@ void TimeCalc_Ramp_Leaf_UI::Up(int16_t val)
 	{
 		myRef->SetNullPoint(myRef->GetNullPoint()+val);
 	}
+	if(selLookUp[sel] == 5)
+	{
+		for(uint16_t i=0; i<5; i++)
+		{
+			myRef->SetPercPerSec(selLookUp[i], myRef->GetPercPerSec(selLookUp[i]) + val);
+		}
+	}
 	PaintVal();
 }
 
@@ -190,14 +210,26 @@ void TimeCalc_Ramp_Leaf_UI::Down(int16_t val)
 	{
 		myRef->SetNullPoint(myRef->GetNullPoint()+val);
 	}
+	if(selLookUp[sel] == 5)
+	{
+
+		uint16_t curVal = myRef->GetPercPerSec(selLookUp[0]);
+		if(curVal > val) curVal += val;
+		else curVal = 0;
+		for(uint16_t i=0; i<5; i++)
+		{
+			myRef->SetPercPerSec(selLookUp[i], curVal);
+		}
+	}
 	PaintVal();
 }
 
 void TimeCalc_Ramp_Leaf_UI::Up()
 {
 	sel++;
-	if(sel == 5) sel = 0;
+	if(sel > 5) sel = 0;
 	MarkSelected();
+	PaintSelected();
 }
 
 void TimeCalc_Ramp_Leaf_UI::Down()
@@ -205,6 +237,7 @@ void TimeCalc_Ramp_Leaf_UI::Down()
 	if(sel == 0) sel = 4;
 	else sel--;
 	MarkSelected();
+	PaintSelected();
 }
 
 void TimeCalc_Ramp_Leaf_UI::Right()
@@ -215,6 +248,26 @@ void TimeCalc_Ramp_Leaf_UI::Right()
 void TimeCalc_Ramp_Leaf_UI::Left()
 {
 	Down(-1);
+}
+
+void TimeCalc_Ramp_Leaf_UI::Grab()
+{
+	uint16_t smallest = 65535;
+	sel = 5;
+	for(uint16_t i=0; i<5; i++)
+	{
+		if(i == 2)i++;
+		if(smallest > myRef->GetPercPerSec(selLookUp[i])) smallest = myRef->GetPercPerSec(selLookUp[i]);
+	}
+
+	for(uint16_t i=0; i<5; i++)
+	{
+		if(i == 2)i++;
+		myRef->SetPercPerSec(selLookUp[i], smallest);
+	}
+
+	MarkSelected();
+	PaintVal();
 }
 
 void TimeCalc_Ramp_Leaf_UI::QuadEncNotify(int16_t val)

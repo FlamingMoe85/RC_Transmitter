@@ -29,7 +29,7 @@ public:
 		virtual void Down();
 		virtual void Right();
 		virtual void Left();
-		virtual void Grab(){ };
+		virtual void Grab();
 
 		virtual void RemFcnBtns(){ };
 		virtual void ConFcnBtns(){ };
@@ -45,6 +45,7 @@ private:
 
 	void PaintVal();
 	void MarkSelected();
+	void PaintSelected();
 };
 
 #endif /* UIS_TIMECALC_RAMP_LEAF_UI_H_ */
