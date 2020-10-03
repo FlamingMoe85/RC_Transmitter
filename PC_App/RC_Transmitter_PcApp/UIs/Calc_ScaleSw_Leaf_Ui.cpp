@@ -4,10 +4,12 @@ Calc_ScaleSw_Leaf_Ui::Calc_ScaleSw_Leaf_Ui()
 {
     SetLabelText(C1PAR, "Position");
     SetLabelText(C2PAR, "Input");
-    SetLabelText(C3PAR, "Scale");
+    SetLabelText(C3PAR, "ScalePos");
+    SetLabelText(C4PAR, "ScaleNeg");
     SetLabelText(CLM1,"Postion");
     SetLabelText(CLM2, "Input");
-    SetLabelText(CLM3, "Scale");
+    SetLabelText(CLM3, "ScalePos");
+    SetLabelText(CLM4, "ScaleNeg");
     scrollAreaRef = GetScrollArea();
 
     SetSpinBoxProps(0, 0, 1, 0, 0);
@@ -16,6 +18,8 @@ Calc_ScaleSw_Leaf_Ui::Calc_ScaleSw_Leaf_Ui()
             this, SLOT(Slot_SpinBx2(double,uint)));
     connect(this, SIGNAL(Signal_SpinBx3(double,uint)),
             this, SLOT(Slot_SpinBx3(double,uint)));
+    connect(this, SIGNAL(Signal_SpinBx4(double,uint)),
+            this, SLOT(Slot_SpinBx4(double,uint)));
     connect(this, SIGNAL(Signal_NewItm()), this, SLOT(Slot_AddStep()));
 }
 void Calc_ScaleSw_Leaf_Ui::SetRef(Calc_ScaleSw_Leaf* ref)
@@ -36,7 +40,7 @@ void Calc_ScaleSw_Leaf_Ui::RefreshChildArea()
 
     for(countDiff; countDiff > 0; countDiff--)
     {
-        scrollAreaRef->AddWidget((QWidget*)new Helper_Triplet_Item());
+        scrollAreaRef->AddWidget((QWidget*)new Helper_Quadlet_Item());
     }
 
     for(countDiff; countDiff < 0; countDiff++)
@@ -47,9 +51,10 @@ void Calc_ScaleSw_Leaf_Ui::RefreshChildArea()
 
     for(int i=0; i<scrollAreaRef->Count(); i++)
     {
-       ((Helper_Triplet_Item*)scrollAreaRef->GetWidget(i))->Set_Pos(QString::number(i));
-       ((Helper_Triplet_Item*)scrollAreaRef->GetWidget(i))->Set_C2Par(QString::number(myRef->AddSgndToPairIn(i, 0)));
-       ((Helper_Triplet_Item*)scrollAreaRef->GetWidget(i))->Set_C3Par(QString::number(((double)(myRef->AddSgndToPairValPos(i, 0)))/10));
+       ((Helper_Quadlet_Item*)scrollAreaRef->GetWidget(i))->Set_Pos(QString::number(i));
+       ((Helper_Quadlet_Item*)scrollAreaRef->GetWidget(i))->Set_C2Par(QString::number(myRef->AddSgndToPairIn(i, 0)));
+       ((Helper_Quadlet_Item*)scrollAreaRef->GetWidget(i))->Set_C3Par(QString::number(((double)(myRef->AddSgndToPairValPos(i, 0)))/10));
+       ((Helper_Quadlet_Item*)scrollAreaRef->GetWidget(i))->Set_C4Par(QString::number(((double)(myRef->AddSgndToPairValNeg(i, 0)))/10));
 
     }
 }
@@ -79,6 +84,11 @@ void Calc_ScaleSw_Leaf_Ui::Slot_SpinBx2(double spnVal, unsigned int sel)
 void Calc_ScaleSw_Leaf_Ui::Slot_SpinBx3(double spnVal, unsigned int sel)
 {
     myRef->SetValPos(sel, (int16_t)(spnVal*10));
+}
+
+void Calc_ScaleSw_Leaf_Ui::Slot_SpinBx4(double spnVal, unsigned int sel)
+{
+    myRef->SetValNeg(sel, (int16_t)(spnVal*10));
 }
 
 void Calc_ScaleSw_Leaf_Ui::Slot_AddStep()

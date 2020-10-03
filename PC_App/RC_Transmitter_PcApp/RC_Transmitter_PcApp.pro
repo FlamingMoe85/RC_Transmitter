@@ -100,6 +100,7 @@ SOURCES += \
     Bluetooth/remoteselector.cpp \
     UIs/Qt_ControlCockpit.cpp \
     UIs/Qt_ControlKnop.cpp \
+    UIs/Helper/Scroll_Quadlet.cpp
 
     ../../share/UIs/Ui_Visitor.cpp
 
@@ -187,7 +188,8 @@ HEADERS += \
     Bluetooth/remoteselector.h \
     UIs/Qt_ControlCockpit.h \
     UIs/Qt_ControlKnop.h \
-    ../../share/UIs/Ui_Visitor.h
+    ../../share/UIs/Ui_Visitor.h \
+    UIs/Helper/Scroll_Quadlet.h
 
 FORMS += \
     Save_Load_Ui.ui \

@@ -17,11 +17,12 @@ public:
 
 private:
     Calc_ScaleSw_Leaf* myRef;
-    Scroll_Triplet* scrollAreaRef;
+    Scroll_Quadlet* scrollAreaRef;
 
 private slots:
     void Slot_SpinBx2(double spnVal, unsigned int sel);
     void Slot_SpinBx3(double spnVal, unsigned int sel);
+    void Slot_SpinBx4(double spnVal, unsigned int sel);
     void Slot_AddStep();
 };
 

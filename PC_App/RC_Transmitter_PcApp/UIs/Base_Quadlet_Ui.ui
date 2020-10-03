@@ -180,7 +180,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBox">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_C4">
            <property name="decimals">
             <number>1</number>
            </property>

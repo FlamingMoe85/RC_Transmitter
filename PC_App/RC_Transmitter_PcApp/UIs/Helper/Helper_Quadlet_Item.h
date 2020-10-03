@@ -14,7 +14,14 @@ class Helper_Quadlet_Item : public QWidget
 public:
     explicit Helper_Quadlet_Item(QWidget *parent = nullptr);
     ~Helper_Quadlet_Item();
-
+    void Set_Pos(QString pos);
+    void Set_C2Par(QString par);
+    void Set_C3Par(QString par);
+    void Set_C4Par(QString par);
+    QString Get_Pos();
+    QString Get_C2Par();
+    QString Get_C3Par();
+    QString Get_C4Par();
 private:
     Ui::Helper_Quadlet_Item *ui;
 };
