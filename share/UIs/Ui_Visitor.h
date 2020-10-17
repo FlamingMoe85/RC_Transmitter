@@ -24,6 +24,7 @@
 #include "../../uController/grlib_demo/UIs/Time_Blinker_Leaf_UI.h"
 #include "../../uController/grlib_demo/UIs/Calc_ScaleSw_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Calc_Quantizer_Leaf_UI.h"
+#include "../../uController/grlib_demo/UIs/Calc_DeadArea_Leaf_Ui.h"
 
 
 
@@ -33,6 +34,10 @@ class Ui_Visitor : public UI_Visitor_I
 public:
      Ui_Visitor();
     //~Ui_Visitor();
+
+     void SetDeadSpanUiRef(Calc_DeadArea_Leaf_Ui* nju);
+     void DispShowCall(Clac_DeadArea_Leaf* caller);
+
     void SetCompNodeUiRef(Strct_Compo_Node_UI* nju);
     void DispShowCall(Strct_Compo_Node* caller);
 
@@ -109,6 +114,7 @@ private:
     Time_Blinker_Leaf_UI* TimeBlinker_UiRef;
     Calc_ScaleSw_Leaf_Ui* ScaleSwitch_Uiref;
     Calc_Quantizer_Leaf_UI* Quanti_UiRef;
+    Calc_DeadArea_Leaf_Ui* DeadSpan_UiRef;
 };
 #endif
 

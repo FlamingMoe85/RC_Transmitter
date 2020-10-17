@@ -238,4 +238,20 @@ void Ui_Visitor::DispShowCall(Calc_Quantizer_Leaf* caller)
 {
 	Quanti_UiRef->SetQuantizer_Ref(caller);
 }
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+
+void Ui_Visitor::SetDeadSpanUiRef(Calc_DeadArea_Leaf_Ui* nju)
+{
+	DeadSpan_UiRef = nju;
+}
+
+void Ui_Visitor::DispShowCall(Clac_DeadArea_Leaf* caller)
+{
+	DeadSpan_UiRef->SetDeadSpan_Ref(caller);
+}
+
 #endif
+

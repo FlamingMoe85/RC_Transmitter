@@ -24,6 +24,7 @@
 #include "Time_Blinker_Leaf.h"
 #include "Calc_ScaleSw_Leaf.h"
 #include "Calc_Quantizer_Leaf.h"
+#include "Clac_DeadArea_Leaf.hpp"
 
 //#include "Strct_PoolOwners.h"
 
@@ -50,6 +51,7 @@ private:
     Strct_Dummy_Leaf timeBlinkDummy;
     Strct_Dummy_Leaf scaleSwDummy;
     Strct_Dummy_Leaf quantizerDummy;
+    Strct_Dummy_Leaf deadSpanDummy;
     UI_Visitor_I *myUiVisitor;
 };
 

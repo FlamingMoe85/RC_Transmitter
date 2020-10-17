@@ -37,6 +37,9 @@ this->GetChildList()->AddEnd(&scaleSwDummy);
 
 quantizerDummy.FillNameArray(quantizerDummy.GetNameArr(), "Quantizer", 9);
 this->GetChildList()->AddEnd(&quantizerDummy);
+
+deadSpanDummy.FillNameArray(deadSpanDummy.GetNameArr(), "Dead Span", 9);
+this->GetChildList()->AddEnd(&deadSpanDummy);
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {
