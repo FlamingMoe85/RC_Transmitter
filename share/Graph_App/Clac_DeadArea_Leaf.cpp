@@ -81,10 +81,19 @@ float Clac_DeadArea_Leaf::GetSpan()
 
 void Clac_DeadArea_Leaf::Serialize(SerializeDest_I* SerDest)
 {
-
+	int16_t conv;
+	SerDest->SaveUint16(DEADSPAN_TYP);
+	conv = (int16_t)nullPoint;
+	SerDest->SaveInt16(conv);
+	conv = (int16_t)deadSpan;
+	SerDest->SaveInt16(conv);
 }
 
 void Clac_DeadArea_Leaf::Deserialize(SerializeDest_I* SerDest)
 {
-
+	int16_t conv;
+	conv = SerDest->GetUint16();
+	nullPoint = (float)conv;
+	conv = SerDest->GetUint16();
+	deadSpan = (float)conv;
 }

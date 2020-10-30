@@ -117,6 +117,7 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
     Time_Blinker_Leaf* tmpBlink;
     Calc_ScaleSw_Leaf* tmpScaleSw;
     Calc_Quantizer_Leaf* tmpQuant;
+    Clac_DeadArea_Leaf* tmpDeadSpan;
 
     uint16_t amtChlds;
     uint16_t compoType, poolPos;
@@ -200,6 +201,12 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	tmpQuant = new Calc_Quantizer_Leaf();
         	GetChildList()->AddEnd(tmpQuant);
         	tmpQuant->Deserialize(SerDest);
+        }
+        else if(compoType == DEADSPAN_TYP)
+        {
+        	tmpDeadSpan = new Clac_DeadArea_Leaf();
+        	GetChildList()->AddEnd(tmpDeadSpan);
+        	tmpDeadSpan->Deserialize(SerDest);
         }
 
     }
