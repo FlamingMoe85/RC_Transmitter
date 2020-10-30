@@ -62,7 +62,7 @@ void Calc_DeadArea_Leaf_Ui::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 	Leave();
 
 	(**curNode).Esc(curNode);
-
+	WidgetPaint((tWidget *)&deadSpanCov);
 	(**curNode).Show(UiVis);
 }
 
