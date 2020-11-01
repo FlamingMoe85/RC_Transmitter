@@ -14,8 +14,9 @@
 #include "../globaldefinesshare.h"
 #include "GraphAppCommons.h"
 #include "../UIs/Ui_Visitor_I.hpp"
+#include "Helper/I_Quadlet.hpp"
 
-class Calc_ScaleSw_Leaf : public Graph_Leaf<Graph_App_I> {
+class Calc_ScaleSw_Leaf : public Graph_Leaf<Graph_App_I>, public I_Quadlet{
 public:
 
     typedef struct digChnlPair{
@@ -34,19 +35,19 @@ public:
     virtual void Deserialize(SerializeDest_I* SerDest);
     virtual void NullSerCntr(){ };
 
-    void AddChnlPair();
-    void DelChnlPairAt(uint16_t delLoc);
-    uint16_t GetAmtOfPairs();
-    uint16_t AddSgndToPairIn(uint16_t loc, int16_t val);
-    int16_t AddSgndToPairValPos(uint16_t loc, int16_t val);
-    int16_t AddSgndToPairValNeg(uint16_t loc, int16_t val);
-    void SetIn(uint16_t loc, int16_t val);
-    void SetValPos(uint16_t loc, int16_t val);
-    void SetValNeg(uint16_t loc, int16_t val);
-    int16_t CalcVal();
-    uint16_t GetPos();
-    int16_t GetValPos();
-    int16_t GetValNeg();
+    virtual void AddChnlPair();
+    virtual void DelChnlPairAt(uint16_t delLoc);
+    virtual uint16_t GetAmtOfPairs();
+    virtual uint16_t AddSgndToPairIn(uint16_t loc, int16_t val);
+    virtual int16_t AddSgndToPairValPos(uint16_t loc, int16_t val);
+    virtual int16_t AddSgndToPairValNeg(uint16_t loc, int16_t val);
+    virtual void SetIn(uint16_t loc, int16_t val);
+    virtual void SetValPos(uint16_t loc, int16_t val);
+    virtual void SetValNeg(uint16_t loc, int16_t val);
+    virtual int16_t CalcVal();
+    virtual uint16_t GetPos();
+    virtual int16_t GetValPos();
+    virtual int16_t GetValNeg();
 
 
 
