@@ -10,17 +10,16 @@
 
 #include"../../../share/Graph_App/Calc_ScaleSw_Leaf.h"
 #include "../utils/UtilClass.h"
-#include "Ui_Identifier.h"
-#include "../../../share/QuadEncConsumerBase.h"
+#include "Helper/Quadlet.h"
 
-class Calc_ScaleSw_Leaf_Ui : public Ui_Identifier, public QuadEncConsumerBase{
+class Calc_ScaleSw_Leaf_Ui : public Quadlet{
 public:
 	Calc_ScaleSw_Leaf_Ui();
 	virtual ~Calc_ScaleSw_Leaf_Ui();
 
 	void SetScaleSw_Ref(Calc_ScaleSw_Leaf *ref);
 
-		virtual void RemFcnBtns();
+/*		virtual void RemFcnBtns();
 		virtual void ConFcnBtns();
 		virtual void DelSelItm(){ };
 
@@ -49,6 +48,7 @@ private:
 		Calc_ScaleSw_Leaf* myRef;
 		uint16_t inSel;
 		uint16_t column;
+		*/
 };
 
 #endif /* UIS_Calc_ScaleSw_Leaf_Ui_H_ */
