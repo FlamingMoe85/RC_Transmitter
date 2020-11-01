@@ -40,6 +40,11 @@ this->GetChildList()->AddEnd(&quantizerDummy);
 
 deadSpanDummy.FillNameArray(deadSpanDummy.GetNameArr(), "Dead Span", 9);
 this->GetChildList()->AddEnd(&deadSpanDummy);
+
+limiterDummy.FillNameArray(limiterDummy.GetNameArr(), "Limiter", 7);
+this->GetChildList()->AddEnd(&limiterDummy);
+
+
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {

@@ -118,6 +118,7 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
     Calc_ScaleSw_Leaf* tmpScaleSw;
     Calc_Quantizer_Leaf* tmpQuant;
     Clac_DeadArea_Leaf* tmpDeadSpan;
+    Calc_MinMaxLimit_Leaf* limiter;
 
     uint16_t amtChlds;
     uint16_t compoType, poolPos;
@@ -208,6 +209,14 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	GetChildList()->AddEnd(tmpDeadSpan);
         	tmpDeadSpan->Deserialize(SerDest);
         }
+        else if(compoType == MINMAXLIMITER_TYP)
+        {
+        	limiter = new Calc_MinMaxLimit_Leaf();
+        	GetChildList()->AddEnd(limiter);
+        	limiter->Deserialize(SerDest);
+        }
+
+
 
     }
 }

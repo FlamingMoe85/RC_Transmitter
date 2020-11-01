@@ -25,6 +25,7 @@
 #include "Calc_ScaleSw_Leaf.h"
 #include "Calc_Quantizer_Leaf.h"
 #include "Clac_DeadArea_Leaf.hpp"
+#include "Calc_MinMaxLimit_Leaf.h"
 
 //#include "Strct_PoolOwners.h"
 
@@ -52,6 +53,7 @@ private:
     Strct_Dummy_Leaf scaleSwDummy;
     Strct_Dummy_Leaf quantizerDummy;
     Strct_Dummy_Leaf deadSpanDummy;
+    Strct_Dummy_Leaf  limiterDummy;
     UI_Visitor_I *myUiVisitor;
 };
 

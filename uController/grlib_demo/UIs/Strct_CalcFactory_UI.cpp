@@ -89,6 +89,13 @@ void Strct_CalcFactory_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 				myRef->GetEntry()->GetChildList()->AddEnd(new Clac_DeadArea_Leaf());
 				break;
 			}
+
+			case 10:
+			{
+				myRef->GetEntry()->GetChildList()->AddEnd(new Calc_MinMaxLimit_Leaf());
+				break;
+			}
+
 		}
 	}
 	(**curNode).Esc(curNode);

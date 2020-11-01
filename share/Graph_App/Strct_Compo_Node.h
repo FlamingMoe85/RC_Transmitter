@@ -16,6 +16,7 @@
 #include "Calc_ScaleSw_Leaf.h"
 #include "Calc_Quantizer_Leaf.h"
 #include "Clac_DeadArea_Leaf.hpp"
+#include "Calc_MinMaxLimit_Leaf.h"
 #include "PoolOwnerUtils.h"
 
 class Strct_Compo_Node : public Graph_Node<Graph_App_I>, public PoolOwnerUtils

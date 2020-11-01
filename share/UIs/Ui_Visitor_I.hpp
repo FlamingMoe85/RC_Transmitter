@@ -20,6 +20,7 @@ class Time_Blinker_Leaf;
 class Calc_ScaleSw_Leaf;
 class Calc_Quantizer_Leaf;
 class Clac_DeadArea_Leaf;
+class Calc_MinMaxLimit_Leaf;
 
 class UI_Visitor_I
 {
@@ -44,6 +45,8 @@ public:
     virtual void DispShowCall(Calc_ScaleSw_Leaf* caller)=0;
     virtual void DispShowCall(Calc_Quantizer_Leaf* caller)=0;
     virtual void DispShowCall(Clac_DeadArea_Leaf* caller)=0;
+    virtual void DispShowCall(Calc_MinMaxLimit_Leaf* caller)=0;
+
 
 };
 

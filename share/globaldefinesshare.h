@@ -40,6 +40,7 @@ const uint16_t BLINK_TYP = 134;
 const uint16_t SCALE_SWITCH_TYP = 135;
 const uint16_t QUANTIZER_TYP = 136;
 const uint16_t DEADSPAN_TYP = 137;
+const uint16_t MINMAXLIMITER_TYP = 138;
 
 union IntUint16
 {

@@ -25,6 +25,7 @@
 #include "../../uController/grlib_demo/UIs/Calc_ScaleSw_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Calc_Quantizer_Leaf_UI.h"
 #include "../../uController/grlib_demo/UIs/Calc_DeadArea_Leaf_Ui.h"
+#include "../../uController/grlib_demo/UIs/Calc_MinMaxLimit_Leaf_Ui.h"
 
 
 
@@ -92,6 +93,9 @@ public:
 	void SetQuanti_UiRef(Calc_Quantizer_Leaf_UI* uiRef);
 	virtual void DispShowCall(Calc_Quantizer_Leaf* caller);
 
+	void SetLimiter_UiRef(Calc_MinMaxLimit_Leaf_Ui* uiRef);
+	virtual void DispShowCall(Calc_MinMaxLimit_Leaf* caller);
+
 
 private:
 
@@ -115,6 +119,7 @@ private:
     Calc_ScaleSw_Leaf_Ui* ScaleSwitch_Uiref;
     Calc_Quantizer_Leaf_UI* Quanti_UiRef;
     Calc_DeadArea_Leaf_Ui* DeadSpan_UiRef;
+    Calc_MinMaxLimit_Leaf_Ui* MinMaxLimit_UiRef;
 };
 #endif
 

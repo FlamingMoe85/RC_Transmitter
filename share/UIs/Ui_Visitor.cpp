@@ -253,5 +253,18 @@ void Ui_Visitor::DispShowCall(Clac_DeadArea_Leaf* caller)
 	DeadSpan_UiRef->SetDeadSpan_Ref(caller);
 }
 
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetLimiter_UiRef(Calc_MinMaxLimit_Leaf_Ui* uiRef)
+{
+	MinMaxLimit_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Calc_MinMaxLimit_Leaf* caller)
+{
+	MinMaxLimit_UiRef->SetLimiter_Ref(caller);
+}
+
 #endif
 

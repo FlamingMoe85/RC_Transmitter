@@ -14,7 +14,6 @@
 #include "../../../../share/QuadEncConsumerBase.h"
 #include "../../../../share/Graph_App/Helper/I_Quadlet.hpp"
 
-class Calc_ScaleSw_Leaf;
 
 class Quadlet  : public Ui_Identifier, public QuadEncConsumerBase{
 public:
