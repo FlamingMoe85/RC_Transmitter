@@ -70,7 +70,10 @@ UI_Visitor_I* Src_CstmSw_Leaf::GetVisitor()
 
 void Src_CstmSw_Leaf::AddChnlPair()
 {
-	myDigPairs.AddEnd(new digChnlPair);
+	digChnlPair* tmpPair = new digChnlPair();
+	tmpPair->chnl = 0 ;
+	tmpPair->val = 0;
+	myDigPairs.AddEnd(tmpPair);
 }
 void Src_CstmSw_Leaf::DelChnlPairAt(uint16_t delLoc)
 {
