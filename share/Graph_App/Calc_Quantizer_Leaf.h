@@ -47,7 +47,7 @@ public:
 
 private :
 
-    List<quantPair*> myLevelPairs;
+    List<quantPair*> myLevelPairsQ;
     uint16_t nyActPos;
     int16_t lastValInt;
     UI_Visitor_I *myUiVisitor;
