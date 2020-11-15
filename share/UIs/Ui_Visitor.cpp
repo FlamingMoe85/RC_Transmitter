@@ -266,5 +266,33 @@ void Ui_Visitor::DispShowCall(Calc_MinMaxLimit_Leaf* caller)
 	MinMaxLimit_UiRef->SetLimiter_Ref(caller);
 }
 
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetSysConf_UiRef(Z_SystemConfig_Leaf_UI* uiRef)
+{
+	sysConfig_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Z_SystemConfig_Leaf* caller)
+{
+	sysConfig_UiRef->SetSysConfig_Ref(caller);
+}
+
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetExpo1_UiRef(Calc_Expo1_Leaf_Ui* uiRef)
+{
+	expo1_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Calc_Expo1_Leaf* caller)
+{
+	expo1_UiRef->SetExpo1_Ref(caller);
+}
+
 #endif
 

@@ -96,6 +96,12 @@ void Strct_CalcFactory_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 				break;
 			}
 
+			case 11:
+			{
+				myRef->GetEntry()->GetChildList()->AddEnd(new Calc_Expo1_Leaf());
+				break;
+			}
+
 		}
 	}
 	(**curNode).Esc(curNode);

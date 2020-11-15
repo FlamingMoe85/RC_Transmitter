@@ -44,6 +44,9 @@ this->GetChildList()->AddEnd(&deadSpanDummy);
 limiterDummy.FillNameArray(limiterDummy.GetNameArr(), "Limiter", 7);
 this->GetChildList()->AddEnd(&limiterDummy);
 
+expo1Dummy.FillNameArray(expo1Dummy.GetNameArr(), "Expo 1", 6);
+this->GetChildList()->AddEnd(&expo1Dummy);
+
 
 }
 
