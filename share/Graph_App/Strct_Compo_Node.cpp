@@ -120,6 +120,7 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
     Clac_DeadArea_Leaf* tmpDeadSpan;
     Calc_MinMaxLimit_Leaf* limiter;
     Calc_Expo1_Leaf* expo1;
+    Calc_DynamicScale_Leaf* dynScl;
 
     uint16_t amtChlds;
     uint16_t compoType, poolPos;
@@ -216,15 +217,17 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	GetChildList()->AddEnd(limiter);
         	limiter->Deserialize(SerDest);
         }
-
         else if(compoType == EXPO1_TYP)
         {
         	expo1 = new Calc_Expo1_Leaf();
         	GetChildList()->AddEnd(expo1);
         	expo1->Deserialize(SerDest);
         }
-
-
-
+        else if(compoType == EXPO1_TYP)
+        {
+        	dynScl = new Calc_DynamicScale_Leaf();
+        	GetChildList()->AddEnd(dynScl);
+        	dynScl->Deserialize(SerDest);
+        }
     }
 }

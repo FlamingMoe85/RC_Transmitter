@@ -42,6 +42,7 @@ const uint16_t QUANTIZER_TYP = 136;
 const uint16_t DEADSPAN_TYP = 137;
 const uint16_t MINMAXLIMITER_TYP = 138;
 const uint16_t EXPO1_TYP = 139;
+const uint16_t DYNSCALE_TYP = 140;
 
 union IntUint16
 {

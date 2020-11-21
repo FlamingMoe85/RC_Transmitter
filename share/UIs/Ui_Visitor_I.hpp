@@ -23,6 +23,7 @@ class Clac_DeadArea_Leaf;
 class Calc_MinMaxLimit_Leaf;
 class Z_SystemConfig_Leaf;
 class Calc_Expo1_Leaf;
+class Calc_DynamicScale_Leaf;
 
 class UI_Visitor_I
 {
@@ -50,10 +51,7 @@ public:
     virtual void DispShowCall(Calc_MinMaxLimit_Leaf* caller)=0;
     virtual void DispShowCall(Z_SystemConfig_Leaf* caller)=0;
     virtual void DispShowCall(Calc_Expo1_Leaf* caller)=0;
-
-
-
-
+    virtual void DispShowCall(Calc_DynamicScale_Leaf* caller)=0;
 };
 
 #endif // UI_VISITOR_I_HPP

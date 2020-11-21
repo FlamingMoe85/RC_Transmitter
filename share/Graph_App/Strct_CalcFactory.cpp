@@ -47,7 +47,8 @@ this->GetChildList()->AddEnd(&limiterDummy);
 expo1Dummy.FillNameArray(expo1Dummy.GetNameArr(), "Expo 1", 6);
 this->GetChildList()->AddEnd(&expo1Dummy);
 
-
+dynSclDummy.FillNameArray(dynSclDummy.GetNameArr(), "Dyn Scale", 9);
+this->GetChildList()->AddEnd(&dynSclDummy);
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {

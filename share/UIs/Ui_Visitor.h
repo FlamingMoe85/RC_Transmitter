@@ -28,6 +28,7 @@
 #include "../../uController/grlib_demo/UIs/Calc_MinMaxLimit_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Z_SystemConfig_Leaf_UI.h"
 #include "../../uController/grlib_demo/UIs/Calc_Expo1_Leaf_Ui.h"
+#include "../../uController/grlib_demo/UIs/Calc_DynamicScale_Leaf_Ui.h"
 
 
 
@@ -106,6 +107,8 @@ public:
 	void SetExpo1_UiRef(Calc_Expo1_Leaf_Ui* uiRef);
     virtual void DispShowCall(Calc_Expo1_Leaf* caller);
 
+    void SetDynScale_UiRef(Calc_DynamicScale_Leaf_Ui* uiRef);
+    virtual void DispShowCall(Calc_DynamicScale_Leaf* caller);
 
 
 private:
@@ -133,6 +136,7 @@ private:
     Calc_MinMaxLimit_Leaf_Ui* MinMaxLimit_UiRef;
     Z_SystemConfig_Leaf_UI* sysConfig_UiRef;
     Calc_Expo1_Leaf_Ui* expo1_UiRef;
+    Calc_DynamicScale_Leaf_Ui* dynScale_UiRef;
 };
 #endif
 

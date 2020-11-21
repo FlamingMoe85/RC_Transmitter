@@ -294,5 +294,20 @@ void Ui_Visitor::DispShowCall(Calc_Expo1_Leaf* caller)
 	expo1_UiRef->SetExpo1_Ref(caller);
 }
 
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetDynScale_UiRef(Calc_DynamicScale_Leaf_Ui* uiRef)
+{
+	dynScale_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Calc_DynamicScale_Leaf* caller)
+{
+	dynScale_UiRef->SetDynScale_Ref(caller);
+}
+
+
+
 #endif
 
