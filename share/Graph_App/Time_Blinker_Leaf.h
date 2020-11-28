@@ -18,7 +18,9 @@
 #include "PoolOwnerUtils.h"
 #include "Strct_Compo_Node.h"
 
-class Time_Blinker_Leaf  : public Graph_Leaf<Graph_App_I>, public SystickConsumerBase, public PoolOwnerUtils{
+#include "Helper/Source.h"
+
+class Time_Blinker_Leaf  : public SystickConsumerBase, public Source{//, public Graph_Leaf<Graph_App_I>,  public PoolOwnerUtils{
 public:
 
     typedef struct timeSlot{
@@ -31,10 +33,6 @@ public:
 
     virtual void Run(float* val, uint32_t itteration);
     virtual void Show(UI_Visitor_I* UiVisitor);
-    virtual UI_Visitor_I* GetVisitor();
-    virtual void Serialize(SerializeDest_I* SerDest);
-    virtual void Deserialize(SerializeDest_I* SerDest);
-    virtual void NullSerCntr(){ };
 
     void AddSlot();
     void DelSlotAt(uint16_t delLoc);
@@ -49,8 +47,6 @@ public:
 
     virtual void TickNotify();
 
-    void NewTrigCompo();
-    Strct_Compo_Node* GetTrigCompo();
 
 private :
 
@@ -59,8 +55,8 @@ private :
     uint16_t noteCntr;
     uint16_t curSlot;
 
-    Strct_Compo_Node* trigCompo;
-    UI_Visitor_I *myUiVisitor;
+   // Strct_Compo_Node* trigCompo;
+    //UI_Visitor_I *myUiVisitor;
 };
 
 #endif /* SHARE_GRAPH_APP_TIME_BLINKER_LEAF_H_ */

@@ -24,8 +24,7 @@ Calc_Expo1_Leaf::Calc_Expo1_Leaf() {
 	this->FillNameArray(GetNameArr(), "Expo 1", 6);
 
 		    SetType(EXPO1_TYP);
-
-			trigCompo = 0;
+			SetMyType(EXPO1_TYP);
 }
 
 Calc_Expo1_Leaf::~Calc_Expo1_Leaf() {
@@ -34,15 +33,9 @@ Calc_Expo1_Leaf::~Calc_Expo1_Leaf() {
 
 void Calc_Expo1_Leaf::Show(UI_Visitor_I *UiVisitor)
 {
-	myUiVisitor = UiVisitor;
+	SetVisitor(UiVisitor);
     UiVisitor->DispShowCall(this);
 }
-
-UI_Visitor_I* Calc_Expo1_Leaf::GetVisitor()
-{
-	return myUiVisitor;
-}
-
 void Calc_Expo1_Leaf::Run(float* val, uint32_t itteration)
 {
 	int16_t intConv;
@@ -50,7 +43,7 @@ void Calc_Expo1_Leaf::Run(float* val, uint32_t itteration)
 	float expPerc = 0.0;
 	uint32_t trigItt;
 
-	if(trigCompo != 0)trigCompo->Run(&expPerc, trigItt);
+	if(GetTrigCompo() != 0)GetTrigCompo()->Run(&expPerc, trigItt);
 
 	intConv = (int16_t)(*val / 10.0);
 	if(intConv < 0) intConv *= (-1);
@@ -63,62 +56,4 @@ void Calc_Expo1_Leaf::Run(float* val, uint32_t itteration)
 
 	floatConv = (float)curveLUT[intConv];
 	*val = *val * ((floatConv*expPerc) + 1.0 - expPerc);
-}
-
-
-void Calc_Expo1_Leaf::NewTrigCompo()
-{
-	Graph_App_I* tmpNamingPtr;
-	if(trigCompo == 0)
-	{
-		tmpNamingPtr = new Strct_Compo_Node();
-		this->AddToPoolLstEnd((Strct_Compo_Node*)tmpNamingPtr);
-		trigCompo = (Strct_Compo_Node*)tmpNamingPtr;
-		FillNameArray(tmpNamingPtr->GetNameArr() , "Composition", 11);
-	}
-}
-
-Strct_Compo_Node* Calc_Expo1_Leaf::GetTrigCompo()
-{
-	return trigCompo;
-}
-
-void Calc_Expo1_Leaf::Serialize(SerializeDest_I* SerDest)
-{/**/
-	uint16_t slotCnt;
-	SerDest->SaveUint16(EXPO1_TYP);
-
-	if(trigCompo != 0)
-	{
-		SerDest->SaveUint16(1);
-		trigCompo->Serialize(SerDest);
-	}
-	else
-	{
-		SerDest->SaveUint16(0);
-	}
-
-}
-
-void Calc_Expo1_Leaf::Deserialize(SerializeDest_I* SerDest)
-{/**/
-	uint16_t slotCnt, compoType, poolPos;
-
-	slotCnt = SerDest->GetUint16(); //read if trigger stored
-	if(slotCnt == 1)
-	{
-
-		compoType = SerDest->GetUint16();
-		if(compoType == COMPO_TYP_OPEN)
-		{
-			trigCompo = new Strct_Compo_Node();
-			this->AddToPoolLstEnd(trigCompo);
-			trigCompo->Deserialize(SerDest);
-		}
-		else if(compoType == COMPO_TYP_STORED)
-		{
-			poolPos = SerDest->GetUint16();
-			trigCompo = (this->GetPoolLst()->At(poolPos));
-		}
-	}
 }

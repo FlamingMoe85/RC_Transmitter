@@ -223,7 +223,7 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	GetChildList()->AddEnd(expo1);
         	expo1->Deserialize(SerDest);
         }
-        else if(compoType == EXPO1_TYP)
+        else if(compoType == DYNSCALE_TYP)
         {
         	dynScl = new Calc_DynamicScale_Leaf();
         	GetChildList()->AddEnd(dynScl);

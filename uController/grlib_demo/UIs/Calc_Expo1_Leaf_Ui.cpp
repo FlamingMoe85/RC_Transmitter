@@ -89,6 +89,7 @@ void Calc_Expo1_Leaf_Ui::SetExpo1_Ref(Calc_Expo1_Leaf* ref)
 {
 	myRef = ref;
 	cRef = ref;
+	this->SetActUi(this->GetStackPos());
 	WidgetPaint((tWidget *)&expo1Cov);
 	WidgetPaint((tWidget *)&expo1Name);
 	instUiPtr = this;
