@@ -48,7 +48,6 @@ void SignalCapa(char sig)
 	{
 		
 		freeState = 1;
-		//DDRD &= ~(0b00001000);  
 		}
 	else
 	{ 
@@ -89,14 +88,8 @@ rxFlag = 0;
 
 void Send()
 {
-	
-
-	//if(byteCntr > 0)
 	if(byteCntr < 8)
  	{
-	
-
-// 		if((GET_RX_STATE() == RX_FREE) && ((UCSR0A & 64)==0))
 		if((UCSR0A & 64)==0)
  		{ 
 			
@@ -104,7 +97,6 @@ void Send()
  			 	UDR0 = byteSendArr[byteCntr];
 
 		 	if(tail == 2) tail = 0;
-			//byteCntr--; 
 			byteCntr++;
 		 }  
 		 
@@ -116,7 +108,6 @@ void UartTx()
 {
 txFlag = 0;
 
-	//void Send();
 }
 
 
@@ -130,7 +121,6 @@ UBRR0H = (unsigned char)(0);
 UBRR0L = (unsigned char)52;
 /* Enable receiver and transmitter */
 UCSR0B = (1<<7)|(1<<6)|(1<<RXEN0)|(1<<TXEN0);//
-//UCSR0B = (1<<RXEN0);
 /* Set frame format: 8data, 2stop bit */
 UCSR0C = (1<<USBS0)|(3<<UCSZ00);
  
@@ -140,13 +130,8 @@ PORTD = TX_FREE;
 EICRA = 0b00001000;
 EIFR = 0b00000010;
 EIMSK = 0b00000010;
- 
-//sei(); 
 
- 
- //PORTD |= 0b01000000;
-
- sei(); 
+sei(); 
 
 PORTC = 0b11111111;
 while(1)
@@ -156,11 +141,11 @@ if(GetTick())
 {
 	if((PIND & 0b01000000) == 64)
 	{
-//		PORTD = 0;
+
 	}
 	else
 	{
-//		PORTD = 64;
+
 	}
 }
  
@@ -214,14 +199,14 @@ rxFlag = 0;
 	byteArr[head++] = UDR0;
 	
 	if(head == 2) head = 0;
-	//byteCntr++; 
+
 	//currently only use of one expander which is trigegred by an 'a', 
 	// so the following is ok
 	if(byteCntr == 8)byteCntr = 0;
 
 }
 
-SIGNAL (USART0_TX_vect)//TIMER1_COMPA_vect) 
+SIGNAL (USART0_TX_vect)
 { 
 if(freeState == 1)
 {
