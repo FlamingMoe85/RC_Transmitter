@@ -2,13 +2,13 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-
-volatile char byteArr[2], byteSendArr[8], byteCntr = 0, rxFlag = 0, txFlag = 0, nextByte = 0, byteSendTrigger = 0;  
-volatile unsigned int head = 0, tail = 0;
+#define BUF_LEN	20
+volatile char byteArr[BUF_LEN], byteSendArr[8],  rxFlag = 0, txFlag = 0, nextByte = 0, byteSendTrigger = 0;  
+volatile unsigned int head = 0, tail = 0, byteCntr = 0;
 volatile char freeState = 0;
 
-const char RX_FREE = 0;
-const char RX_BUSY = 1;
+const char DST_FREE = 0;
+const char DST_BUSY = 1;
 
 char tmp, switchBits;
 
@@ -44,7 +44,7 @@ char GetTick()
 
 void SignalCapa(char sig)
 {
-	if(sig == RX_FREE)
+	if(sig == DST_FREE)
 	{
 		
 		freeState = 1;
@@ -55,10 +55,16 @@ void SignalCapa(char sig)
 	}
 }
 
-char GET_RX_STATE()
+char GetDstState()
 { 
-	if((PIND & TX_FREE) == TX_FREE) return RX_FREE;
-	else return RX_BUSY;
+	if((PIND & TX_FREE) == TX_FREE) 
+	{
+		return DST_FREE;
+	}
+	else 
+	{
+		return DST_BUSY;
+	}
 }
 
 void UartRx()
@@ -101,7 +107,7 @@ void Send()
 		 }  
 		 
  	}  
-	if(byteCntr == 8)SignalCapa(RX_FREE);
+	if(byteCntr == 8)SignalCapa(DST_FREE);
 }
 
 void UartTx()
@@ -110,6 +116,12 @@ txFlag = 0;
 
 }
 
+unsigned int DiffHeadTail(unsigned int headC, unsigned int tailC)
+{
+	if(headC > tailC) return (headC - tailC);
+	else if(headC < tailC)return (tailC - headC);
+	else return 0;
+}
 
 
 int main(void)
@@ -120,16 +132,17 @@ int main(void)
 UBRR0H = (unsigned char)(0);
 UBRR0L = (unsigned char)52;
 /* Enable receiver and transmitter */
-UCSR0B = (1<<7)|(1<<6)|(1<<RXEN0)|(1<<TXEN0);//
+UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);//
 /* Set frame format: 8data, 2stop bit */
-UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+//UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+UCSR0C = (3<<UCSZ00);
  
 DDRD = 0b01000010;
 PORTD = TX_FREE;
 
-EICRA = 0b00001000;
-EIFR = 0b00000010;
-EIMSK = 0b00000010;
+EICRA = 0b00000001;
+EIFR = 0b00000001;
+EIMSK = 0b00000001;
 
 sei(); 
 
@@ -158,62 +171,83 @@ if(GetTick())
 	byteSendArr[2] = 0;
 	byteSendArr[3] = 0;
 
-	byteSendArr[4] = 42;
-	byteSendArr[5] = 42;
+	byteSendArr[4] = 0;
+	byteSendArr[5] = 0;
 
-	byteSendArr[6] = 32;
+	byteSendArr[6] = 0;
 	byteSendArr[7] = 0+64;
 
 	if(switchBits == 16)
 	{
-		PORTD |= 64;
+		//PORTD |= 64;
 	}
 	else
 	{
 		PORTD = PORTD & ~(64);
 	}
 
-	Send();   
+//	if((DiffHeadTail(head, tail) != 0) && (byteCntr == 0))
+	if(DiffHeadTail(head, tail) != 0)
+	{
+		tail++;
+		if(tail == BUF_LEN)tail = 0;
+		if(byteArr[tail] == 'a')
+		{
+	
+			byteCntr = 0;
 
-	if(rxFlag == 1)UartRx();
-	if(txFlag == 1)UartTx();
+			UCSR0B |= (1<<UDRIE0);
+			UDR0 = byteSendArr[byteCntr++];
+		}
+	}
+
+//	Send();   
+
+//	if(rxFlag == 1)UartRx();
+//	if(txFlag == 1)UartTx();
 }
 }//main
 
 /**/
-SIGNAL (INT1_vect)
+SIGNAL (INT0_vect)
 {
 	DDRD |= SIG_BUSY;
 	EIMSK = 0b00000000;
-
+	
 }
 
 SIGNAL (USART0_RX_vect)//TIMER1_COMPA_vect) 
 { 
-	//SignalCapa(RX_BUSY); 
-	DDRD |= SIG_BUSY;
-	//UartRx();
-	
-rxFlag = 0;
- 
-	byteArr[head++] = UDR0;
-	
-	if(head == 2) head = 0;
 
-	//currently only use of one expander which is trigegred by an 'a', 
-	// so the following is ok
-	if(byteCntr == 8)byteCntr = 0;
+	byteArr[head++] = UDR0;
+	if(head >= BUF_LEN)head = 0;
+	if((UCSR0A & 128) == 128)//Rx has 2position buffer -> so in case there are two chars
+	{
+		byteArr[head++] = UDR0;
+		if(head >= BUF_LEN) head = 0;
+	}
+	
+	if(DiffHeadTail(head, tail) < (10))
+	{
+
+
+		DDRD &= ~SIG_BUSY;
+		EIFR = 0b00000001;
+		EIMSK = 0b00000001;
+	}
 
 }
 
-SIGNAL (USART0_TX_vect)
+SIGNAL (USART0_UDRE_vect)
 { 
-if(freeState == 1)
-{
-EIFR = 0b00000010;
-EIMSK = 0b00000010;
-		freeState = 0;
-		DDRD &= ~(SIG_BUSY); 
+if(switchBits == 16)PORTD |= 64;
+	if(GetDstState() == DST_FREE)
+	{
+		UDR0 = byteSendArr[byteCntr++];
+		if(byteCntr == 8)
+		{
+			UCSR0B &= ~(1<<UDRIE0);
 		}
+	}
 }
 
