@@ -4,47 +4,68 @@
 
 #define BUF_LEN	20
 volatile char byteArr[BUF_LEN], byteSendArr[8],  rxFlag = 0, txFlag = 0, nextByte = 0, byteSendTrigger = 0;  
-volatile unsigned int head = 0, tail = 0, byteCntr = 0;
+volatile unsigned int head = 0, tail = 0, byteCntr = 8;
 volatile char freeState = 0;
+unsigned int adcVal, ledCntr = 0;
 
-const char DST_FREE = 0;
-const char DST_BUSY = 1;
+const char CTS_FREE = 0;
+const char CTS_BUSY = 1;
+
+#define CTS  0b00001000
+#define RTS 0b00010000
 
 char tmp, switchBits;
 
-#define TX_FREE  0b00001000
-#define SIG_BUSY 0b00010000
+#ifdef __AVR_ATmega1284P__
+#define UBRRH_COM	UBRR0H
+#define UBRRL_COM	UBRR0L
+#define UCSRA_COM	UCSR0A
+#define UCSRB_COM	UCSR0B
+#define UCSRC_COM	UCSR0C
+#define UDR_COM		UDR0
 
+#define USART_RX_vect_COM	USART0_RX_vect
+#define USART_UDRE_vect_COM	USART0_UDRE_vect
+#endif
 
-void SignalCapa(char sig)
-{
-	if(sig == DST_FREE)
-	{
-		
-		freeState = 1;
-		}
-	else
-	{ 
-		DDRD |= SIG_BUSY; 
-	}
-}
+#ifdef __AVR_ATmega8__
+#define UBRRH_COM	UBRRH
+#define UBRRL_COM	UBRRL
+#define UCSRA_COM	UCSRA
+#define UCSRB_COM	UCSRB
+#define UCSRC_COM	UCSRC
+#define UDR_COM		UDR
 
-char GetDstState()
+#define USART_RX_vect_COM	USART_RXC_vect
+#define USART_UDRE_vect_COM	USART_UDRE_vect
+#endif
+
+/*
+1284p :
+	TX0 : PD1
+	RX0 : PD0
+INT0: PD0
+	RTS:  PD4 // Request to send -> output (collector)
+	CTS:  PD3 // Clear to send 	-> input
+
+8:
+	TX0 : PD1
+	RX0 : PD0
+INT0: PD2
+	RTS:  PD4 // Request to send -> output (collector)
+	CTS:  PD3 // Clear to send 	-> input
+*/
+
+char IsCtsFtee()
 { 
-	if((PIND & TX_FREE) == TX_FREE) 
+	if((PIND & CTS) == CTS) 
 	{
-		return DST_FREE;
+		return CTS_FREE;
 	}
 	else 
 	{
-		return DST_BUSY;
+		return CTS_BUSY;
 	}
-}
-
-void UartTx()
-{
-txFlag = 0;
-
 }
 
 unsigned int DiffHeadTail(unsigned int headC, unsigned int tailC)
@@ -55,40 +76,144 @@ unsigned int DiffHeadTail(unsigned int headC, unsigned int tailC)
 }
 
 
+unsigned char GetSwitchPins()
+{
+unsigned char tmpC = 0;
+#ifdef __AVR_ATmega1284P__
+return (unsigned char)(PINC ^ 0b11111111);
+#endif
+
+#ifdef __AVR_ATmega8__
+tmpC |= (((PINB ^ 0b11111111) & 0b00111100)<<0);
+tmpC |= (((PIND ^ 0b11111111) & 0b01100000)>>5);
+return tmpC;
+#endif
+}
+
+void Enable_UDREIE()
+{
+#ifdef __AVR_ATmega1284P__
+UCSRB_COM |= (1<<UDRIE0);
+#endif
+
+#ifdef __AVR_ATmega8__
+UCSRB_COM |= (1<<UDRIE);
+#endif
+}
+
+void Disable_UDREIE()
+{
+#ifdef __AVR_ATmega1284P__
+UCSRB_COM &= ~(1<<UDRIE0);
+#endif
+
+#ifdef __AVR_ATmega8__
+UCSRB_COM &= ~(1<<UDRIE);
+#endif
+}
+
+void Enable_ExtInt()
+{
+#ifdef __AVR_ATmega1284P__
+EIFR |= 0b00000001;
+EIMSK |= 0b00000001;
+#endif
+
+#ifdef __AVR_ATmega8__
+GIFR |= (1<<INTF0);// clear flag
+GICR |= (1<<INT0);// Int enable
+#endif
+}
+
+void Disable_ExtInt()
+{
+#ifdef __AVR_ATmega1284P__
+EIMSK &= ~(1<<INT0);
+#endif
+
+#ifdef __AVR_ATmega8__
+GICR &= ~(1<<INT0);// Int enable
+#endif
+}
+
+void GetAdcs()
+{
+#ifdef __AVR_ATmega8__
+ADMUX = 0b01000101;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[3] = (adcVal & 0b0000000000111111);
+
+ADMUX = 0b01000100;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[5] = (adcVal & 0b0000000000111111);
+
+ADMUX = 0b01000011;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[6] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[7] = ((adcVal & 0b0000000000111111)+64);
+#endif
+}
+
 int main(void)
 { 
 
+Enable_ExtInt();
 
 /* Set baud rate  for 9600 Baud*/
-UBRR0H = (unsigned char)(0);
-UBRR0L = (unsigned char)52;
+UBRRH_COM = (unsigned char)(0);
 /* Enable receiver and transmitter */
-UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);//
-/* Set frame format: 8data, 2stop bit */
-//UCSR0C = (1<<USBS0)|(3<<UCSZ00);
-UCSR0C = (3<<UCSZ00);
- 
-DDRD = 0b01000010;
-PORTD = TX_FREE;
+UCSRB_COM = (1<<7)|(1<<4)|(1<<3);//
+/* Set frame format: 8data, 1stop bit */
+#ifdef __AVR_ATmega8__
+UBRRL_COM = (unsigned char)(102);
+UCSRC_COM = 128+6; 
+#endif
+
+#ifdef __AVR_ATmega1284P__
+UBRRL_COM = (unsigned char)(51);
+UCSRC_COM = 6; 
+#endif
+
+PORTD |= CTS;
+
+
+#ifdef __AVR_ATmega8__
+MCUCR = 1; // define Int Sense -> any edge
+DDRD = 0b00000010; 
+DDRB |= 2;
+PORTB |= 0b00111110;
+PORTD |= 0b01100000;
+#endif 
+
+
+#ifdef __AVR_ATmega1284P__
 
 EICRA = 0b00000001;
-EIFR = 0b00000001;
-EIMSK = 0b00000001;
+DDRD = 0b01000010;//bit 6 LED
+PORTC = 0b11111111;
+#endif
 
 sei(); 
 
-PORTC = 0b11111111;
 while(1)
 { 
+	switchBits = GetSwitchPins();
+	
 
- 
-	switchBits = (PINC ^ 0b11111111);
 	byteSendArr[0] = 128;
 	byteSendArr[0] |= (switchBits >> 2);
 	byteSendArr[1] = 0;
 	byteSendArr[1] |= (switchBits & 3);
-
-	byteSendArr[2] = 0;
+	GetAdcs();
+/*	byteSendArr[2] = 0;
 	byteSendArr[3] = 0;
 
 	byteSendArr[4] = 0;
@@ -96,18 +221,12 @@ while(1)
 
 	byteSendArr[6] = 0;
 	byteSendArr[7] = 0+64;
+	*/
 
-	if(switchBits == 16)
-	{
-		//PORTD |= 64;
-	}
-	else
-	{
-		PORTD = PORTD & ~(64);
-	}
+	//PORTC &= ~(0b00100000);
 
-//	if((DiffHeadTail(head, tail) != 0) && (byteCntr == 0))
-	if(DiffHeadTail(head, tail) != 0)
+	if((DiffHeadTail(head, tail) != 0) && (byteCntr == 8))
+//	if(DiffHeadTail(head, tail) != 0)
 	{
 		tail++;
 		if(tail == BUF_LEN)tail = 0;
@@ -115,11 +234,19 @@ while(1)
 		{
 	
 			byteCntr = 0;
-
-			UCSR0B |= (1<<UDRIE0);
-			UDR0 = byteSendArr[byteCntr++];
+			Enable_UDREIE();
+			//UDR_COM = byteSendArr[byteCntr++];
 		}
 	}
+	#ifdef __AVR_ATmega8__
+	ledCntr++;
+	if(ledCntr == 3000)PORTB &= ~2;
+	else if(ledCntr == 6000)
+	{
+		PORTB |= 2;
+		ledCntr = 0;
+	}
+	#endif
 
 }
 }//main
@@ -127,42 +254,41 @@ while(1)
 /**/
 SIGNAL (INT0_vect)
 {
-	DDRD |= SIG_BUSY;
-	EIMSK = 0b00000000;
-	
+	DDRD |= RTS;
+	Disable_ExtInt();
 }
 
-SIGNAL (USART0_RX_vect)//TIMER1_COMPA_vect) 
+
+SIGNAL (USART_RX_vect_COM)//TIMER1_COMPA_vect) 
 { 
 
-	byteArr[head++] = UDR0;
+PORTC |= 0b00100000;
+	
+	byteArr[head++] = UDR_COM;
 	if(head >= BUF_LEN)head = 0;
-	if((UCSR0A & 128) == 128)//Rx has 2position buffer -> so in case there are two chars
+	if((UCSRA_COM & 128) == 128)//Rx has 2position buffer -> so in case there are two chars
 	{
-		byteArr[head++] = UDR0;
+		byteArr[head++] = UDR_COM;
 		if(head >= BUF_LEN) head = 0;
 	}
 	
 	if(DiffHeadTail(head, tail) < (10))
 	{
-
-
-		DDRD &= ~SIG_BUSY;
-		EIFR = 0b00000001;
-		EIMSK = 0b00000001;
+		DDRD &= ~RTS;
+		Enable_ExtInt();
 	}
 
 }
 
-SIGNAL (USART0_UDRE_vect)
+
+SIGNAL (USART_UDRE_vect_COM)
 { 
-if(switchBits == 16)PORTD |= 64;
-	if(GetDstState() == DST_FREE)
+	if(IsCtsFtee() == CTS_FREE)
 	{
-		UDR0 = byteSendArr[byteCntr++];
+		UDR_COM = byteSendArr[byteCntr++];
 		if(byteCntr == 8)
 		{
-			UCSR0B &= ~(1<<UDRIE0);
+			Disable_UDREIE();
 		}
 	}
 }
