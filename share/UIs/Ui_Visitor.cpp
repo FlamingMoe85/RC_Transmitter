@@ -307,7 +307,18 @@ void Ui_Visitor::DispShowCall(Calc_DynamicScale_Leaf* caller)
 	dynScale_UiRef->SetDynScale_Ref(caller);
 }
 
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetIntegrator_UiRef(Time_Integrator_Leaf_Ui* uiRef)
+{
+	integrator_UiRef = uiRef;
+}
 
+void Ui_Visitor::DispShowCall(Time_Integrator_Leaf* caller)
+{
+	integrator_UiRef->SetIntegrator_Ref(caller);
+}
 
 #endif
 

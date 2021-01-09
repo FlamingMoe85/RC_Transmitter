@@ -23,7 +23,7 @@ this->GetChildList()->AddEnd(&adcDummy);
 cstmSwDummy.FillNameArray(cstmSwDummy.GetNameArr(), "Custom Switch", 13);
 this->GetChildList()->AddEnd(&cstmSwDummy);
 
-cstmSwDummy.FillNameArray(intTrimDummy.GetNameArr(), "Trim", 4);
+intTrimDummy.FillNameArray(intTrimDummy.GetNameArr(), "Trim", 4);
 this->GetChildList()->AddEnd(&intTrimDummy);
 
 timeCalcRampDummy.FillNameArray(timeCalcRampDummy.GetNameArr(), "Ramp", 4);
@@ -49,6 +49,9 @@ this->GetChildList()->AddEnd(&expo1Dummy);
 
 dynSclDummy.FillNameArray(dynSclDummy.GetNameArr(), "Dyn Scale", 9);
 this->GetChildList()->AddEnd(&dynSclDummy);
+
+IntegratorDummy.FillNameArray(IntegratorDummy.GetNameArr(), "Integrator", 10);
+this->GetChildList()->AddEnd(&IntegratorDummy);
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {

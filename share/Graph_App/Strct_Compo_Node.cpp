@@ -121,6 +121,7 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
     Calc_MinMaxLimit_Leaf* limiter;
     Calc_Expo1_Leaf* expo1;
     Calc_DynamicScale_Leaf* dynScl;
+    Time_Integrator_Leaf* tmpIntegr;
 
     uint16_t amtChlds;
     uint16_t compoType, poolPos;
@@ -229,5 +230,12 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	GetChildList()->AddEnd(dynScl);
         	dynScl->Deserialize(SerDest);
         }
+        else if(compoType == INTEGRATOR_TYP)
+        {
+        	tmpIntegr = new Time_Integrator_Leaf();
+        	GetChildList()->AddEnd(tmpIntegr);
+        	tmpIntegr->Deserialize(SerDest);
+        }
+
     }
 }

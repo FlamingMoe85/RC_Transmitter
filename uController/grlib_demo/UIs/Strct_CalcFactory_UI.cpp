@@ -108,6 +108,12 @@ void Strct_CalcFactory_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 				break;
 			}
 
+			case 13:
+			{
+				myRef->GetEntry()->GetChildList()->AddEnd(new Time_Integrator_Leaf());
+				break;
+			}
+
 		}
 	}
 	(**curNode).Esc(curNode);

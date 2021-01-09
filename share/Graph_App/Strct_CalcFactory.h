@@ -28,6 +28,7 @@
 #include "Calc_MinMaxLimit_Leaf.h"
 #include "Calc_Expo1_Leaf.h"
 #include "Calc_DynamicScale_Leaf.h"
+#include "Time_Integrator_Leaf.h"
 
 //#include "Strct_PoolOwners.h"
 
@@ -58,6 +59,7 @@ private:
     Strct_Dummy_Leaf  limiterDummy;
     Strct_Dummy_Leaf  expo1Dummy;
     Strct_Dummy_Leaf  dynSclDummy;
+    Strct_Dummy_Leaf  IntegratorDummy;
     UI_Visitor_I *myUiVisitor;
 };
 
