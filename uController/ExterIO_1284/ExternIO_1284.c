@@ -178,7 +178,7 @@ UCSRC_COM = 128+6;
 #endif
 
 #ifdef __AVR_ATmega1284P__
-UBRRL_COM = (unsigned char)(51);
+UBRRL_COM = (unsigned char)(102);
 UCSRC_COM = 6; 
 #endif
 
