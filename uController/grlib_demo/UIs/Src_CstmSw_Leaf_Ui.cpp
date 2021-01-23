@@ -39,6 +39,7 @@ static char valArr_2[6];
 static char valArr_3[6];
 static char activePosArr[] = "   ";
 static char outputArr[] = "      ";
+static char modeArr[11];
 
 extern void CstmSwAddInPrs(tWidget *psWidget);
 extern void CstmSwDelInPrs(tWidget *psWidget);
@@ -69,10 +70,15 @@ tCanvasWidget rubricCanvas[] =
 				 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 				 				 UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "In", 0, 0),
 
-    CanvasStruct(rubricCanvas, 0,0,
+    CanvasStruct(rubricCanvas, 0,rubricCanvas + 3,
                  &g_sKentec320x240x16_SSD2119, CAN_X_POS+100, 45, 110, CAN_Y_WIDTH,
 				 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
-				 				 UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "Val", 0, 0)
+				 				 UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "Val", 0, 0),
+
+	CanvasStruct(rubricCanvas, 0,0,
+				&g_sKentec320x240x16_SSD2119, 0, 90, 100, CAN_Y_WIDTH,
+				CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
+				UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "Mode", 0, 0)
 };
 
 tCanvasWidget swPosCanvas[] =
@@ -148,6 +154,8 @@ tPushButtonWidget cstmSwBtns[] =
 
 Canvas(srcCstmSwValue, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 110, CAN_X_WIDTH, CAN_Y_WIDTH, CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT, UNSELCTED_PNT, ClrGray, ClrWhite, &g_sFontCm22, "-", 0, 0);
 
+Canvas(modeValue, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90+CAN_Y_WIDTH, 100, CAN_Y_WIDTH, CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT, UNSELCTED_PNT, ClrGray, ClrWhite, &g_sFontCm22, "-", 0, 0);
+
 Src_CstmSw_Leaf_Ui::Src_CstmSw_Leaf_Ui() {
 	// TODO Auto-generated constructor stub
 	myRef_C = &myRef;
@@ -177,6 +185,7 @@ void Src_CstmSw_Leaf_Ui::SetCstmSw_Ref(Src_CstmSw_Leaf *ref)
 	WidgetPaint((tWidget *)&srcCstmSwCov_1);
 	WidgetPaint((tWidget *)&srcCstmSwCov_2);
 	WidgetPaint((tWidget *)&srcCstmSwName);
+	WidgetPaint((tWidget *)&modeValue);
 	//UtilClass::SgndIntToStrng(&(nameArr[0]), myRef->GetChnlVal());
 	//CanvasTextSet(&srcCstmSwValue, &(nameArr[0]));
 	WidgetPaint((tWidget *)&srcCstmSwValue);
@@ -252,7 +261,38 @@ void Src_CstmSw_Leaf_Ui::Left()
 
 void Src_CstmSw_Leaf_Ui::Grab()
 {
+	myRef->CycleMode();
+	PaintMode();
+}
 
+void Src_CstmSw_Leaf_Ui::PaintMode()
+{
+	if(myRef->GetMode() == CONT_MODE)
+	{
+		modeArr[0] = 'C';
+		modeArr[1] = 'o';
+		modeArr[2] = 'n';
+		modeArr[3] = 't';
+		modeArr[4] = 'i';
+		modeArr[5] = 'n';
+		modeArr[6] = 'u';
+	    modeArr[7] = 'o';
+	    modeArr[8] = 'u';
+		modeArr[9] = 's';
+		modeArr[10] = 0;
+	}
+	else
+	{
+		modeArr[0] = 'P';
+		modeArr[1] = 'u';
+		modeArr[2] = 'l';
+		modeArr[3] = 's';
+		modeArr[4] = 'e';
+		modeArr[5] = 0;
+
+	}
+	CanvasTextSet(&(modeValue), &(modeArr[0]));
+	WidgetPaint((tWidget *)&(modeValue));
 }
 
 void Src_CstmSw_Leaf_Ui::Paint()

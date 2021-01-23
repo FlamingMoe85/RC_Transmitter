@@ -15,6 +15,9 @@
 #include "GraphAppCommons.h"
 #include "../UIs/Ui_Visitor_I.hpp"
 
+#define PULSE_MODE	0
+#define CONT_MODE	1
+
 class Src_CstmSw_Leaf : public Graph_Leaf<Graph_App_I> {
 public:
 
@@ -43,16 +46,18 @@ public:
     int16_t GetVal();
     void SetPairIn(uint16_t loc, int16_t val);
     void SetPairVal(uint16_t loc, int16_t val);
-
+    void SetMode(uint16_t m);
+    void CycleMode();
+    uint16_t GetMode();
 
 
 private :
 
     List<digChnlPair*> myDigPairs;
-    uint16_t nyActPos;
+    uint16_t nyActPos, nyActPosOld;
     int16_t lastValInt;
     UI_Visitor_I *myUiVisitor;
-
+    uint16_t mode;
 };
 
 #endif /* SHARE_GRAPH_APP_SRC_CSTMSW_LEAF_H_ */

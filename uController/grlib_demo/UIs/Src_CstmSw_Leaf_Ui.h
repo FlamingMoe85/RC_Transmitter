@@ -42,6 +42,7 @@ public:
 		void DelIn();
 
 		void RepaintVal();
+		void PaintMode();
 
 		virtual void QuadEncNotify(int16_t val);
 

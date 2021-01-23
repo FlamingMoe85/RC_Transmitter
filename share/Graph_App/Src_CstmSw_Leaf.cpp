@@ -14,6 +14,8 @@ Src_CstmSw_Leaf::Src_CstmSw_Leaf() {
 	this->FillNameArray(GetNameArr(), "Custom Switch", 13);
 	nyActPos = 0;
     SetType(CSTMSW_TYP);
+    mode = CONT_MODE;
+    nyActPosOld = 0;
 }
 
 Src_CstmSw_Leaf::~Src_CstmSw_Leaf() {
@@ -24,12 +26,13 @@ void Src_CstmSw_Leaf::Run(float* val, uint32_t itteration)
 {
 	float conv;
 	uint16_t actPos, neutChnl, neutPos;
+	uint32_t digBitsCopy = digInArrBits;
 	for(actPos=0; actPos<myDigPairs.Count(); actPos++)
 	{
 		neutChnl = myDigPairs.At(actPos)->chnl;
 		if(neutChnl != 0)
 		{
-			if(digInArrBits & (1 << (neutChnl-1))) break;
+			if(digBitsCopy & (1 << (neutChnl-1))) break;
 		}
 		else
 		{
@@ -40,7 +43,23 @@ void Src_CstmSw_Leaf::Run(float* val, uint32_t itteration)
 	{
 		if(actPos == myDigPairs.Count()) actPos = neutPos;
 		nyActPos = actPos;
-		lastValInt = myDigPairs.At(nyActPos)->val;
+		if(mode == PULSE_MODE)
+		{
+			if(nyActPosOld != nyActPos)
+			{
+				lastValInt = myDigPairs.At(nyActPos)->val;
+			}
+			else
+			{
+				lastValInt = myDigPairs.At(0)->val;
+			}
+		}
+		else
+		{
+			lastValInt = myDigPairs.At(nyActPos)->val;
+		}
+		nyActPosOld = nyActPos;
+
 		conv = (float)lastValInt;
 	*val += conv;
 	}
@@ -130,11 +149,45 @@ void Src_CstmSw_Leaf::SetPairVal(uint16_t loc, int16_t val)
     myDigPairs.At(loc)->val = val;
 }
 
+void Src_CstmSw_Leaf::SetMode(uint16_t m)
+{
+	switch(m)
+	{
+		case CONT_MODE:
+		{
+			mode = m;
+			break;
+		}
+		case PULSE_MODE:
+		{
+			mode = m;
+			break;
+		}
+	}
+}
+
+void Src_CstmSw_Leaf::CycleMode()
+{
+	if(mode == CONT_MODE)
+	{
+		mode = PULSE_MODE;
+	}
+	else
+	{
+		mode = CONT_MODE;
+	}
+}
+
+uint16_t Src_CstmSw_Leaf::GetMode()
+{
+	return mode;
+}
 
 void Src_CstmSw_Leaf::Serialize(SerializeDest_I* SerDest)
 {
 	uint16_t digPairCnt;
 	SerDest->SaveUint16(CSTMSW_TYP);
+	SerDest->SaveUint16(mode);
 	digPairCnt = myDigPairs.Count();
 	SerDest->SaveUint16(digPairCnt);
 	for(uint16_t i=0; i<digPairCnt; i++)
@@ -147,6 +200,8 @@ void Src_CstmSw_Leaf::Serialize(SerializeDest_I* SerDest)
 void Src_CstmSw_Leaf::Deserialize(SerializeDest_I* SerDest)
 {
 	uint16_t digPairCnt;
+	digPairCnt = SerDest->GetUint16();//reads the mode
+	mode = digPairCnt;
 	digPairCnt = SerDest->GetUint16();
 	for(uint16_t i=0; i<digPairCnt; i++)
 	{

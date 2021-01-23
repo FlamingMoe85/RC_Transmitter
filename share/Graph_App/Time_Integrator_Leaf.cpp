@@ -32,14 +32,26 @@ Time_Integrator_Leaf::~Time_Integrator_Leaf() {
 
 void Time_Integrator_Leaf::Run(float* val, uint32_t itteration)
 {
-	if(rateF > 0.0)iValue += (((*val)*rateF)/50000.0);
-	else iValue = *val;
+	if(rateF > 0.0)
+	{
+		iValue += (((*val)*rateF)/50000.0);
+	}
+	else
+	{
+		iValue += (*val);
+	}
 	if((digInArrBits & resPin)== resPin)
 	{
 		iValue = defF;
 	}
-	if(iValue > maxF)iValue = maxF;
-	if(iValue < minF)iValue = minF;
+	if(iValue > maxF)
+	{
+		iValue = maxF;
+	}
+	if(iValue < minF)
+	{
+		iValue = minF;
+	}
 	*val = iValue;
 }
 
@@ -84,6 +96,8 @@ void Time_Integrator_Leaf::Deserialize(SerializeDest_I* SerDest)
 
 	SetRate(SerDest->GetUint16());
 	SetResSel(SerDest->GetUint16());
+
+	minF = (float)min;
 }
 
 void Time_Integrator_Leaf::NullSerCntr()
