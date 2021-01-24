@@ -30,6 +30,11 @@
 #include "Calc_DynamicScale_Leaf.h"
 #include "Time_Integrator_Leaf.h"
 
+#include "Machines/I_Machine.hpp"
+#include "Machines/Machine_uCAdc.h"
+#include "Machines/Machine_ScaleSwitch.h"
+#include "Machines/Machine_CstmSw.h"
+
 //#include "Strct_PoolOwners.h"
 
 class Strct_CalcFactory : public Graph_Node<Graph_App_I>{
@@ -45,6 +50,12 @@ public:
     virtual void NullSerCntr();
 
     void Show();
+
+    char* GetNameOfMachIndex(uint16_t index);
+    uint16_t GetMachTypeByIndex(uint16_t index);
+    uint16_t GetAmtOfMachines();
+    void AddModuleToEntryByType(uint16_t t);
+
 private:
     Strct_Dummy_Leaf addDummy;
     Strct_Dummy_Leaf mulDummy;
@@ -61,6 +72,11 @@ private:
     Strct_Dummy_Leaf  dynSclDummy;
     Strct_Dummy_Leaf  IntegratorDummy;
     UI_Visitor_I *myUiVisitor;
+
+    List<I_Machine*> machineList;
+    Machine_uCAdc adcMachine;
+    Machine_ScaleSwitch sclSwMachine;
+    Machine_CstmSw cstmSwMachine;
 };
 
 #endif /* SHARE_GRAPH_APP_STRCT_CALCFACTORY_H_ */

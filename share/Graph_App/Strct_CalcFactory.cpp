@@ -52,6 +52,10 @@ this->GetChildList()->AddEnd(&dynSclDummy);
 
 IntegratorDummy.FillNameArray(IntegratorDummy.GetNameArr(), "Integrator", 10);
 this->GetChildList()->AddEnd(&IntegratorDummy);
+
+machineList.AddEnd(&adcMachine);
+machineList.AddEnd(&cstmSwMachine);
+machineList.AddEnd(&sclSwMachine);
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {
@@ -94,5 +98,33 @@ void Strct_CalcFactory::Deserialize(SerializeDest_I* SerDest)
 
 void Strct_CalcFactory::NullSerCntr()
 {
+
+}
+
+char* Strct_CalcFactory::GetNameOfMachIndex(uint16_t index)
+{
+	return machineList.At(index)->GetNameArr();
+}
+
+uint16_t Strct_CalcFactory::GetAmtOfMachines()
+{
+	return machineList.Count();
+}
+
+uint16_t Strct_CalcFactory::GetMachTypeByIndex(uint16_t index)
+{
+	return machineList.At(index)->GetType();
+}
+
+void Strct_CalcFactory::AddModuleToEntryByType(uint16_t t)
+{
+	for(uint16_t typeToIndex = 0; typeToIndex < machineList.Count(); typeToIndex++)
+	{
+		if(machineList.At(typeToIndex)->GetType() == t)
+		{
+			this->GetEntry()->GetChildList()->AddEnd(machineList.At(typeToIndex)->GetInstance());
+			break;
+		}
+	}
 
 }
