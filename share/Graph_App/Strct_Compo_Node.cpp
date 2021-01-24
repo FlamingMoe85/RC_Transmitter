@@ -1,10 +1,12 @@
 
 
 #include "Strct_Compo_Node.h"
+#include "Strct_CalcFactory.h"
 
 static uint16_t serializeCntr = 0;
 
 static UI_Visitor_I* statUiVisPtr;
+static Strct_CalcFactory compoNodeCalcFac;
 
 Strct_Compo_Node::Strct_Compo_Node()
 {
@@ -107,21 +109,7 @@ void Strct_Compo_Node::Serialize(SerializeDest_I* SerDest)
 
 void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
 {
-    Strct_Compo_Node* tmpNode;
-    Calc_Addition_Leaf* tmpAdd;
-    Calc_Multiplication_Leaf* tmpMul;
-    Src_CstmSw_Leaf* tmpCstSw;
-    Calc_uCAdc_Leaf* tmpAdcuC;
-    Src_InternTrim_Leaf* tmpIntTrim;
-    TimeCalc_Ramp_Leaf* tmpRamp;
-    Time_Blinker_Leaf* tmpBlink;
-    Calc_ScaleSw_Leaf* tmpScaleSw;
-    Calc_Quantizer_Leaf* tmpQuant;
-    Clac_DeadArea_Leaf* tmpDeadSpan;
-    Calc_MinMaxLimit_Leaf* limiter;
-    Calc_Expo1_Leaf* expo1;
-    Calc_DynamicScale_Leaf* dynScl;
-    Time_Integrator_Leaf* tmpIntegr;
+    Graph_App_I* tmpModule;
 
     uint16_t amtChlds;
     uint16_t compoType, poolPos;
@@ -152,90 +140,11 @@ void Strct_Compo_Node::Deserialize(SerializeDest_I* SerDest)
         	poolPos = SerDest->GetUint16();
         	GetChildList()->AddEnd(this->GetPoolLst()->At(poolPos));
         }
-        else if(compoType == ADD_TYP)
+        else
         {
-            tmpAdd = new Calc_Addition_Leaf();
-            GetChildList()->AddEnd(tmpAdd);
-            tmpAdd->Deserialize(SerDest);
+        	tmpModule = compoNodeCalcFac.GetModuleByType(compoType);
+        	tmpModule->Deserialize(SerDest);
+        	GetChildList()->AddEnd(tmpModule);
         }
-        else if(compoType == MULT_TYP)
-        {
-            tmpMul = new Calc_Multiplication_Leaf();
-            GetChildList()->AddEnd(tmpMul);
-            tmpMul->Deserialize(SerDest);
-        }
-        else if(compoType == CSTMSW_TYP)
-        {
-        	tmpCstSw = new Src_CstmSw_Leaf();
-        	GetChildList()->AddEnd(tmpCstSw);
-        	tmpCstSw->Deserialize(SerDest);
-        }
-        else if(compoType == ADCuC_TYP)
-        {
-        	tmpAdcuC = new Calc_uCAdc_Leaf();
-        	GetChildList()->AddEnd(tmpAdcuC);
-        	tmpAdcuC->Deserialize(SerDest);
-        }
-        else if(compoType == INTERN_TRIM_TYP)
-        {
-        	tmpIntTrim = new Src_InternTrim_Leaf();
-        	GetChildList()->AddEnd(tmpIntTrim);
-        	tmpIntTrim->Deserialize(SerDest);
-        }
-        else if(compoType == RAMP_TYP)
-        {
-        	tmpRamp = new TimeCalc_Ramp_Leaf();
-        	GetChildList()->AddEnd(tmpRamp);
-        	tmpRamp->Deserialize(SerDest);
-        }
-        else if(compoType == BLINK_TYP)
-        {
-        	tmpBlink = new Time_Blinker_Leaf();
-        	GetChildList()->AddEnd(tmpBlink);
-        	tmpBlink->Deserialize(SerDest);
-        }
-        else if(compoType == SCALE_SWITCH_TYP)
-        {
-        	tmpScaleSw = new Calc_ScaleSw_Leaf();
-        	GetChildList()->AddEnd(tmpScaleSw);
-        	tmpScaleSw->Deserialize(SerDest);
-        }
-        else if(compoType == QUANTIZER_TYP)
-        {
-        	tmpQuant = new Calc_Quantizer_Leaf();
-        	GetChildList()->AddEnd(tmpQuant);
-        	tmpQuant->Deserialize(SerDest);
-        }
-        else if(compoType == DEADSPAN_TYP)
-        {
-        	tmpDeadSpan = new Clac_DeadArea_Leaf();
-        	GetChildList()->AddEnd(tmpDeadSpan);
-        	tmpDeadSpan->Deserialize(SerDest);
-        }
-        else if(compoType == MINMAXLIMITER_TYP)
-        {
-        	limiter = new Calc_MinMaxLimit_Leaf();
-        	GetChildList()->AddEnd(limiter);
-        	limiter->Deserialize(SerDest);
-        }
-        else if(compoType == EXPO1_TYP)
-        {
-        	expo1 = new Calc_Expo1_Leaf();
-        	GetChildList()->AddEnd(expo1);
-        	expo1->Deserialize(SerDest);
-        }
-        else if(compoType == DYNSCALE_TYP)
-        {
-        	dynScl = new Calc_DynamicScale_Leaf();
-        	GetChildList()->AddEnd(dynScl);
-        	dynScl->Deserialize(SerDest);
-        }
-        else if(compoType == INTEGRATOR_TYP)
-        {
-        	tmpIntegr = new Time_Integrator_Leaf();
-        	GetChildList()->AddEnd(tmpIntegr);
-        	tmpIntegr->Deserialize(SerDest);
-        }
-
     }
 }
