@@ -56,6 +56,15 @@ this->GetChildList()->AddEnd(&IntegratorDummy);
 machineList.AddEnd(&adcMachine);
 machineList.AddEnd(&cstmSwMachine);
 machineList.AddEnd(&sclSwMachine);
+machineList.AddEnd(&blinkMach);
+machineList.AddEnd(&deadAreaMach);
+machineList.AddEnd(&dynScaleMach);
+machineList.AddEnd(&expo1Mach);
+machineList.AddEnd(&integrMach);
+machineList.AddEnd(&internTrimMach);
+machineList.AddEnd(&quantMach);
+machineList.AddEnd(&limiterMach);
+machineList.AddEnd(&rampMach);
 }
 
 Strct_CalcFactory::~Strct_CalcFactory() {

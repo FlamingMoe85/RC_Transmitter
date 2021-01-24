@@ -34,6 +34,15 @@
 #include "Machines/Machine_uCAdc.h"
 #include "Machines/Machine_ScaleSwitch.h"
 #include "Machines/Machine_CstmSw.h"
+#include "Machines/Machine_Blinker.h"
+#include "Machines/Machine_DeadArea.h"
+#include "Machines/Machine_DynScale.h"
+#include "Machines/Machine_Expo1.h"
+#include "Machines/Machine_Integrator.h"
+#include "Machines/Machine_InternTrim.h"
+#include "Machines/Machine_Quantizer.h"
+#include "Machines/MachineM_inMaxLimit.h"
+#include "Machines/MachineRamp.h"
 
 //#include "Strct_PoolOwners.h"
 
@@ -77,6 +86,15 @@ private:
     Machine_uCAdc adcMachine;
     Machine_ScaleSwitch sclSwMachine;
     Machine_CstmSw cstmSwMachine;
+	Machine_Blinker blinkMach;
+	Machine_DeadArea deadAreaMach;
+	Machine_DynScale dynScaleMach;
+	Machine_Expo1 expo1Mach;
+	Machine_Integrator integrMach;
+	Machine_InternTrim internTrimMach;
+	Machine_Quantizer quantMach;
+	Machine_MinMaxLimit limiterMach;
+	Machine_Ramp rampMach;
 };
 
 #endif /* SHARE_GRAPH_APP_STRCT_CALCFACTORY_H_ */
