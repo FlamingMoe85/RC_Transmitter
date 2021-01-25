@@ -320,5 +320,30 @@ void Ui_Visitor::DispShowCall(Time_Integrator_Leaf* caller)
 	integrator_UiRef->SetIntegrator_Ref(caller);
 }
 
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetWizard_UiRef(Z_Wizard_Node_Ui* uiRef)
+{
+	wizard_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Z_Wizard_Node* caller)
+{
+	wizard_UiRef->SetWizard_Ref(caller);
+}
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetIntTrimWizard_UiRef(Wizard_IntTrim* uiRef)
+{
+	wizardIntTrim_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Wizard_InternTrim* caller)
+{
+	wizardIntTrim_UiRef->SetIntTrimWiz_Ref(caller);
+}
 #endif
 

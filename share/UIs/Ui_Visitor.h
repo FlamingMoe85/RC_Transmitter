@@ -30,6 +30,9 @@
 #include "../../uController/grlib_demo/UIs/Calc_Expo1_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Calc_DynamicScale_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Time_Integrator_Leaf_Ui.h"
+#include "../../uController/grlib_demo/UIs/Z_Wizard_Node_Ui.h"
+#include "../../uController/grlib_demo/UIs/Wizards/Wizard_IntTrim.h"
+
 
 
 
@@ -113,6 +116,13 @@ public:
     void SetIntegrator_UiRef(Time_Integrator_Leaf_Ui* uiRef);
     virtual void DispShowCall(Time_Integrator_Leaf* caller);
 
+    void SetWizard_UiRef(Z_Wizard_Node_Ui* uiRef);
+    virtual void DispShowCall(Z_Wizard_Node* caller);
+
+    void SetIntTrimWizard_UiRef(Wizard_IntTrim* uiRef);
+    virtual void DispShowCall(Wizard_InternTrim* caller);
+
+
 
 private:
 
@@ -141,6 +151,8 @@ private:
     Calc_Expo1_Leaf_Ui* expo1_UiRef;
     Calc_DynamicScale_Leaf_Ui* dynScale_UiRef;
     Time_Integrator_Leaf_Ui* integrator_UiRef;
+    Z_Wizard_Node_Ui* wizard_UiRef;
+    Wizard_IntTrim* wizardIntTrim_UiRef;
 };
 #endif
 

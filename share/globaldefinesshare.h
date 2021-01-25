@@ -44,6 +44,8 @@ const uint16_t MINMAXLIMITER_TYP = 138;
 const uint16_t EXPO1_TYP = 139;
 const uint16_t DYNSCALE_TYP = 140;
 const uint16_t INTEGRATOR_TYP = 141;
+const uint16_t WIZARD_MEN_TYP = 142;
+const uint16_t INTERN_TRIM_WIZ_TYP = 143;
 
 union IntUint16
 {
