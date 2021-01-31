@@ -24,6 +24,7 @@ const float RESET_MULTI_SW = -1600;
 
 #define NAME_LENGTH 20
 
+
 const uint16_t SLOT_TYP = 15;
 const uint16_t COMPO_TYP_OPEN = 1;
 const uint16_t COMPO_TYP_STORED = 2;
@@ -46,6 +47,7 @@ const uint16_t DYNSCALE_TYP = 140;
 const uint16_t INTEGRATOR_TYP = 141;
 const uint16_t WIZARD_MEN_TYP = 142;
 const uint16_t INTERN_TRIM_WIZ_TYP = 143;
+const uint16_t TWO_CHNL_MODL_WIZ_TYP = 144;
 
 union IntUint16
 {

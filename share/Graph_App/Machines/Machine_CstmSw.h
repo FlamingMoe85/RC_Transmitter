@@ -18,9 +18,12 @@ public:
     virtual uint16_t GetType();
     virtual char* GetNameArr();
     virtual Graph_App_I* GetInstance();
+    virtual Graph_App_I* GetInstance(uint16_t* desArr);
 
 private:
     char nameArr[14];
+    uint16_t dataCntr;
+    uint16_t* dataArr;
 };
 
 #endif /* SHARE_GRAPH_APP_MACHINES_MACHINE_CSTMSW_H_ */

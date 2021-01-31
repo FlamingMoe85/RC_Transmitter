@@ -336,7 +336,7 @@ void Ui_Visitor::DispShowCall(Z_Wizard_Node* caller)
 /*********************************************/
 ///////////////////////////////////////////////
 /*********************************************/
-void Ui_Visitor::SetIntTrimWizard_UiRef(Wizard_IntTrim* uiRef)
+void Ui_Visitor::SetIntTrimWizard_UiRef(Wizard_IntTrim_Ui* uiRef)
 {
 	wizardIntTrim_UiRef = uiRef;
 }
@@ -344,6 +344,19 @@ void Ui_Visitor::SetIntTrimWizard_UiRef(Wizard_IntTrim* uiRef)
 void Ui_Visitor::DispShowCall(Wizard_InternTrim* caller)
 {
 	wizardIntTrim_UiRef->SetIntTrimWiz_Ref(caller);
+}
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetIntTrimWizard_UiRef(Wizard_TwoChnlModl_Leaf_Ui* uiRef)
+{
+	wizardTwoChnlMod_UiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Wizard_TwoChnlModl_Leaf* caller)
+{
+	wizardTwoChnlMod_UiRef->SetTwoChnlModl_Ref(caller);
 }
 #endif
 

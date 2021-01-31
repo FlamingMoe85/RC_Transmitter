@@ -5,17 +5,17 @@
  *      Author: Justus
  */
 
-#ifndef UIS_WIZARDS_WIZARD_INTTRIM_H_
-#define UIS_WIZARDS_WIZARD_INTTRIM_H_
+#ifndef UIS_WIZARDS_WIZARD_INTTRIM_UI_H_
+#define UIS_WIZARDS_WIZARD_INTTRIM_UI_H_
 
 #include"../../../../share/Graph_App/Wizards/Wizard_InternTrim.h"
 #include "../ItemSelector.h"
 #include "../Ui_Identifier.h"
 
-class Wizard_IntTrim  : public Ui_Identifier{
+class Wizard_IntTrim_Ui  : public Ui_Identifier{
 public:
-	Wizard_IntTrim();
-	virtual ~Wizard_IntTrim();
+	Wizard_IntTrim_Ui();
+	virtual ~Wizard_IntTrim_Ui();
 
 	void SetIntTrimWiz_Ref(Wizard_InternTrim* ref);
 
@@ -40,4 +40,4 @@ private:
 		Wizard_InternTrim* myRef;
 };
 
-#endif /* UIS_WIZARDS_WIZARD_INTTRIM_H_ */
+#endif /* UIS_WIZARDS_WIZARD_INTTRIM_UI_H_ */

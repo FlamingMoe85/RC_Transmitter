@@ -18,6 +18,7 @@ public:
     virtual uint16_t GetType() = 0;
     virtual char* GetNameArr() = 0;
     virtual Graph_App_I* GetInstance() = 0;
+    virtual Graph_App_I* GetInstance(uint16_t* desArr) = 0;
 };
 
 

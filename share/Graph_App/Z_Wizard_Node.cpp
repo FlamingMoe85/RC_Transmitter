@@ -13,6 +13,7 @@ Z_Wizard_Node::Z_Wizard_Node() {
 	SetType(WIZARD_MEN_TYP);
 
 	this->GetChildList()->AddEnd(&internTrimWiz);
+	this->GetChildList()->AddEnd(&twoChnlModlWiz);
 }
 
 Z_Wizard_Node::~Z_Wizard_Node() {

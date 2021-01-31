@@ -8,6 +8,8 @@
 #include "Machine_CstmSw.h"
 #include "../Src_CstmSw_Leaf.h"
 
+//static uint16_t data[] = {0, 3, 1, 2, 3, 4, 5, 6};
+
 Machine_CstmSw::Machine_CstmSw() {
 	// TODO Auto-generated constructor stub
 		nameArr[0] = 'C';
@@ -44,3 +46,15 @@ Graph_App_I* Machine_CstmSw::GetInstance()
 {
 	return (Graph_App_I*) new Src_CstmSw_Leaf();
 }
+
+Graph_App_I* Machine_CstmSw::GetInstance(uint16_t* desArr)
+{
+	/*
+	Src_CstmSw_Leaf* tmpRef;
+	tmpRef = new Src_CstmSw_Leaf();
+	dataArr = desArr;
+	dataCntr = 0;
+	tmpRef->Deserialize(this);
+	return tmpRef;*/
+}
+

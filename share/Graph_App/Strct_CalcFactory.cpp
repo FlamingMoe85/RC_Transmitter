@@ -107,3 +107,14 @@ Graph_App_I* Strct_CalcFactory::GetModuleByType(uint16_t t)
 		}
 	}
 }
+
+Graph_App_I* Strct_CalcFactory::GetDeserializedModule(uint16_t* data)
+{
+	for(uint16_t typeToIndex = 0; typeToIndex < machineList.Count(); typeToIndex++)
+	{
+		if(machineList.At(typeToIndex)->GetType() == data[0])
+		{
+			return machineList.At(typeToIndex)->GetInstance(&(data[1]));
+		}
+	}
+}

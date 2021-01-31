@@ -30,9 +30,10 @@
 #include "../../uController/grlib_demo/UIs/Calc_Expo1_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Calc_DynamicScale_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Time_Integrator_Leaf_Ui.h"
-#include "../../uController/grlib_demo/UIs/Z_Wizard_Node_Ui.h"
-#include "../../uController/grlib_demo/UIs/Wizards/Wizard_IntTrim.h"
 
+#include "../../uController/grlib_demo/UIs/Z_Wizard_Node_Ui.h"
+#include "../../uController/grlib_demo/UIs/Wizards/Wizard_IntTrim_Ui.h"
+#include "../../uController/grlib_demo/UIs/Wizards/Wizard_TwoChnlModl_Leaf_Ui.h"
 
 
 
@@ -119,8 +120,11 @@ public:
     void SetWizard_UiRef(Z_Wizard_Node_Ui* uiRef);
     virtual void DispShowCall(Z_Wizard_Node* caller);
 
-    void SetIntTrimWizard_UiRef(Wizard_IntTrim* uiRef);
+    void SetIntTrimWizard_UiRef(Wizard_IntTrim_Ui* uiRef);
     virtual void DispShowCall(Wizard_InternTrim* caller);
+
+    void SetIntTrimWizard_UiRef(Wizard_TwoChnlModl_Leaf_Ui* uiRef);
+    virtual void DispShowCall(Wizard_TwoChnlModl_Leaf* caller);
 
 
 
@@ -152,7 +156,8 @@ private:
     Calc_DynamicScale_Leaf_Ui* dynScale_UiRef;
     Time_Integrator_Leaf_Ui* integrator_UiRef;
     Z_Wizard_Node_Ui* wizard_UiRef;
-    Wizard_IntTrim* wizardIntTrim_UiRef;
+    Wizard_IntTrim_Ui* wizardIntTrim_UiRef;
+    Wizard_TwoChnlModl_Leaf_Ui* wizardTwoChnlMod_UiRef;
 };
 #endif
 

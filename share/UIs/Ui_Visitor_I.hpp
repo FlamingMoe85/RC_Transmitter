@@ -26,6 +26,7 @@ class Calc_Expo1_Leaf;
 class Calc_DynamicScale_Leaf;
 class Time_Integrator_Leaf;
 class Wizard_InternTrim;
+class Wizard_TwoChnlModl_Leaf;
 
 class Z_Wizard_Node;
 
@@ -59,7 +60,7 @@ public:
     virtual void DispShowCall(Time_Integrator_Leaf* caller)=0;
     virtual void DispShowCall(Z_Wizard_Node* caller)=0;
     virtual void DispShowCall(Wizard_InternTrim* caller)=0;
-
+    virtual void DispShowCall(Wizard_TwoChnlModl_Leaf* caller)=0;
 
 };
 

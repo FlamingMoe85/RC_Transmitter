@@ -50,6 +50,7 @@ public:
     uint16_t GetAmtOfMachines();
     void AddModuleToEntryByType(uint16_t t);
     Graph_App_I* GetModuleByType(uint16_t t);
+    Graph_App_I* GetDeserializedModule(uint16_t* data);
 
 private:
 

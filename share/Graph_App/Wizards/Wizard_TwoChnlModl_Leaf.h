@@ -1,12 +1,12 @@
 /*
- * Wizard_InternTrim.h
+ * Wizard_TwoChnlModl.h
  *
- *  Created on: 25.01.2021
+ *  Created on: 28.01.2021
  *      Author: Justus
  */
 
-#ifndef SHARE_GRAPH_APP_WIZARDS_WIZARD_INTERNTRIM_H_
-#define SHARE_GRAPH_APP_WIZARDS_WIZARD_INTERNTRIM_H_
+#ifndef SHARE_GRAPH_APP_WIZARDS_WIZARD_TWOCHNLMODL_LEAF_H_
+#define SHARE_GRAPH_APP_WIZARDS_WIZARD_TWOCHNLMODL_LEAF_H_
 
 #include "../Graph_App_I.h"
 #include "../../std/Graph_Node.h"
@@ -18,10 +18,10 @@
 
 #include "I_WizardDeserial.hpp"
 
-class Wizard_InternTrim  : public Graph_Node<Graph_App_I>, public PoolOwnerUtils, public I_WizardDeserial{
+class Wizard_TwoChnlModl_Leaf : public Graph_Node<Graph_App_I>, public PoolOwnerUtils, public I_WizardDeserial{
 public:
-	Wizard_InternTrim();
-	virtual ~Wizard_InternTrim();
+	Wizard_TwoChnlModl_Leaf();
+	virtual ~Wizard_TwoChnlModl_Leaf();
 
     virtual void Run(float* val, uint32_t itteration){ };
     virtual void Show(UI_Visitor_I* UiVisitor);
@@ -42,7 +42,8 @@ private:
     UI_Visitor_I *myUiVisitor;
     //char name[] = "Intern Trim";
     uint16_t dataCntr;
-
+    uint16_t* dataArrRef;
+    char* nameRef;
 };
 
-#endif /* SHARE_GRAPH_APP_WIZARDS_WIZARD_INTERNTRIM_H_ */
+#endif /* SHARE_GRAPH_APP_WIZARDS_WIZARD_TWOCHNLMODL_LEAF_H_ */
