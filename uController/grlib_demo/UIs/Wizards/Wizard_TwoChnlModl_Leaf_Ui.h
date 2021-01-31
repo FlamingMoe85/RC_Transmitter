@@ -13,8 +13,9 @@
 #include"../../../../share/Graph_App/Wizards/Wizard_TwoChnlModl_Leaf.h"
 #include "../ItemSelector.h"
 #include "../Ui_Identifier.h"
+#include "../../../../share/QuadEncConsumerBase.h"
 
-class Wizard_TwoChnlModl_Leaf_Ui : public Ui_Identifier{
+class Wizard_TwoChnlModl_Leaf_Ui : public Ui_Identifier, public QuadEncConsumerBase{
 public:
 	Wizard_TwoChnlModl_Leaf_Ui();
 	virtual ~Wizard_TwoChnlModl_Leaf_Ui();
@@ -24,11 +25,14 @@ public:
 
 		virtual void Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis);
 		virtual void Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis);
-		virtual void Up(){ };
-		virtual void Down(){ };
-		virtual void Right(){ };//No need
-		virtual void Left(){ };//No need
+		virtual void Up();
+		virtual void Down();
+		virtual void Right();//No need
+		virtual void Left();//No need
 		virtual void Grab(){ };//No need
+
+		void Left(int16_t val);
+		void Right(int16_t val);
 
 
 		virtual uint16_t GetCanSel(){ };// CHECK
@@ -38,8 +42,16 @@ public:
 		virtual void ConFcnBtns(){ };
 		virtual void DelSelItm(){ };
 
+		virtual void QuadEncNotify(int16_t val);
+
 private:
 		Wizard_TwoChnlModl_Leaf* myRef;
+		uint16_t curSel;
+
+		void PaintAll();
+		void MarkSelected();
+		void RepaintSelVal();
+		void FillVal(uint16_t sel);
 };
 
 #endif /* UIS_WIZARDS_WIZARD_TWOCHNLMODL_LEAF_UI_H_ */

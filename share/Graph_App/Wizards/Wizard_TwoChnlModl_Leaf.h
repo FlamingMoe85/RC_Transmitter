@@ -18,6 +18,11 @@
 
 #include "I_WizardDeserial.hpp"
 
+#define GAS			0
+#define GAS_SCL		1
+#define STEER		2
+#define STEER_SCL	3
+
 class Wizard_TwoChnlModl_Leaf : public Graph_Node<Graph_App_I>, public PoolOwnerUtils, public I_WizardDeserial{
 public:
 	Wizard_TwoChnlModl_Leaf();
@@ -36,14 +41,20 @@ public:
 
 
     void Generate();
+    int16_t AddValtoSel(uint16_t sel, int16_t val);
+    uint16_t GetSel(uint16_t sel);
+
 
 private:
 
+    int16_t AddValToSel(uint16_t sel, int16_t val);
+    int16_t SubValFromSel(uint16_t sel, uint16_t val);
     UI_Visitor_I *myUiVisitor;
     //char name[] = "Intern Trim";
     uint16_t dataCntr;
     uint16_t* dataArrRef;
     char* nameRef;
+    int16_t selADC[4];
 };
 
 #endif /* SHARE_GRAPH_APP_WIZARDS_WIZARD_TWOCHNLMODL_LEAF_H_ */
