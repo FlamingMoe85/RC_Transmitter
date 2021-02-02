@@ -16,7 +16,7 @@ unsigned int adcVal, ledCntr = 0;
 #define EXT_INIT		2
 #define EXT_DIG_REQ		0
 #define EXT_ADC_REQ		1
-uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_IDLE;
+volatile uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_IDLE;
 
 const char CTS_FREE = 0;
 const char CTS_BUSY = 1;
@@ -148,7 +148,7 @@ GICR &= ~(1<<INT0);// Int enable
 
 void GetAdcs()
 {
-#ifdef __AVR_ATmega8__
+//#ifdef __AVR_ATmega8__
 ADMUX = 0b01000101;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
@@ -169,7 +169,7 @@ while ((ADCSRA & 64) == 64);
 adcVal = ADC;
 byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
 byteSendArr[5] = (adcVal & 0b0000000000111111);
-#endif
+//#endif
 }
 
 int main(void)
@@ -240,8 +240,8 @@ while(1)
 	if((DiffHeadTail(head, tail) != 0) && (extMode == EXT_IDLE))
 //	if(DiffHeadTail(head, tail) != 0)
 	{
-		tail++;
-		if(tail == BUF_LEN)tail = 0;
+	
+
 		if(byteArr[tail] == DIG_BEGIN_END)
 		{
 			extMode = EXT_DIG_REQ;
@@ -257,14 +257,15 @@ while(1)
 		else if(byteArr[tail] == ADC_BEGIN_END)
 		{
 			GetAdcs();
-			byteSendArr[0] += ADC_BEGIN_END;
-			byteSendArr[5] += ADC_BEGIN_END;
+			byteSendArr[0] |= ADC_BEGIN_END;
+			byteSendArr[5] |= ADC_BEGIN_END;
 			extMode = EXT_ADC_REQ;
 			byteCntr = 0;
 			Enable_UDREIE();
 		}
 		else if(byteArr[tail] == MSG_AMT_REQ)
 		{
+			
 			extMode = EXT_AMT;
 			byteCntr = 0;
 			byteSendArr[0] = MSG_AMT_REQ;
@@ -273,6 +274,8 @@ while(1)
 			byteSendArr[3] = MSG_AMT_REQ + 3;
 			Enable_UDREIE();
 		}
+		tail++;
+		if(tail == BUF_LEN)tail = 0;
 	}
 	
 	/*
@@ -354,8 +357,10 @@ SIGNAL (USART_UDRE_vect_COM)
 		}
 		else if(extMode == EXT_AMT)
 		{
+		
 			if(byteCntr == 4)
 			{
+			
 				extMode = EXT_IDLE;
 				Disable_UDREIE();
 			}

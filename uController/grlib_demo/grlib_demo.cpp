@@ -253,7 +253,10 @@ int16_t initialAdcRead = 0;
 #define EXT_INIT		2
 #define EXT_DIG_REQ		0
 #define EXT_ADC_REQ		1
-uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT, askForAdcFlag = 0;
+volatile uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT, askForAdcFlag = 0;
+#define RETRYTIME 50
+volatile uint16_t retry = RETRYTIME + 1;
+
 
 uint32_t digInArrBits;
 unsigned int expanInByteCntr = 0;
@@ -1132,8 +1135,9 @@ main(void)
     while(1)
     {
 
-    	if(askForAdcFlag == 1)
+    	if((askForAdcFlag == 1) && (retry > RETRYTIME))
     	{
+    		retry = 0;
     		if(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_2))
     		{
     			askForAdcFlag = 0;
@@ -1469,6 +1473,7 @@ WidgetMessageQueueProcess();
         			extMode = EXT_DIG_REQ;
         		}
         		expanInByteCntr = 0;
+        		retry = RETRYTIME + 1;
         	}//end msg
         	else
         	{
@@ -1584,9 +1589,10 @@ void PpmMatchIntHandler(void)
 		{
 			TimerLoadSet(TIMER0_BASE, TIMER_A, (20000*120) - sum);
 			sum = 0;
-
-			if(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_2))
+			retry++;
+			if((GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_2)) && (retry > RETRYTIME))
 			{
+				retry = 0;
 				if(extMode == EXT_DIG_REQ)
 				{
 					UARTCharPut(UART5_BASE, DIG_BEGIN_END);
