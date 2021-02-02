@@ -632,17 +632,6 @@ void CstmSwDelInPrs(tWidget *psWidget)
 	srcCstmSwUi.DelIn();
 }
 
-/*
-void ScaleSwAddInPrs(tWidget *psWidget)
-{
-	scaleSwUi.AddIn();
-}
-
-void ScaleSwDelInPrs(tWidget *psWidget)
-{
-	scaleSwUi.DelIn();
-}
-*/
 void BlinkerAddInPrs(tWidget *psWidget)
 {
 	timeBlinkerUi.AddIn();
