@@ -8,6 +8,16 @@ volatile unsigned int head = 0, tail = 0, byteCntr = 8;
 volatile char freeState = 0;
 unsigned int adcVal, ledCntr = 0;
 
+#define DIG_BEGIN_END	128
+#define ADC_BEGIN_END	128 + 64
+#define MSG_AMT_REQ		64
+#define EXT_IDLE		4
+#define EXT_AMT			3
+#define EXT_INIT		2
+#define EXT_DIG_REQ		0
+#define EXT_ADC_REQ		1
+uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_IDLE;
+
 const char CTS_FREE = 0;
 const char CTS_BUSY = 1;
 
@@ -143,22 +153,22 @@ ADMUX = 0b01000101;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[3] = (adcVal & 0b0000000000111111);
+byteSendArr[0] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[1] = (adcVal & 0b0000000000111111);
 
 ADMUX = 0b01000100;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[5] = (adcVal & 0b0000000000111111);
+byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[3] = (adcVal & 0b0000000000111111);
 
 ADMUX = 0b01000011;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[6] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[7] = ((adcVal & 0b0000000000111111)+64);
+byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
+byteSendArr[5] = (adcVal & 0b0000000000111111);
 #endif
 }
 
@@ -205,7 +215,7 @@ sei();
 
 while(1)
 { 
-	switchBits = GetSwitchPins();
+/*	switchBits = GetSwitchPins();
 	
 
 	byteSendArr[0] = 128;
@@ -213,6 +223,7 @@ while(1)
 	byteSendArr[1] = 0;
 	byteSendArr[1] |= (switchBits & 3);
 	GetAdcs();
+	*/
 /*	byteSendArr[2] = 0;
 	byteSendArr[3] = 0;
 
@@ -225,19 +236,57 @@ while(1)
 
 	//PORTC &= ~(0b00100000);
 
-	if((DiffHeadTail(head, tail) != 0) && (byteCntr == 8))
+	//if((DiffHeadTail(head, tail) != 0) && (byteCntr == 8))
+	if((DiffHeadTail(head, tail) != 0) && (extMode == EXT_IDLE))
 //	if(DiffHeadTail(head, tail) != 0)
 	{
 		tail++;
 		if(tail == BUF_LEN)tail = 0;
-		if(byteArr[tail] == 'a')
+		if(byteArr[tail] == DIG_BEGIN_END)
 		{
-	
+			extMode = EXT_DIG_REQ;
 			byteCntr = 0;
+			switchBits = GetSwitchPins();
+			byteSendArr[0] = DIG_BEGIN_END;
+			byteSendArr[0] |= (switchBits >> 6);
+			byteSendArr[1] = DIG_BEGIN_END;
+			byteSendArr[1] |= (switchBits & 0b00111111);
 			Enable_UDREIE();
 			//UDR_COM = byteSendArr[byteCntr++];
 		}
+		else if(byteArr[tail] == ADC_BEGIN_END)
+		{
+			GetAdcs();
+			byteSendArr[0] += ADC_BEGIN_END;
+			byteSendArr[5] += ADC_BEGIN_END;
+			extMode = EXT_ADC_REQ;
+			byteCntr = 0;
+			Enable_UDREIE();
+		}
+		else if(byteArr[tail] == MSG_AMT_REQ)
+		{
+			extMode = EXT_AMT;
+			byteCntr = 0;
+			byteSendArr[0] = MSG_AMT_REQ;
+			byteSendArr[1] = 8;
+			byteSendArr[2] = 0;
+			byteSendArr[3] = MSG_AMT_REQ + 3;
+			Enable_UDREIE();
+		}
 	}
+	
+	/*
+#define DIG_BEGIN_END	128
+#define ADC_BEGIN_END	128 + 64
+#define MSG_AMT_REQ		64
+#define EXT_IDLE		4
+#define EXT_AMT			3
+#define EXT_INIT		2
+#define EXT_DIG_REQ		0
+#define EXT_ADC_REQ		1
+uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT;
+	*/
+	
 	#ifdef __AVR_ATmega8__
 	ledCntr++;
 	if(ledCntr == 3000)PORTB &= ~2;
@@ -286,9 +335,30 @@ SIGNAL (USART_UDRE_vect_COM)
 	if(IsCtsFtee() == CTS_FREE)
 	{
 		UDR_COM = byteSendArr[byteCntr++];
-		if(byteCntr == 8)
+		
+		if(extMode == EXT_DIG_REQ)
 		{
-			Disable_UDREIE();
+			if(byteCntr == 2)
+			{
+				extMode = EXT_IDLE;
+				Disable_UDREIE();
+			}
+		}
+		else if(extMode == EXT_ADC_REQ)
+		{
+			if(byteCntr == 6)
+			{
+				extMode = EXT_IDLE;
+				Disable_UDREIE();
+			}
+		}
+		else if(extMode == EXT_AMT)
+		{
+			if(byteCntr == 4)
+			{
+				extMode = EXT_IDLE;
+				Disable_UDREIE();
+			}
 		}
 	}
 }
