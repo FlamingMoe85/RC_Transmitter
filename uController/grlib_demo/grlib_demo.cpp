@@ -247,12 +247,17 @@ uint16_t externADCs[4];
 unsigned int extAdcCnt = 0;
 int16_t initialAdcRead = 0;
 
-#define DIG_BEGIN_END	128
-#define ADC_BEGIN_END	128 + 64
-#define MSG_AMT_REQ		64
+#define DIG_BEGIN			128
+#define DIG_END				128+32
+#define ADC_BEGIN 			128 + 64
+#define ADC_END 			128 + 64 + 32
+#define MSG_AMT_REQ_BEG		64
+#define MSG_AMT_REQ_END		64 + 32
+
 #define EXT_INIT		2
 #define EXT_DIG_REQ		0
 #define EXT_ADC_REQ		1
+
 volatile uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT, askForAdcFlag = 0;
 #define RETRYTIME 50
 volatile uint16_t retry = RETRYTIME + 1;
@@ -1141,7 +1146,7 @@ main(void)
     		if(GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_2))
     		{
     			askForAdcFlag = 0;
-    			UARTCharPut(UART5_BASE, ADC_BEGIN_END);
+    			UARTCharPut(UART5_BASE, ADC_END);
     		}
     	}
         //
@@ -1305,21 +1310,21 @@ WidgetMessageQueueProcess();
                 		}
 
  #ifdef CONTROLLER
-                		digInArrBits = 0;
-                		                		 digInArrBits |= (GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6)>>6);//1/32
+                		//digInArrBits = 0;
+                		//	 digInArrBits |= (GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6)>>6);//1/32
 
                 		                		tmpPins = (GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3));
-                		                	    digInArrBits |= (tmpPins << 1);//5/31
+                		                		//    digInArrBits |= (tmpPins << 1);//5/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5));
-                		                	    digInArrBits |= (tmpPins << 1);//7/31
+                		                	    //  digInArrBits |= (tmpPins << 1);//7/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4));
                 		                	    trimPins = ((tmpPins & 15) << 4);
-                		                	    digInArrBits |= (tmpPins << 7);//12/31
+                		                	    //  digInArrBits |= (tmpPins << 7);//12/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTG_BASE, GPIO_PIN_0));
-                		                	    digInArrBits |= (tmpPins << 12);//13/31
+                		                	    //    digInArrBits |= (tmpPins << 12);//13/31
 
                 		                	    //tmpPins = (GPIOPinRead(GPIO_PORTH_BASE, GPIO_PIN_2 | GPIO_PIN_3));
                 		                	    //digInArrBits |= (tmpPins << 11);//15/31
@@ -1329,13 +1334,13 @@ WidgetMessageQueueProcess();
                 		                	    menuDigs = (tmpPins & 1)<<4;
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTK_BASE, GPIO_PIN_0));
-                		                	    digInArrBits |= (tmpPins << 17);//18/31
+                		                	    //    digInArrBits |= (tmpPins << 17);//18/31
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTK_BASE, GPIO_PIN_3));
-                		                	    digInArrBits |= (tmpPins << 15);//19/31
+                		                	    //    digInArrBits |= (tmpPins << 15);//19/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTL_BASE, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5));
                 		                	    trimPins |= (tmpPins >> 2);
-                		                	    digInArrBits |= (tmpPins << 17);//23/31
+                		                	    //  digInArrBits |= (tmpPins << 17);//23/31
                 		                	    trimPins |= (tmpPins >> 3);
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5));
@@ -1402,12 +1407,15 @@ WidgetMessageQueueProcess();
 #endif   //Controller
                 	}
 /*
-#define DIG_BEGIN_END	128
-#define ADC_BEGIN_END	128 + 64
-#define MSG_AMT_REQ		64
-#define EXT_INIT		2
-#define EXT_DIG_REQ		0
-#define EXT_ADC_REQ		1
+#define DIG_BEGIN			128
+#define DIG_END				128+32
+#define ADC_BEGIN 			128 + 64
+#define ADC_BEGIN 			128 + 64 + 32
+#define MSG_AMT_REQ_BEG		64
+#define MSG_AMT_REQ_END		64 + 32
+volatile uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT, askForAdcFlag = 0;
+#define RETRYTIME 50
+volatile uint16_t retry = RETRYTIME + 1;
 */
         while(UARTCharsAvail(UART5_BASE))
         {
@@ -1416,62 +1424,58 @@ WidgetMessageQueueProcess();
         	ROM_GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_3,  GPIO_DIR_MODE_OUT);
         	uartExtIO = UARTCharGetNonBlocking(UART5_BASE);
 
-        	if(((uartExtIO & (128+64))== DIG_BEGIN_END) && (expanInByteCntr == 0))//msgBegin
+        	if(((uartExtIO & (128+64+32))== DIG_BEGIN))//msgBegin
         	{
         	     expanInByteCntr = 1;
         	     extAdcCnt = 0;
-        	     digInArrBits = (uartExtIO & 63);
+        	     digInArrBits = (uartExtIO & 31);
         	}
-        	else if((uartExtIO & (128+64)) && (expanInByteCntr == 0))//msgBegin
+        	else if((uartExtIO & (128+64+32)) == ADC_BEGIN)//msgBegin
         	{
         		expanInByteCntr = 1;
         		extAdcCnt = 0;
-        		staticByte = (uartExtIO & 63)<<6;
+        		staticByte = (uartExtIO & 31)<<5;
         	}
-        	else if((uartExtIO & (128+64)) && (expanInByteCntr != 0))//msgEnd
+        	else if((uartExtIO & (128+64+32)) == DIG_END)//msgEnd
         	{
-        		if(extMode == EXT_DIG_REQ)
-        		{
-        			digInArrBits = digInArrBits << 6;
-        			digInArrBits += (uartExtIO & 63);
-        			askForAdcFlag = 1;
-        			extMode = EXT_ADC_REQ;
-        		}
-        		else if(extMode == EXT_ADC_REQ)
-        		{
-					if((expanInByteCntr & 1) == 0)
-					{
-						externADCs[extAdcCnt] = (uartExtIO & 63);//most sig six of 12 bits
-						externADCs[extAdcCnt] = externADCs[extAdcCnt] << 6;
-					}
-					else
-					{
-						externADCs[extAdcCnt] += (uartExtIO & 63);//low sig six of 12 bits
-						if(extAdcCnt < 3) extAdcCnt++;
-					}
-					if(extAdcCnt == 3)
-					{
-						fourAdcs[4] = (float)externADCs[0];
-						fourAdcs[5] = (float)externADCs[1];
-						fourAdcs[6] = (float)externADCs[2];
-						//fourAdcs[7] = (float)externADCs[3];
-					}
-					extMode = EXT_DIG_REQ;
-        		}//still End msg
-        		else if(extMode == EXT_INIT)//amtOfExtDigs
-        		{
-        			if((expanInByteCntr & 1) == 0)
-        			{
-        				amtOfExtAdc = (uartExtIO & 63);//most sig six of 12 bits
-        				amtOfExtAdc = amtOfExtAdc << 6;
-        			}
-        			else
-        			{
-        				amtOfExtAdc += (uartExtIO & 63);//low sig six of 12 bits
-        				if(extAdcCnt < 3) extAdcCnt++;
-        			}
-        			extMode = EXT_DIG_REQ;
-        		}
+        		digInArrBits = (digInArrBits << 5);
+        		digInArrBits += (uartExtIO & 31);
+        		askForAdcFlag = 1;
+        		extMode = EXT_ADC_REQ;
+        		retry = RETRYTIME + 1;
+        	}
+        	else if((uartExtIO & (128+64+32)) == ADC_END)
+        	{
+				if((expanInByteCntr & 1) == 0)
+				{
+					externADCs[extAdcCnt] = (uartExtIO & 31);//most sig six of 12 bits
+					externADCs[extAdcCnt] = externADCs[extAdcCnt] << 5;
+				}
+				else
+				{
+					externADCs[extAdcCnt] += (uartExtIO & 31);//low sig six of 12 bits
+					if(extAdcCnt < 3) extAdcCnt++;
+				}
+				if(extAdcCnt == 3)
+				{
+					fourAdcs[4] = (float)externADCs[0];
+					fourAdcs[5] = (float)externADCs[1];
+					fourAdcs[6] = (float)externADCs[2];
+				}
+				extMode = EXT_DIG_REQ;
+        		retry = RETRYTIME + 1;
+        	}//still End msg
+        	else if((uartExtIO & (128+64+32)) == MSG_AMT_REQ_BEG)//msgBegin
+        	{
+        		expanInByteCntr = 1;
+        		amtOfExtAdc = 0;
+        		amtOfExtDigs = (uartExtIO & 31);//most sig six of 12 bits
+        	}
+        	else if((uartExtIO & (128+64+32)) == MSG_AMT_REQ_END)//amtOfExtDigs
+        	{
+        		amtOfExtAdc += (uartExtIO & 31);//low sig six of 12 bits
+        		if(extAdcCnt < 3) extAdcCnt++;
+        		extMode = EXT_DIG_REQ;
         		expanInByteCntr = 0;
         		retry = RETRYTIME + 1;
         	}//end msg
@@ -1479,41 +1483,37 @@ WidgetMessageQueueProcess();
         	{
         		if(extMode == EXT_DIG_REQ)
         		{
-        			digInArrBits = digInArrBits << 6;
-					digInArrBits += (uartExtIO & 63);
+        			digInArrBits = digInArrBits << 5;
+					digInArrBits += (uartExtIO & 31);
 					expanInByteCntr++;
         		}
         		if(extMode == EXT_ADC_REQ)
         		{
 					if(expanInByteCntr == 1)
 					{
-						externADCs[extAdcCnt] = staticByte + (uartExtIO & 63);
+						externADCs[extAdcCnt] = staticByte + (uartExtIO & 31);
 						extAdcCnt++;
 					}
 					else if((expanInByteCntr & 1) == 0)
 					{
-						externADCs[extAdcCnt] = (uartExtIO & 63)<<6;//most sig six of 12 bits
+						externADCs[extAdcCnt] = (uartExtIO & 31)<<5;//most sig six of 12 bits
 					}
 					else
 					{
-						externADCs[extAdcCnt] += (uartExtIO & 63);//low sig six of 12 bits
+						externADCs[extAdcCnt] += (uartExtIO & 31);//low sig six of 12 bits
 						if(extAdcCnt < 4) extAdcCnt++;
 					}
 					expanInByteCntr++;
         		}
         		else if(extMode == EXT_INIT)//amtOfExtDigs
         		{
-					if(expanInByteCntr == 1)
+					if((expanInByteCntr & 1) == 0)
 					{
-						amtOfExtDigs = staticByte + (uartExtIO & 63);
-					}
-					else if((expanInByteCntr & 1) == 0)
-					{
-						amtOfExtAdc = (uartExtIO & 63)<<6;//most sig six of 12 bits
+						amtOfExtAdc += (uartExtIO & 31);//most sig six of 12 bits
 					}
 					else
 					{
-						amtOfExtAdc += (uartExtIO & 63);//low sig six of 12 bits
+						amtOfExtDigs += (uartExtIO & 31);//low sig six of 12 bits
 					}
 					expanInByteCntr++;
 
@@ -1595,15 +1595,15 @@ void PpmMatchIntHandler(void)
 				retry = 0;
 				if(extMode == EXT_DIG_REQ)
 				{
-					UARTCharPut(UART5_BASE, DIG_BEGIN_END);
+					UARTCharPut(UART5_BASE, DIG_END);
 				}
 				else if(extMode == EXT_INIT)
 				{
-					UARTCharPut(UART5_BASE, MSG_AMT_REQ);
+					UARTCharPut(UART5_BASE, MSG_AMT_REQ_END);
 				}
 				if(extMode == EXT_ADC_REQ)
 		    	{
-		    		UARTCharPut(UART5_BASE, ADC_BEGIN_END);
+		    		UARTCharPut(UART5_BASE, ADC_END);
 		    	}
 			}
 		}
