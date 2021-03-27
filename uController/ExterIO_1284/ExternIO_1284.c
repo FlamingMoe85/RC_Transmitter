@@ -104,6 +104,7 @@ return (unsigned char)(PINC ^ 0b11111111);
 #endif
 
 #ifdef __AVR_ATmega8__
+unsigned char tmpC = 0;
 tmpC |= (((PINB ^ 0b11111111) & 0b00111100)<<0);
 tmpC |= (((PIND ^ 0b11111111) & 0b01100000)>>5);
 return tmpC;
@@ -163,22 +164,22 @@ ADMUX = 0b01000101;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[0] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[1] = (adcVal & 0b0000000000111111);
+byteSendArr[0] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[1] = (adcVal & 0b0000000000011111);
 
 ADMUX = 0b01000100;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[2] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[3] = (adcVal & 0b0000000000111111);
+byteSendArr[2] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[3] = (adcVal & 0b0000000000011111);
 
 ADMUX = 0b01000011;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
 adcVal = ADC;
-byteSendArr[4] = (adcVal & 0b0000111111000000)>>6;
-byteSendArr[5] = (adcVal & 0b0000000000111111);
+byteSendArr[4] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[5] = (adcVal & 0b0000000000011111);
 //#endif
 }
 
@@ -378,11 +379,11 @@ while(1)
 		GetAdcs();
 		if(TOKEN_FLAG == 0)
 		{
-			byteSendArr[0] = ADC_BEGIN;
+			byteSendArr[0] |= ADC_BEGIN;
 		}
 		else
 		{
-			byteSendArr[0] = 0;
+			//byteSendArr[0] = 0;
 		}
 		byteSendArr[5] |= ADC_END;
 		Enable_UDREIE();
