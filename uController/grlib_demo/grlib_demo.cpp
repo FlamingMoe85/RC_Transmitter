@@ -1078,6 +1078,7 @@ main(void)
 	                               UARTFIFOEnable(UART5_BASE);
 	                               SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 	                               GPIOPinConfigure(GPIO_PC6_U5RX);
+	                               GPIOPadConfigSet(GPIO_PORTC_BASE, GPIO_PIN_6, GPIO_STRENGTH_6MA, GPIO_PIN_TYPE_STD_WPU);
 	                                  GPIOPinConfigure(GPIO_PC7_U5TX);
 	                                  GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
 	                                  UARTConfigSetExpClk(UART5_BASE, g_ui32SysClock, 9600,
@@ -1454,13 +1455,14 @@ volatile uint16_t retry = RETRYTIME + 1;
 				else
 				{
 					externADCs[extAdcCnt] += (uartExtIO & 31);//low sig six of 12 bits
-					if(extAdcCnt < 3) extAdcCnt++;
+					if(extAdcCnt < 4) extAdcCnt++;
 				}
-				if(extAdcCnt == 3)
+				if(extAdcCnt == 4)
 				{
 					fourAdcs[4] = (float)externADCs[0];
 					fourAdcs[5] = (float)externADCs[1];
 					fourAdcs[6] = (float)externADCs[2];
+					fourAdcs[7] = (float)externADCs[3];
 				}
 				extMode = EXT_DIG_REQ;
         		retry = RETRYTIME + 1;
@@ -1474,7 +1476,7 @@ volatile uint16_t retry = RETRYTIME + 1;
         	else if((uartExtIO & (128+64+32)) == MSG_AMT_REQ_END)//amtOfExtDigs
         	{
         		amtOfExtAdc += (uartExtIO & 31);//low sig six of 12 bits
-        		if(extAdcCnt < 3) extAdcCnt++;
+        		if(extAdcCnt < 4) extAdcCnt++;
         		extMode = EXT_DIG_REQ;
         		expanInByteCntr = 0;
         		retry = RETRYTIME + 1;
