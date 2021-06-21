@@ -242,10 +242,16 @@ char curRecChar;
 
 float fourAdcs[8];
 uint32_t fourAdcsRaw[4];
-uint32_t fourAdcsOffset[4];
+uint32_t fourAdcsOffset[8];
 uint16_t externADCs[4];
+int externAdcCnt = 0;
 unsigned int extAdcCnt = 0;
 int16_t initialAdcRead = 0;
+
+#define BT_START	192
+#define BT_STOP		128
+unsigned char btTx[14], btflag = 0;
+unsigned int btSendCntr = 0;
 
 #define DIG_BEGIN			128
 #define DIG_END				128+32
@@ -1066,7 +1072,7 @@ main(void)
 	                	                               GPIOPinConfigure(GPIO_PC4_U7RX);
 	                	                               GPIOPinConfigure(GPIO_PC5_U7TX);
 	                	                               ROM_GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5);
-	                	                               ROM_UARTConfigSetExpClk(UART7_BASE, g_ui32SysClock, 38400,
+	                	                               ROM_UARTConfigSetExpClk(UART7_BASE, g_ui32SysClock, 115200,
 	                	                                                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
 	                	                                                        UART_CONFIG_PAR_NONE));
 	                               //ROM_IntEnable(INT_UART0);
@@ -1224,12 +1230,27 @@ WidgetMessageQueueProcess();
         	for(uint16_t i=0; i<7; i++)
         	{
         		tmp32 = (int32_t)(rootNode.GetChnlVal(i));
+
+
 #ifdef CONTROLLER
-        		chnlValArr[i] = (NEUTRAL + (tmp32 * 0.5)) * 120;
+        		chnlValArr[i] = (NEUTRAL + (tmp32 * 0.5));
+
+        		btTx[i*2] = ((chnlValArr[i] & 4032) >> 6);
+        		btTx[(i*2)+1] = ((chnlValArr[i] & 63));
+
+        		chnlValArr[i] = chnlValArr[i]*120;
 #endif
         		//if(chnlValArr[i] > (2000.0*120.0))chnlValArr[i] = (2000.0*120);
         		//if(chnlValArr[i] < (500.0*120))chnlValArr[i] = 500.0*12.0;
         	}
+        	btTx[0] |= BT_START;
+        	btTx[13] |= BT_STOP;
+        	if(btflag == 0)
+        	{
+        		btflag = 1;
+        		btSendCntr = 0;
+        	}
+
         	quadPos = (int16_t)QEIPositionGet(QEI0_BASE);
         	/**/
        	if(quadPos != 5000)quadNoty.Notify( quadPos - 5000);
@@ -1267,6 +1288,15 @@ WidgetMessageQueueProcess();
        		OnEsc();
         }
      }
+
+        while((btflag == 1) && (ROM_UARTCharPutNonBlocking(UART7_BASE, btTx[btSendCntr])))
+        {
+        	btSendCntr++;
+        	if(btSendCntr >= 14)
+        	{
+        		btflag = 0;
+        	}
+        }
 
         if(ADCIntStatus(ADC0_BASE, 1, false))
                 	{
@@ -1459,10 +1489,21 @@ volatile uint16_t retry = RETRYTIME + 1;
 				}
 				if(extAdcCnt == 4)
 				{
-					fourAdcs[4] = (float)externADCs[0];
-					fourAdcs[5] = (float)externADCs[1];
-					fourAdcs[6] = (float)externADCs[2];
-					fourAdcs[7] = (float)externADCs[3];
+					if(externAdcCnt == 4)
+					{
+						fourAdcs[4] = (float)(externADCs[0] - fourAdcsOffset[4]);
+						fourAdcs[5] = (float)(externADCs[1] - fourAdcsOffset[5]);
+						fourAdcs[6] = (float)(externADCs[2] - fourAdcsOffset[6]);
+						fourAdcs[7] = (float)(externADCs[3] - fourAdcsOffset[7]);
+					}
+					else
+					{
+						externAdcCnt++;
+						fourAdcsOffset[4] = externADCs[0];
+						fourAdcsOffset[5] = externADCs[1];
+						fourAdcsOffset[6] = externADCs[2];
+						fourAdcsOffset[7] = externADCs[3];
+					}
 				}
 				extMode = EXT_DIG_REQ;
         		retry = RETRYTIME + 1;
