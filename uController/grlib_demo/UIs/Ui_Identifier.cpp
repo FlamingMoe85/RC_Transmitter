@@ -11,10 +11,13 @@
 static uint16_t uiIdntCntr = 0;
 static uint16_t actUi;
 
+static unsigned int rotaryState;
+
 Ui_Identifier::Ui_Identifier() {
 	// TODO Auto-generated constructor stub
 	myStackPos = uiIdntCntr++;
 	actUi = 0;
+	rotaryState = ROTARY_IS_DOWN;
 }
 
 Ui_Identifier::~Ui_Identifier() {
@@ -36,4 +39,15 @@ uint16_t Ui_Identifier::GetActUi()
 void Ui_Identifier::SetActUi(uint16_t acUi)
 {
 	actUi = acUi;
+}
+
+void Ui_Identifier::RotaryDown(unsigned int rotaryPrsState)
+{
+	rotaryState = rotaryPrsState;
+	RefreshButtons();
+}
+
+unsigned int Ui_Identifier::GetRotaryState()
+{
+	return rotaryState;
 }

@@ -27,11 +27,12 @@ public:
 
 	//virtual void Enter();
 	//virtual void Esc();
-	virtual void Up();
-	virtual void Down();
-	virtual void Right();
-	virtual void Left();
-	virtual void Grab();
+	void ItemUp();
+	void ItemDown();
+	void ItemRight();
+	void ItemLeft();
+	void ItemGrab();
+
 
 	virtual uint16_t GetCanSel();
 	virtual uint16_t GetItmSel();

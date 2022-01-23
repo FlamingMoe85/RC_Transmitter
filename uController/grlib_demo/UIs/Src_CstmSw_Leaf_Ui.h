@@ -35,6 +35,7 @@ public:
 		virtual void Right();
 		virtual void Left();
 		virtual void Grab();
+		virtual void RefreshButtons();
 		void Up(int16_t val);
 		void Down(int16_t val);
 
@@ -50,6 +51,7 @@ private:
 		Src_CstmSw_Leaf* myRef;
 		uint16_t inSel;
 		uint16_t column;
+		unsigned int btnSel;
 };
 
 #endif /* UIS_SRC_CSTMSW_LEAF_UI_H_ */

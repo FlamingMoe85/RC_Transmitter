@@ -25,6 +25,14 @@ public:
 	virtual void ConFcnBtns(){ };
 	virtual void DelSelItm(){ };
 
+
+	virtual void Up(){ItemUp();};
+	virtual void Down(){ItemDown();};
+	virtual void Right(){ItemRight();};
+	virtual void Left(){ItemLeft();};
+	virtual void Grab(){ItemGrab();};
+	virtual void RefreshButtons() { };
+
 private:
 	Strct_TopMenue_Node* myRef;
 };

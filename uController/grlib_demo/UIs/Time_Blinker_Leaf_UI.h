@@ -38,6 +38,7 @@ public:
 		virtual void Right();
 		virtual void Left();
 		virtual void Grab();
+		virtual void RefreshButtons();
 		void Up(int16_t val);
 		void Down(int16_t val);
 
@@ -57,6 +58,7 @@ private:
 		uint16_t inSel;
 		uint16_t column;
 		Strct_PoolOwner_Node* myPoolOwnerRef;
+		unsigned int btnSel;
 
 };
 

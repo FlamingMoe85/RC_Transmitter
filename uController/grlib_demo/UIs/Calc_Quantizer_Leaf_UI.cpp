@@ -133,14 +133,14 @@ tPushButtonWidget quantBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 UNSELCTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, "Add Level", 0, 0, 0, 0, QuantAddLevPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, "Add Level", 0, 0, 0, 0, 0),//QuantAddLevPrs),
 
 						RectangularButtonStruct(quantBtns, 0, 0,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 100, 190, 100, 50,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, "Del Level", 0, 0, 0, 0, QuantAddDelPrs)
+									 ClrGray, TEXT_COLR, &g_sFontCm22, "Del Level", 0, 0, 0, 0, 0)//QuantAddDelPrs)
 
 
 
@@ -151,7 +151,7 @@ Canvas(srcQuantValue, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 110, CAN
 
 Calc_Quantizer_Leaf_UI::Calc_Quantizer_Leaf_UI() {
 	// TODO Auto-generated constructor stub
-
+	btnSel = 0;
 }
 
 Calc_Quantizer_Leaf_UI::~Calc_Quantizer_Leaf_UI() {
@@ -273,21 +273,47 @@ void Calc_Quantizer_Leaf_UI::Down(int16_t val)
 
 void Calc_Quantizer_Leaf_UI::Right()
 {
-	if(column < 2) column++;
-	else column = 0;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 2)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column < 2) column++;
+		else column = 0;
+		Paint();
+	}
 }
 
 void Calc_Quantizer_Leaf_UI::Left()
 {
-	if(column > 0) column--;
-	else column = 2;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=1;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column > 0) column--;
+		else column = 2;
+		Paint();
+	}
 }
 
 void Calc_Quantizer_Leaf_UI::Grab()
 {
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)instPtr->AddMark();
+		if(btnSel == 1)instPtr->DelMark();
+	}
+	else
+	{
 
+	}
 }
 
 void Calc_Quantizer_Leaf_UI::QuadEncNotify(int16_t val)
@@ -376,4 +402,14 @@ void Calc_Quantizer_Leaf_UI::RepaintVal()
 	UtilClass::IntToPercStrng(&(outputArr[0]),  myRef->GetVal(), SIGNED);
 		CanvasTextSet(&outputCanQuant, &(outputArr[0]));
 		WidgetPaint((tWidget *)&outputCanQuant);
+}
+
+void Calc_Quantizer_Leaf_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<2; i++)
+	{
+		quantBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)quantBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&quantBtns);
 }

@@ -36,8 +36,10 @@ extern const tDisplay g_sKentec320x240x16_SSD2119;
 Strct_Junc_Node* myRef_C;
 
 void JuncAddCompPrs(tWidget *psWidget);
-extern void CompPoolPrs_JuncNode(tWidget *psWidget);
-extern void DelPrs(tWidget *psWidget);
+//extern void CompPoolPrs_JuncNode(tWidget *psWidget);
+extern void CompPoolPrs_JuncNode();
+//extern void DelPrs(tWidget *psWidget);
+extern void DelPrs();
 
 tPushButtonWidget jncBtns[] =
 {
@@ -46,21 +48,21 @@ tPushButtonWidget jncBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 SELECTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, " New Compo ", 0, 0, 0, 0, JuncAddCompPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, " New Compo ", 0, 0, 0, 0, 0),//JuncAddCompPrs),
 
 						RectangularButtonStruct(jncBtns, 0, jncBtns + 2,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 110, 140, 100, 50,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, CompPoolPrs_JuncNode),
+									 ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, 0),//CompPoolPrs_JuncNode),
 
 										RectangularButtonStruct(jncBtns+1, 0, 0,//myCanvacsesAdd+1,
 																&g_sKentec320x240x16_SSD2119, 220, 140, 100, 50,
 																CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 																UNSELCTED_PNT,
 																UNSELCTED_PNT,
-																ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, DelPrs)
+																ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, 0),//DelPrs)
 };
 Canvas(jncBtnsCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90, 320, 150, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 
@@ -143,4 +145,55 @@ void Strct_Junc_Node_UI::DelSelItm()
 {
 	myRef->GetChildList()->DelAtLoc(this->GetItmSel());
 	myRef->Show();
+}
+
+
+void Strct_Junc_Node_UI::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 3)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemRight();
+	}
+}
+void Strct_Junc_Node_UI::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=2;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemLeft();
+	}
+}
+void Strct_Junc_Node_UI::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)myRef->AddCompAtEnd();
+		if(btnSel == 1)CompPoolPrs_JuncNode();
+		if(btnSel == 2)DelPrs();
+	}
+	else
+	{
+
+		ItemGrab();
+	}
+}
+void Strct_Junc_Node_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<2; i++)
+	{
+		jncBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)jncBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&jncBtns);
 }

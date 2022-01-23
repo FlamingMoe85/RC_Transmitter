@@ -49,8 +49,8 @@ static char moduleName[16];
 static char rubric_3_Name[6];
 static char rubric_4_Name[6];
 
-void QuadletAddInPrs(tWidget *psWidget);
-void QuadletDelInPrs(tWidget *psWidget);
+void QuadletAddInPrs();
+void QuadletDelInPrs();
 
 Canvas(srcQuadletName, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, CAN_X_WIDTH, CAN_Y_WIDTH, CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT, UNSELCTED_PNT, ClrGray, ClrWhite, &g_sFontCm22, "Empty", 0, 0);
 Canvas(srcQuadletCov_1, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, 320, 90, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
@@ -162,14 +162,14 @@ tPushButtonWidget addDelBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 UNSELCTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, "Add", 0, 0, 0, 0, QuadletAddInPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, "Add", 0, 0, 0, 0, 0),//QuadletAddInPrs),
 
 						RectangularButtonStruct(addDelBtns, 0, 0,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 50, 190, 50, 50,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, "Del", 0, 0, 0, 0, QuadletDelInPrs)
+									 ClrGray, TEXT_COLR, &g_sFontCm22, "Del", 0, 0, 0, 0, 0)//QuadletDelInPrs)
 };
 
 
@@ -182,6 +182,7 @@ Quadlet::Quadlet() {
 	thisPointer = this;
 	inSel = 0;
 	column = 0;
+	btnSel = 0;
 }
 
 Quadlet::~Quadlet() {
@@ -472,3 +473,34 @@ void Quadlet::ConFcnBtns()
 	WidgetAdd(WIDGET_ROOT, (tWidget *)addDelBtns);
 }
 
+void Quadlet::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)
+		{
+			cRef->AddChnlPair();
+			thisPointer->Paint();
+		}
+		if(btnSel == 1)
+		{
+			cRef->DelChnlPairAt(thisPointer->GetInSel());
+			thisPointer->CorrectInSel();
+			thisPointer->Paint();
+		}
+	}
+	else
+	{
+
+	}
+}
+
+void Quadlet::RefreshButtons()
+{
+	for(unsigned int i=0; i<2; i++)
+	{
+		addDelBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)addDelBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&addDelBtns);
+}

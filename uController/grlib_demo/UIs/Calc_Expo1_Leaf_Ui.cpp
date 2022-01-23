@@ -29,9 +29,9 @@ extern const tDisplay g_sKentec320x240x16_SSD2119;
 #define TEXT_COLR		ClrWhite
 
 
-void CompPoolPrsExp1(tWidget *psWidget);
-void NewCompPrsExp1(tWidget *psWidget);
-void EnterTriggerPrsExp1(tWidget *psWidget);
+void CompPoolPrsExp1();
+void NewCompPrsExp1();
+void EnterTriggerPrsExp1();
 
 Canvas(expo1Name, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, CAN_X_WIDTH, CAN_Y_WIDTH, CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT, UNSELCTED_PNT, ClrGray, ClrWhite, &g_sFontCm22, "Expo 1", 0, 0);
 Canvas(expo1Cov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 0, 320, 240, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
@@ -44,21 +44,21 @@ tPushButtonWidget expo1Btns[] =
 									 						 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 						UNSELCTED_PNT,
 									 						UNSELCTED_PNT,
-									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, CompPoolPrsExp1),
+									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, 0),//CompPoolPrsExp1),
 
 									RectangularButtonStruct(expo1Btns, 0, expo1Btns+2,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 100, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, NewCompPrsExp1),
+															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, 0),//NewCompPrsExp1),
 
 									RectangularButtonStruct(expo1Btns+1, 0, 0,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 200, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, EnterTriggerPrsExp1)
+															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, 0)//EnterTriggerPrsExp1)
 
 
 
@@ -153,4 +153,52 @@ void NewCompPrsExp1(tWidget *psWidget)
 void EnterTriggerPrsExp1(tWidget *psWidget)
 {
 	instUiPtr->EnterTrigCompo();
+}
+
+void Calc_Expo1_Leaf_Ui::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 3)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+	}
+}
+void Calc_Expo1_Leaf_Ui::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=2;
+		RefreshButtons();
+	}
+	else
+	{
+	}
+}
+void Calc_Expo1_Leaf_Ui::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)instUiPtr->EnterCompoPool();
+		if(btnSel == 1)myRef->NewTrigCompo();
+		if(btnSel == 2)instUiPtr->EnterTrigCompo();
+	}
+	else
+	{
+
+	}
+}
+
+void Calc_Expo1_Leaf_Ui::RefreshButtons()
+{
+	for(unsigned int i=0; i<3; i++)
+	{
+		expo1Btns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)expo1Btns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&expo1Btns);
 }

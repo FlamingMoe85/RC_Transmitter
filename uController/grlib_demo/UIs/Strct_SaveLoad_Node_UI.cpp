@@ -18,9 +18,15 @@
 
 #include "../utils/UtilClass.h"
 
+extern "C"
+{
+#include "inc/hw_sysctl.h"
+#include "driverlib/sysctl.h"
+}
+
 extern const tDisplay g_sKentec320x240x16_SSD2119;
 extern tCanvasWidget g_psPanels[];
-
+extern ModelManager modMan;
 
 #define CAN_X_POS	100
 #define CAN_X_WIDTH	200
@@ -36,12 +42,13 @@ extern tCanvasWidget g_psPanels[];
 
 static Strct_SaveLoad_Node_UI* instPtr;
 
-extern void SavePrs(tWidget *psWidget);
-extern void LoadPrs(tWidget *psWidget);
-extern void DelModPrs(tWidget *psWidget);
-extern void FormatPrs(tWidget *psWidget);
-extern void ExportPrs(tWidget *psWidget);
-extern void ImportPrs(tWidget *psWidget);
+extern void SavePrs();
+extern void LoadPrs();
+extern void DelModPrs();
+extern void FormatPrs();
+extern void ExportPrs();
+extern void ImportPrs();
+
 void ModNamePrs(tWidget *psWidget);
 void ModKeyPrs(tWidget *psWidget, uint32_t ui32Key, uint32_t ui32Event);
 void ModSetName(char* n);
@@ -72,14 +79,14 @@ tPushButtonWidget saveLoadBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 UNSELCTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, "Save", 0, 0, 0, 0, SavePrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, "Save", 0, 0, 0, 0, 0),//SavePrs),
 
 						RectangularButtonStruct(saveLoadBtns, 0, saveLoadBtns+2,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 110, 160, 100, 40,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, "Load", 0, 0, 0, 0, LoadPrs),
+									 ClrGray, TEXT_COLR, &g_sFontCm22, "Load", 0, 0, 0, 0, 0),//LoadPrs),
 
 
 
@@ -88,21 +95,21 @@ tPushButtonWidget saveLoadBtns[] =
 													 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 													 UNSELCTED_PNT,
 													 UNSELCTED_PNT,
-													 ClrGray, TEXT_COLR, &g_sFontCm22, "Del", 0, 0, 0, 0, DelModPrs),
+													 ClrGray, TEXT_COLR, &g_sFontCm22, "Del", 0, 0, 0, 0, 0),//DelModPrs),
 
 									 RectangularButtonStruct(saveLoadBtns+2, 0, saveLoadBtns+4,//myCanvacsesAdd+1,
 													&g_sKentec320x240x16_SSD2119, CAN_X_POS, 120, CAN_X_WIDTH, CAN_Y_WIDTH,
 													 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 													 UNSELCTED_PNT,
 													 UNSELCTED_PNT,
-													 ClrGray, TEXT_COLR, &g_sFontCm22, "Name", 0, 0, 0, 0, ModNamePrs),
+													 ClrGray, TEXT_COLR, &g_sFontCm22, "Name", 0, 0, 0, 0, 0),//ModNamePrs),
 
 										RectangularButtonStruct(saveLoadBtns+3, 0, saveLoadBtns+5,//myCanvacsesAdd+1,
 													&g_sKentec320x240x16_SSD2119, 0, 200, 100, 40,
 													CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 													UNSELCTED_PNT,
 													UNSELCTED_PNT,
-													ClrGray, TEXT_COLR, &g_sFontCm22, "Export", 0, 0, 0, 0, ExportPrs),
+													ClrGray, TEXT_COLR, &g_sFontCm22, "Export", 0, 0, 0, 0, 0),//ExportPrs),
 
 
 
@@ -153,6 +160,7 @@ Strct_SaveLoad_Node_UI::Strct_SaveLoad_Node_UI() {
 	name_4[7] = '\0';
 
 	curItem = 0;
+	btnSel = 0;
 }
 
 Strct_SaveLoad_Node_UI::~Strct_SaveLoad_Node_UI() {
@@ -321,6 +329,7 @@ void Strct_SaveLoad_Node_UI::Down()
 	ItemSel(curItem, canSel);
 }
 
+
 void Strct_SaveLoad_Node_UI::Paint()
 {
 	//WidgetPaint((tWidget *)&(svldCov0));
@@ -373,4 +382,59 @@ uint16_t Strct_SaveLoad_Node_UI::GetCanSel()
 uint16_t Strct_SaveLoad_Node_UI::GetItmSel()
 {
 	return curItem;
+}
+
+void Strct_SaveLoad_Node_UI::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 6)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+
+	}
+}
+void Strct_SaveLoad_Node_UI::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=5;
+		RefreshButtons();
+	}
+	else
+	{
+
+	}
+}
+
+void Strct_SaveLoad_Node_UI::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)SavePrs();
+		if(btnSel == 1)LoadPrs();
+		if(btnSel == 2)DelModPrs();
+		if(btnSel == 3)FormatPrs();
+		if(btnSel == 4)ExportPrs();
+		if(btnSel == 5)ImportPrs();
+	}
+	else
+	{
+
+
+	}
+}
+
+void Strct_SaveLoad_Node_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<5; i++)
+	{
+		saveLoadBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)saveLoadBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&saveLoadBtns);
 }

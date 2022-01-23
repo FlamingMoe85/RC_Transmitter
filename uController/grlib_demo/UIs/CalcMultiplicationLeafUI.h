@@ -33,6 +33,7 @@ private:
 	virtual void Right(){ };
 	virtual void Left(){ };
 	virtual void Grab(){ };
+	virtual void RefreshButtons() { };
 
 	virtual void RemFcnBtns(){ };
 	virtual void ConFcnBtns(){ };

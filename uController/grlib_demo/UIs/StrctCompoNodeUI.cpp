@@ -35,10 +35,11 @@ extern const tDisplay g_sKentec320x240x16_SSD2119;
 
 Strct_Compo_Node* myRef_C;
 Strct_CalcFactory myCalcFac;
-void AddModPrs(tWidget *psWidget);
+
+extern void AddModPrs();
 void NewCompPress(tWidget *psWidget);
-extern void CompPoolPrs_CompNode(tWidget *psWidget);
-extern void DelPrs(tWidget *psWidget);
+extern void CompPoolPrs_CompNode();
+extern void DelPrs();
 
 tCanvasWidget myCanvacsesNode[] =
 {
@@ -55,28 +56,28 @@ tPushButtonWidget moduleBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 UNSELCTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, " Add Module ", 0, 0, 0, 0, AddModPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, " Add Module ", 0, 0, 0, 0, 0),//AddModPrs),
 
 						RectangularButtonStruct(moduleBtns, 0, moduleBtns+2,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 110, 140, 100, 50,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, CompPoolPrs_CompNode),
+									 ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, 0),//CompPoolPrs_CompNode),
 
 										RectangularButtonStruct(moduleBtns+1, 0, moduleBtns+3,//myCanvacsesAdd+1,
 																&g_sKentec320x240x16_SSD2119, 220, 140, 100, 50,
 																CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 																UNSELCTED_PNT,
 																UNSELCTED_PNT,
-																ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, DelPrs),
+																ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, 0),//DelPrs),
 
 																RectangularButtonStruct(moduleBtns+2, 0, 0,//myCanvacsesAdd+1,
 																					                 &g_sKentec320x240x16_SSD2119, 110, 200, 100, 50,
 																									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 																									 UNSELCTED_PNT,
 																									 UNSELCTED_PNT,
-																									 ClrGray, TEXT_COLR, &g_sFontCm22, " New Comp", 0, 0, 0, 0, NewCompPress)
+																									 ClrGray, TEXT_COLR, &g_sFontCm22, " New Comp", 0, 0, 0, 0, 0)//NewCompPress)
 
 
 
@@ -86,7 +87,7 @@ Canvas(modBtnsCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90, 320, 150, CANVA
 
 Strct_Compo_Node_UI::Strct_Compo_Node_UI() {
 	// TODO Auto-generated constructor stub
-
+	btnSel = 0;
 }
 
 Strct_Compo_Node_UI::~Strct_Compo_Node_UI() {
@@ -174,4 +175,58 @@ void Strct_Compo_Node_UI::DelSelItm()
 {
 	myRef->GetChildList()->DelAtLoc(this->GetItmSel());
 	myRef->Show();
+}
+
+
+void Strct_Compo_Node_UI::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 4)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemRight();
+	}
+}
+
+void Strct_Compo_Node_UI::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=3;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemLeft();
+	}
+}
+void Strct_Compo_Node_UI::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)AddModPrs();
+		if(btnSel == 1)CompPoolPrs_CompNode();
+		if(btnSel == 2)DelPrs();
+		if(btnSel == 3)myRef->AddCompAtEnd();
+	}
+	else
+	{
+
+		ItemGrab();
+	}
+}
+
+void Strct_Compo_Node_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<4; i++)
+	{
+		moduleBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)moduleBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&moduleBtns);
 }

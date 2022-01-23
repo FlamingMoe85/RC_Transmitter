@@ -24,7 +24,7 @@
 
 //#define PC
 #define CONTROLLER
-
+//#define BT_LINK
 #define EEPROM_READ
 
 #include "../../share/UIs/Ui_Visitor.h"
@@ -230,7 +230,7 @@ void AddCompPoolPrs(tWidget *psWidget);
 
 void SavePrs(tWidget *psWidget);
 void LoadPrs(tWidget *psWidget);
-void FormatPrs(tWidget *psWidget);
+void FormatPrs();
 
 Strct_CalcFactory GlobalModFactory;
 
@@ -240,12 +240,15 @@ uint32_t recChannels[7];
 uint16_t nibleCntr, numCntr, msgLength, charCntr, amtRecValsTop;
 char curRecChar;
 
-float fourAdcs[8];
+float fourAdcs[12];
 uint32_t fourAdcsRaw[4];
 uint32_t fourAdcsOffset[8];
 uint16_t externADCs[4];
+uint16_t externADCsBT[4];
 int externAdcCnt = 0;
+int externAdcCntBT = 0;
 unsigned int extAdcCnt = 0;
+unsigned int extAdcCntBT = 0;
 int16_t initialAdcRead = 0;
 
 #define BT_START	192
@@ -263,6 +266,7 @@ unsigned int btSendCntr = 0;
 #define EXT_INIT		2
 #define EXT_DIG_REQ		0
 #define EXT_ADC_REQ		1
+#define EXT_BT_REQ		3
 
 volatile uint16_t amtOfExtAdc = 0, amtOfExtDigs = 0, extMode = EXT_INIT, askForAdcFlag = 0;
 #define RETRYTIME 50
@@ -271,6 +275,7 @@ volatile uint16_t retry = RETRYTIME + 1;
 
 uint32_t digInArrBits;
 unsigned int expanInByteCntr = 0;
+unsigned int expanInByteCntrBT = 0;
 uint16_t trimmDigBits = 0;
 static volatile uint16_t trimPins = 0;
 uint16_t guiRefreshCntr = 0;
@@ -283,6 +288,7 @@ unsigned char menuDigs = 0, menuDigsOld = 0;
 #define GRAB_MEN	16
 #define ENTER_MEN	64
 #define	ESC_MEN		32
+#define ROTARY_DOWN	128
 
 extern tCanvasWidget g_psPanels[];
 
@@ -319,7 +325,7 @@ Canvas(dummyCan, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 220, 300, 140, CANVAS
 									 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 									 UNSELCTED_PNT,
 									 									 UNSELCTED_PNT,
-									 									 ClrGray, TEXT_COLR, &g_sFontCm22, "Form", 0, 0, 0, 0, FormatPrs);
+									 									 ClrGray, TEXT_COLR, &g_sFontCm22, "Form", 0, 0, 0, 0, 0);//FormatPrs);
 
 /*
 RectangularButton(upBtn, g_psPanels,  0, 0,  &g_sKentec320x240x16_SSD2119, 30, 0,
@@ -594,25 +600,37 @@ void OnGrab(tWidget *psWidget)
 //	uiIdArr[chnlMngrUi.GetActUi()]->Grab();
 }
 
+void OnRotaryDown()
+{
+	uiIdArr[chnlMngrUi.GetActUi()]->RotaryDown(ROTARY_IS_DOWN);
+}
+
+void OnRotaryUp()
+{
+	uiIdArr[chnlMngrUi.GetActUi()]->RotaryDown(ROTARY_IS_UP);
+}
 
 
-void AddModPrs(tWidget *psWidget)
+
+void AddModPrs()
 {
 	cmpoNodUi.EnterModFac(&currentNode, &UiVisitor);
 }
 
-void CompPoolPrs_CompNode(tWidget *psWidget)
+void CompPoolPrs_CompNode()
 {
 	cmpoNodUi.EnterCompoPool(&currentNode, &UiVisitor);
 }
 
-void CompPoolPrs_MultSwNode(tWidget *psWidget)
+//void CompPoolPrs_MultSwNode(tWidget *psWidget)
+void CompPoolPrs_MultSwNode()
 {
 	mltSwUi.EnterCompoPool(&currentNode, &UiVisitor);
 }
 
 
-void CompPoolPrs_JuncNode(tWidget *psWidget)
+//void CompPoolPrs_JuncNode(tWidget *psWidget)
+void CompPoolPrs_JuncNode()
 {
 	strctJuncUi.EnterCompoPool(&currentNode, &UiVisitor);
 }
@@ -627,12 +645,14 @@ void ConBtns_ItmSel()
 	uiIdArr[chnlMngrUi.GetActUi()]->ConFcnBtns();
 }
 
-void DelPrs(tWidget *psWidget)
+//void DelPrs(tWidget *psWidget)
+void DelPrs()
 {
 	uiIdArr[chnlMngrUi.GetActUi()]->DelSelItm();
 }
 
-void DelJuncPrs(tWidget *psWidget)
+//void DelJuncPrs(tWidget *psWidget)
+void DelJuncPrs()
 {
 	uiIdArr[chnlMngrUi.GetActUi()]->DelSelItm();
 }
@@ -646,12 +666,12 @@ void CstmSwDelInPrs(tWidget *psWidget)
 	srcCstmSwUi.DelIn();
 }
 
-void BlinkerAddInPrs(tWidget *psWidget)
+void BlinkerAddInPrs()
 {
 	timeBlinkerUi.AddIn();
 }
 
-void BlinkerDelInPrs(tWidget *psWidget)
+void BlinkerDelInPrs()
 {
 	timeBlinkerUi.DelIn();
 }
@@ -699,26 +719,8 @@ uint32_t RdArr32[amtTestFigs];
 char writeName[25];
 char readName[100];
 
-void SavePrs(tWidget *psWidget)
+void SavePrs()
 {
-/*
-	storageHandler.NewAccessStrobe();
-	for(uint16_t i=0; i<amtTestFigs; i++)
-	{
-		storageHandler.WriteS16bSeq(eeTestWrtArr[i]);
-	}
-	storageHandler.FinalSaveStrobe();*/
-/*
-	storageHandler.NewAccessStrobe();
-	modMan.SaveName(&(writeName[0]));
-		storageHandler.FinalSaveStrobe();
-		*/
-
-	/*
-	storageHandler.NewAccessStrobe();
-	rootNode.Serialize(&modMan);
-	storageHandler.FinalSaveStrobe();
-	*/
 	storageHandler.NewAccessStrobe();
 	uint16_t compoNodes;
 	compoNodes = cmpoNod.GetPoolLst()->Count();
@@ -732,42 +734,9 @@ void SavePrs(tWidget *psWidget)
 	storageHandler.FinalSaveStrobe();
 	strctSaveLoadUi.ItemSel(strctSaveLoadUi.GetItmSel(),1);
 }
-/*
-void LoadDummy()
-{
-	storageHandler.SetReadStartAdr(0);
-	for(uint16_t i=0; i<amtTestFigs; i++)
-	{
-		//eeTestRdArr[i] = storageHandler.GetS16bSeq();
-		EEPROMRead(&(RdArr32[i]), i*4, 4);
-	}
-}
-*/
-void LoadPrs(tWidget *psWidget)
+void LoadPrs()
 {
 	char dummyName[20];
-/*
-	storageHandler.SetReadStartAdr(64);
-	for(uint16_t i=0; i<amtTestFigs; i++)
-	{
-		eeTestRdArr[i] = storageHandler.GetS16bSeq();
-	}
-*/
-	/*
-	storageHandler.SetReadStartAdr(64);
-	modMan.GetName(&(writeName[0]));
-	*/
-
-	//storageHandler.SetReadStartAdr(64);
-	//rootNode.Deserialize(&modMan);
-	//modMan.GetNameOfModel(&(dummyName[0]),modMan.GetSelctdMod());
-	//rootNode.Deserialize(&modMan);
-	/*
-	 LoadDummy();
-	 modMan.SetCurModByNmbr(strctSaveLoadUi.GetItmSel());
- modMan.GetNameOfModel(&(dummyName[0]),strctSaveLoadUi.GetItmSel());
- rootNode.Deserialize(&modMan);
- */
 	modMan.SetCurModByNmbr(strctSaveLoadUi.GetItmSel());
 	SysCtlReset();
 }
@@ -789,23 +758,23 @@ modNmbr = modMan.GetCurModNmbr();
 	}
 }
 
-void FormatPrs(tWidget *psWidget)
+void FormatPrs()
 {
 	storageHandler.Format();
 }
 
-void DelModPrs(tWidget *psWidget)
+void DelModPrs()
 {
 	modMan.DelSelctdMod(strctSaveLoadUi.GetItmSel());
 	strctSaveLoadUi.ItemSel(strctSaveLoadUi.GetItmSel(),1);
 }
 
 
-void ExportPrs(tWidget *psWidget)
+void ExportPrs()
 {
 	void ReadEEPROM();
 }
-void ImportPrs(tWidget *psWidget)
+void ImportPrs()
 {
 
 }
@@ -1087,7 +1056,7 @@ main(void)
 	                               GPIOPadConfigSet(GPIO_PORTC_BASE, GPIO_PIN_6, GPIO_STRENGTH_6MA, GPIO_PIN_TYPE_STD_WPU);
 	                                  GPIOPinConfigure(GPIO_PC7_U5TX);
 	                                  GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
-	                                  UARTConfigSetExpClk(UART5_BASE, g_ui32SysClock, 9600,
+	                                  UARTConfigSetExpClk(UART5_BASE, g_ui32SysClock, 9600,//38400,
 	                                                              (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
 	                                                               UART_CONFIG_PAR_NONE));
 	                                  //IntEnable(INT_UART5);
@@ -1220,6 +1189,9 @@ WidgetMessageQueueProcess();
 #endif //PC
         if(runTrigger != runTriggerOld)
         {
+#ifdef BT_LINK
+        	ROM_UARTCharPutNonBlocking(UART7_BASE, ADC_BEGIN);
+#endif
         	int32_t tmp32;
         	unsigned char tmpMenuDigs;
         	runTriggerOld = runTrigger;
@@ -1234,15 +1206,16 @@ WidgetMessageQueueProcess();
 
 #ifdef CONTROLLER
         		chnlValArr[i] = (NEUTRAL + (tmp32 * 0.5));
-
+#ifdef BT_TX
         		btTx[i*2] = ((chnlValArr[i] & 4032) >> 6);
         		btTx[(i*2)+1] = ((chnlValArr[i] & 63));
-
+#endif
         		chnlValArr[i] = chnlValArr[i]*120;
 #endif
         		//if(chnlValArr[i] > (2000.0*120.0))chnlValArr[i] = (2000.0*120);
         		//if(chnlValArr[i] < (500.0*120))chnlValArr[i] = 500.0*12.0;
         	}
+#ifdef BT_TX
         	btTx[0] |= BT_START;
         	btTx[13] |= BT_STOP;
         	if(btflag == 0)
@@ -1250,14 +1223,27 @@ WidgetMessageQueueProcess();
         		btflag = 1;
         		btSendCntr = 0;
         	}
-
+#endif
         	quadPos = (int16_t)QEIPositionGet(QEI0_BASE);
         	/**/
        	if(quadPos != 5000)quadNoty.Notify( quadPos - 5000);
        	QEIPositionSet(QEI0_BASE, 5000);
 
 
-       	tmpMenuDigs = ((menuDigs ^ menuDigsOld) &  menuDigs);
+       	tmpMenuDigs = (menuDigs ^ menuDigsOld);
+       	if((tmpMenuDigs & 128) == 128)
+       	{
+			if((menuDigs & ROTARY_DOWN) == ROTARY_DOWN)
+			{
+				OnRotaryDown();
+			}
+			else if((menuDigs & ROTARY_DOWN) == 0)
+			{
+				OnRotaryUp();
+			}
+       	}
+
+       	tmpMenuDigs = (tmpMenuDigs &  menuDigs);
        	menuDigsOld = menuDigs;
        	if((tmpMenuDigs & UP_MEN) == UP_MEN)
        	{
@@ -1287,8 +1273,9 @@ WidgetMessageQueueProcess();
        	{
        		OnEsc();
         }
-     }
 
+     }
+#ifdef BT_TX
         while((btflag == 1) && (ROM_UARTCharPutNonBlocking(UART7_BASE, btTx[btSendCntr])))
         {
         	btSendCntr++;
@@ -1297,7 +1284,7 @@ WidgetMessageQueueProcess();
         		btflag = 0;
         	}
         }
-
+#endif
         if(ADCIntStatus(ADC0_BASE, 1, false))
                 	{
 
@@ -1355,6 +1342,17 @@ WidgetMessageQueueProcess();
                 		                	    //  digInArrBits |= (tmpPins << 7);//12/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTG_BASE, GPIO_PIN_0));
+                		                	    if(tmpPins == 0)
+                		                	    {
+                		                	    	menuDigs = ROTARY_DOWN;
+                		                	    }
+                		                	    else
+                		                	    {
+                		                	    	menuDigs = 0;
+                		                	    }
+                		                	    //different than the others, G is set to pull up
+                		                	    //if(!tmpPins) menuDigs |= ROTARY_DOWN;
+                		                	    //else menuDigs &= ~ROTARY_DOWN;
                 		                	    //    digInArrBits |= (tmpPins << 12);//13/31
 
                 		                	    //tmpPins = (GPIOPinRead(GPIO_PORTH_BASE, GPIO_PIN_2 | GPIO_PIN_3));
@@ -1362,7 +1360,7 @@ WidgetMessageQueueProcess();
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTJ_BASE, GPIO_PIN_0 | GPIO_PIN_1));
                 		                	    //digInArrBits |= (tmpPins << 15);//17/31
-                		                	    menuDigs = (tmpPins & 1)<<4;
+                		                	    menuDigs |= (tmpPins & 1)<<4;
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTK_BASE, GPIO_PIN_0));
                 		                	    //    digInArrBits |= (tmpPins << 17);//18/31
@@ -1451,7 +1449,7 @@ volatile uint16_t retry = RETRYTIME + 1;
         while(UARTCharsAvail(UART5_BASE))
         {
         	unsigned char uartExtIO;
-        	static staticByte;
+        	static int staticByte;
         	ROM_GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_3,  GPIO_DIR_MODE_OUT);
         	uartExtIO = UARTCharGetNonBlocking(UART5_BASE);
 
@@ -1485,16 +1483,19 @@ volatile uint16_t retry = RETRYTIME + 1;
 				else
 				{
 					externADCs[extAdcCnt] += (uartExtIO & 31);//low sig six of 12 bits
-					if(extAdcCnt < 4) extAdcCnt++;
+					//if(extAdcCnt < 4) extAdcCnt++;
+					if(extAdcCnt < 3) extAdcCnt++;
 				}
-				if(extAdcCnt == 4)
+				//if(extAdcCnt == 4)
+				if(extAdcCnt == 3)
 				{
-					if(externAdcCnt == 4)
+					//if(externAdcCnt == 4)
+					if(externAdcCnt == 3)
 					{
-						fourAdcs[4] = (float)(externADCs[0] - fourAdcsOffset[4]);
-						fourAdcs[5] = (float)(externADCs[1] - fourAdcsOffset[5]);
-						fourAdcs[6] = (float)(externADCs[2] - fourAdcsOffset[6]);
-						fourAdcs[7] = (float)(externADCs[3] - fourAdcsOffset[7]);
+						fourAdcs[8] = (((float)externADCs[0]) - fourAdcsOffset[4]);
+						fourAdcs[9] = (((float)externADCs[1]) - fourAdcsOffset[5]);
+						fourAdcs[10] = (((float)externADCs[2]) - fourAdcsOffset[6]);
+						//fourAdcs[11] = (float)(externADCs[3] - fourAdcsOffset[7]);
 					}
 					else
 					{
@@ -1502,10 +1503,15 @@ volatile uint16_t retry = RETRYTIME + 1;
 						fourAdcsOffset[4] = externADCs[0];
 						fourAdcsOffset[5] = externADCs[1];
 						fourAdcsOffset[6] = externADCs[2];
-						fourAdcsOffset[7] = externADCs[3];
+						//fourAdcsOffset[7] = externADCs[3];
 					}
 				}
-				extMode = EXT_DIG_REQ;
+#ifdef BT_LINK
+				extMode = EXT_BT_REQ;//EXT_DIG_REQ;//hier Trigger für BT_Req einbauen
+#else
+				extMode = EXT_DIG_REQ;//hier Trigger für BT_Req einbauen
+#endif
+				ROM_UARTCharPutNonBlocking(UART7_BASE, ADC_END);
         		retry = RETRYTIME + 1;
         	}//still End msg
         	else if((uartExtIO & (128+64+32)) == MSG_AMT_REQ_BEG)//msgBegin
@@ -1566,6 +1572,61 @@ volatile uint16_t retry = RETRYTIME + 1;
         	//ROM_UARTCharPutNonBlocking(UART0_BASE, digInArrBits);
         }
         ROM_GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_3,  GPIO_DIR_MODE_IN);
+
+#ifdef BT_LINK
+        while(UARTCharsAvail(UART7_BASE))
+        {
+        	unsigned char uartExtIO;
+        	static unsigned int staticByte;
+        	uartExtIO = UARTCharGetNonBlocking(UART7_BASE);
+        	if((uartExtIO & (128+64+32)) == ADC_BEGIN)//msgBegin
+        	{
+        	      expanInByteCntrBT = 1;
+        	      extAdcCntBT = 0;
+        	      staticByte = (uartExtIO & 31)<<5;
+        	}
+        	else if((uartExtIO & (128+64+32)) == ADC_END)
+        	{
+        		if((expanInByteCntrBT & 1) == 0)
+        		{
+        			externADCsBT[extAdcCntBT] = (uartExtIO & 31);//most sig six of 12 bits
+        			externADCsBT[extAdcCntBT] = externADCsBT[extAdcCntBT] << 5;
+        		}
+        		else
+        		{
+        			externADCsBT[extAdcCntBT] += (uartExtIO & 31);//low sig six of 12 bits
+        			if(extAdcCntBT < 4) extAdcCntBT++;
+        		}
+        		if(extAdcCntBT == 4)
+        		{
+        			fourAdcs[4] = externADCsBT[0];
+        			fourAdcs[5] = externADCsBT[1];
+        			fourAdcs[6] = externADCsBT[2];
+        			fourAdcs[7] = externADCsBT[3];
+        		}
+        		extMode = EXT_DIG_REQ;
+        	    retry = RETRYTIME + 1;
+        	}
+        	else if(extMode == EXT_BT_REQ)
+    		{
+				if(expanInByteCntrBT == 1)
+				{
+					externADCsBT[extAdcCntBT] = staticByte + (uartExtIO & 31);
+					extAdcCntBT++;
+				}
+				else if((expanInByteCntrBT & 1) == 0)
+				{
+					externADCsBT[extAdcCntBT] = (uartExtIO & 31)<<5;//most sig six of 12 bits
+				}
+				else
+				{
+					externADCsBT[extAdcCntBT] += (uartExtIO & 31);//low sig six of 12 bits
+					if(extAdcCntBT < 4) extAdcCntBT++;
+				}
+				expanInByteCntrBT++;
+    		}
+        }
+#endif
 
 #ifdef PC
         while(ROM_UARTCharsAvail(UART7_BASE))
@@ -1636,6 +1697,9 @@ void PpmMatchIntHandler(void)
 			if((GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_2)) && (retry > RETRYTIME))
 			{
 				retry = 0;
+				UARTCharPut(UART5_BASE, DIG_END);
+				extMode = EXT_DIG_REQ;
+				/*
 				if(extMode == EXT_DIG_REQ)
 				{
 					UARTCharPut(UART5_BASE, DIG_END);
@@ -1648,6 +1712,7 @@ void PpmMatchIntHandler(void)
 		    	{
 		    		UARTCharPut(UART5_BASE, ADC_END);
 		    	}
+				*/
 			}
 		}
 			GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_2, GPIO_PIN_2);

@@ -260,7 +260,7 @@ void ItemSelector::EscItmSel()
 	WidgetPaint((tWidget *)&(selCov));
 }
 
-void ItemSelector::Up()
+void ItemSelector::ItemUp()
 {
 
 	if(curItem < (myItmLst->Count()-1))
@@ -281,7 +281,7 @@ void ItemSelector::Up()
 
 	ItemSel(curItem, canSel);
 }
-void ItemSelector::Down()
+void ItemSelector::ItemDown()
 {
 	if(curItem > 0)
 	{
@@ -296,16 +296,16 @@ void ItemSelector::Down()
 	}
 	ItemSel(curItem, canSel);
 }
-void ItemSelector::Right()
+void ItemSelector::ItemRight()
 {
 
 }
-void ItemSelector::Left()
+void ItemSelector::ItemLeft()
 {
 
 }
 
-void ItemSelector::Grab()
+void ItemSelector::ItemGrab()
 {
 	if(grabMode == 0)
 	{

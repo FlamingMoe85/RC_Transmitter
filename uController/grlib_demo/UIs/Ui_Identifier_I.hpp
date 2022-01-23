@@ -12,6 +12,9 @@
 #include "../../../share/Graph_App/graph_app_i.h"
 #include "../../../share/UIs/Ui_Visitor_I.hpp"
 
+#define ROTARY_IS_DOWN 	1
+#define ROTARY_IS_UP	0
+
 class Ui_Identifier_I
 {
 public:
@@ -23,6 +26,9 @@ public:
 	virtual void Right() = 0;
 	virtual void Left() = 0;
 	virtual void Grab() = 0;
+	virtual void RotaryDown(unsigned int rotaryPrsState) = 0;
+	virtual unsigned int GetRotaryState() = 0;
+	virtual void RefreshButtons() = 0;
 
 	virtual uint16_t GetCanSel() = 0;
 	virtual uint16_t GetItmSel() = 0;
@@ -33,6 +39,7 @@ public:
 	virtual void RemFcnBtns() = 0;
 	virtual void ConFcnBtns() = 0;
 	virtual void DelSelItm() = 0;
+
 };
 
 

@@ -29,9 +29,15 @@ extern const tDisplay g_sKentec320x240x16_SSD2119;
 #define TEXT_COLR		ClrWhite
 
 
+/*
 void CompPoolPrsDynScl(tWidget *psWidget);
 void NewCompPrsDynScl(tWidget *psWidget);
 void EnterTriggerPrsDynScl(tWidget *psWidget);
+*/
+
+void CompPoolPrsDynScl();
+void NewCompPrsDynScl();
+void EnterTriggerPrsDynScl();
 
 Canvas(dynSclName, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, CAN_X_WIDTH, CAN_Y_WIDTH, CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT, UNSELCTED_PNT, ClrGray, ClrWhite, &g_sFontCm22, "Dyn Scale", 0, 0);
 Canvas(dynSclCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 0, 320, 240, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
@@ -44,21 +50,21 @@ tPushButtonWidget dynSclBtns[] =
 									 						 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 						UNSELCTED_PNT,
 									 						UNSELCTED_PNT,
-									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, CompPoolPrsDynScl),
+									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, 0),//CompPoolPrsDynScl),
 
 									RectangularButtonStruct(dynSclBtns, 0, dynSclBtns+2,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 100, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, NewCompPrsDynScl),
+															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, 0),//NewCompPrsDynScl),
 
 									RectangularButtonStruct(dynSclBtns+1, 0, 0,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 200, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, EnterTriggerPrsDynScl)
+															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, 0)//EnterTriggerPrsDynScl)
 
 
 
@@ -69,7 +75,7 @@ Calc_DynamicScale_Leaf* cRef;
 
 Calc_DynamicScale_Leaf_Ui::Calc_DynamicScale_Leaf_Ui() {
 	// TODO Auto-generated constructor stub
-
+	btnSel = 0;
 }
 
 Calc_DynamicScale_Leaf_Ui::~Calc_DynamicScale_Leaf_Ui() {
@@ -152,4 +158,55 @@ void NewCompPrsDynScl(tWidget *psWidget)
 void EnterTriggerPrsDynScl(tWidget *psWidget)
 {
 	instUiPtr->EnterTrigCompo();
+}
+
+void Calc_DynamicScale_Leaf_Ui::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 3)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+	}
+}
+void Calc_DynamicScale_Leaf_Ui::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=2;
+		RefreshButtons();
+	}
+	else
+	{
+
+	}
+}
+
+void Calc_DynamicScale_Leaf_Ui::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)instUiPtr->EnterCompoPool();
+		if(btnSel == 1)myRef->NewTrigCompo();
+		if(btnSel == 2)instUiPtr->EnterTrigCompo();
+	}
+	else
+	{
+
+
+	}
+}
+
+void Calc_DynamicScale_Leaf_Ui::RefreshButtons()
+{
+	for(unsigned int i=0; i<3; i++)
+	{
+		dynSclBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)dynSclBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&dynSclBtns);
 }

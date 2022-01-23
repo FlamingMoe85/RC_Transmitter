@@ -25,8 +25,17 @@ public:
 	virtual void ConFcnBtns();
 	virtual void DelSelItm(){ };
 
+	virtual void Up(){ItemUp();};
+	virtual void Down(){ItemDown();};
+	virtual void Right(){ItemRight();};
+	virtual void Left(){ItemLeft();};
+	virtual void Grab();
+	virtual void RefreshButtons();
+
 private:
 	Strct_Chnl_Node* myRef;
+
+	unsigned int secMenStat;
 };
 
 #endif /* UIS_STRCTCHNLNODEUI_H_ */

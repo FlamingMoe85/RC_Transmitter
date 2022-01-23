@@ -34,6 +34,7 @@ public:
 	virtual void Right();
 	virtual void Left();
 	virtual void Grab();
+	virtual void RefreshButtons();
 	void Up(int16_t val);
 	void Down(int16_t val);
 
@@ -48,6 +49,7 @@ private:
 	Calc_Quantizer_Leaf* myRef;
 	uint16_t inSel;
 	uint16_t column;
+	unsigned int btnSel;
 };
 
 #endif /* UIS_CALC_QUANTIZER_LEAF_UI_H_ */

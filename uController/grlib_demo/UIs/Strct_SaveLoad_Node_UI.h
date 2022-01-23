@@ -30,9 +30,10 @@ public:
 	virtual void Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis);
 	virtual void Up();
 	virtual void Down();
-	virtual void Right(){ };//No need
-	virtual void Left(){ };//No need
-	virtual void Grab(){ };//No need
+	virtual void Right();//No need
+	virtual void Left();//No need
+	virtual void Grab();
+	virtual void RefreshButtons();
 
 
 	virtual uint16_t GetCanSel();// CHECK
@@ -53,6 +54,7 @@ private:
 	char name_1[NAME_LENGTH];
 	char name_2[NAME_LENGTH];
 	char name_3[NAME_LENGTH];
+	unsigned int btnSel;
 
 
 

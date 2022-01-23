@@ -28,18 +28,21 @@ extern const tDisplay g_sKentec320x240x16_SSD2119;
 #define NXT_X_POS	(CAN_X_POS+CAN_X_WIDTH-NXT_X_WIDTH-3)
 
 #define UNSELCTED_PNT 	ClrSaddleBrown
-#define SELECTED_PNT		ClrOrange
+#define SELECTED_PNT		ClrSilver
 #define GRABED_PNT		ClrRed
 #define TEXT_COLR		ClrWhite
 
 Strct_MultSw_Node* myRef_C;
 
 void AddCompPrs(tWidget *psWidget);
-extern void CompPoolPrs_MultSwNode(tWidget *psWidget);
-extern void DelPrs(tWidget *psWidget);
+//extern void CompPoolPrs_MultSwNode(tWidget *psWidget);
+extern void CompPoolPrs_MultSwNode();
+//extern void DelPrs(tWidget *psWidget);
+extern void DelPrs();
 
 void AddJuncPrs(tWidget *psWidget);
-extern void DelJuncPrs(tWidget *psWidget);
+//extern void DelJuncPrs(tWidget *psWidget);
+extern void DelJuncPrs();
 
 tPushButtonWidget cmpBtns[] =
 {
@@ -48,41 +51,41 @@ tPushButtonWidget cmpBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 SELECTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, " New Compo ", 0, 0, 0, 0, AddCompPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, " New Compo ", 0, 0, 0, 0, 0),//AddCompPrs),
 
 	RectangularButtonStruct(cmpBtns, 0, cmpBtns + 2,//myCanvacsesAdd+1,
 							&g_sKentec320x240x16_SSD2119, 110, 140, 100, 50,
 							CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 							UNSELCTED_PNT,
 							UNSELCTED_PNT,
-							ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, CompPoolPrs_MultSwNode),
+							ClrGray, TEXT_COLR, &g_sFontCm22, " CompPool ", 0, 0, 0, 0, 0),//CompPoolPrs_MultSwNode),
 
 	RectangularButtonStruct(cmpBtns+1, 0, cmpBtns + 3,//myCanvacsesAdd+1,
 							&g_sKentec320x240x16_SSD2119, 220, 140, 100, 50,
 							CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 							UNSELCTED_PNT,
 							UNSELCTED_PNT,
-							ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, DelPrs),
+							ClrGray, TEXT_COLR, &g_sFontCm22, "DelComp", 0, 0, 0, 0, 0),//DelPrs),
 
 	RectangularButtonStruct(cmpBtns + 2, 0, cmpBtns+4,//myCanvacsesAdd+1,
 							&g_sKentec320x240x16_SSD2119, 0, 190, 100, 50,
 							CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 							UNSELCTED_PNT,
 							SELECTED_PNT,
-							ClrGray, TEXT_COLR, &g_sFontCm22, " New Junc ", 0, 0, 0, 0, AddJuncPrs),
+							ClrGray, TEXT_COLR, &g_sFontCm22, " New Junc ", 0, 0, 0, 0, 0),//AddJuncPrs),
 
 	RectangularButtonStruct(cmpBtns+3, 0, 0,//myCanvacsesAdd+1,
 							&g_sKentec320x240x16_SSD2119, 220, 190, 100, 50,
 							CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 							UNSELCTED_PNT,
 							UNSELCTED_PNT,
-							ClrGray, TEXT_COLR, &g_sFontCm22, "Rem Junc", 0, 0, 0, 0, DelJuncPrs),
+							ClrGray, TEXT_COLR, &g_sFontCm22, "Rem Junc", 0, 0, 0, 0, 0)//DelJuncPrs),
 };
 Canvas(cmpBtnsCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90, 320, 150, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 
 StrctMultiSwNodeUI::StrctMultiSwNodeUI() {
 	// TODO Auto-generated constructor stub
-
+	btnSel = 0;
 }
 
 StrctMultiSwNodeUI::~StrctMultiSwNodeUI() {
@@ -100,7 +103,7 @@ void StrctMultiSwNodeUI::SetMultSw_Ref(Strct_MultSw_Node* ref)
 	ItemSel(GetItmSel(), 1);
 	this->SetName(myRef->GetNameArr());
 	WidgetPaint((tWidget *)&cmpBtns);
-		Paint();
+	Paint();
 }
 
 
@@ -157,7 +160,7 @@ void StrctMultiSwNodeUI::RemFcnBtns()
 
 void StrctMultiSwNodeUI::ConFcnBtns()
 {
-	WidgetPaint((tWidget *)cmpBtns);
+	RefreshButtons();
 	WidgetAdd(WIDGET_ROOT, (tWidget *)cmpBtns);
 }
 
@@ -165,4 +168,57 @@ void StrctMultiSwNodeUI::DelSelItm()
 {
 	myRef->GetChildList()->DelAtLoc(this->GetItmSel());
 	myRef->Show();
+}
+
+void StrctMultiSwNodeUI::Right()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 5)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemRight();
+	}
+}
+void StrctMultiSwNodeUI::Left()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=4;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemLeft();
+	}
+}
+void StrctMultiSwNodeUI::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)myRef->AddCompAtEnd();
+		if(btnSel == 1)CompPoolPrs_MultSwNode();
+		if(btnSel == 2)DelPrs();
+		if(btnSel == 3){myRef->GetChildList()->AddEnd((Graph_App_I*)new Strct_Junc_Node()); myRef->Show();}
+		if(btnSel == 4)DelJuncPrs();
+	}
+	else
+	{
+
+		ItemGrab();
+	}
+}
+
+void StrctMultiSwNodeUI::RefreshButtons()
+{
+	for(unsigned int i=0; i<5; i++)
+	{
+		cmpBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)cmpBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&cmpBtns);
 }

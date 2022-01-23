@@ -28,6 +28,7 @@ public:
 	virtual void Right(){ };
 	virtual void Left(){ };
 	virtual void Grab(){ };
+	virtual void RefreshButtons() { };
 
 	virtual uint16_t GetCanSel(){return 0; };
 	virtual uint16_t GetItmSel(){return 0; };

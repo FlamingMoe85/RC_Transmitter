@@ -28,9 +28,18 @@ public:
 	virtual void ConFcnBtns();
 	virtual void DelSelItm();
 
+
+	virtual void Up(){ItemUp();};
+	virtual void Down(){ItemDown();};
+	virtual void Right();
+	virtual void Left();
+	virtual void Grab();
+	virtual void RefreshButtons();
+
 private:
 	Strct_Compo_Node* myRef;
 	Strct_PoolOwner_Node* myPoolOwnerRef;
+	unsigned int btnSel;
 };
 
 #endif /* UIS_STRCTCOMPONODEUI_H_ */

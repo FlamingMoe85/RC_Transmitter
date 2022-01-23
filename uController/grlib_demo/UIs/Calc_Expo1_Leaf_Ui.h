@@ -25,9 +25,10 @@ public:
 	virtual void Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis){ };
 	virtual void Up(){ };
 	virtual void Down(){ };
-	virtual void Right(){ };//No need
-	virtual void Left(){ };//No need
-	virtual void Grab(){ };//No need
+	virtual void Right();
+	virtual void Left();
+	virtual void Grab();
+	virtual void RefreshButtons();
 
 
 	virtual uint16_t GetCanSel(){ };// CHECK
@@ -44,6 +45,7 @@ public:
 private:
 	Calc_Expo1_Leaf* myRef;
 	Strct_PoolOwner_Node* myPoolOwnerRef;
+	unsigned int btnSel;
 };
 
 #endif /* UIS_CALC_EXPO1_LEAF_UI_H_ */

@@ -32,6 +32,7 @@ public:
 	virtual void Right();//No need
 	virtual void Left();//No need
 	virtual void Grab();//No need
+	virtual void RefreshButtons() { };
 
 
 	virtual uint16_t GetCanSel();// CHECK

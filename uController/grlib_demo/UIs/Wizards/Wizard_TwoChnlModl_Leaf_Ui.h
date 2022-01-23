@@ -30,6 +30,7 @@ public:
 		virtual void Right();//No need
 		virtual void Left();//No need
 		virtual void Grab(){ };//No need
+		virtual void RefreshButtons() { };
 
 		void Left(int16_t val);
 		void Right(int16_t val);
@@ -43,6 +44,8 @@ public:
 		virtual void DelSelItm(){ };
 
 		virtual void QuadEncNotify(int16_t val);
+
+		virtual void RotaryDown() { };
 
 private:
 		Wizard_TwoChnlModl_Leaf* myRef;

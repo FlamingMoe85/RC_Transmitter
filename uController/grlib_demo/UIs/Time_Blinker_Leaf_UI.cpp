@@ -44,8 +44,8 @@ static Time_Blinker_Leaf_UI* instPtr;
 //static char activePosArr[] = "   ";
 //static char outputArr[] = "      ";
 
-extern void BlinkerAddInPrs(tWidget *psWidget);
-extern void BlinkerDelInPrs(tWidget *psWidget);
+extern void BlinkerAddInPrs();
+extern void BlinkerDelInPrs();
 void CompPoolPrs(tWidget *psWidget);
 void NewCompPrs(tWidget *psWidget);
 void EnterTriggerPrs(tWidget *psWidget);
@@ -142,35 +142,35 @@ tPushButtonWidget blinkerBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 UNSELCTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, "+", 0, 0, 0, 0, BlinkerAddInPrs),
+					 ClrGray, TEXT_COLR, &g_sFontCm22, "+", 0, 0, 0, 0, 0),//BlinkerAddInPrs),
 
 						RectangularButtonStruct(blinkerBtns, 0, blinkerBtns+2,//myCanvacsesAdd+1,
 					                 &g_sKentec320x240x16_SSD2119, 50, 120, 50, 50,
 									 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 UNSELCTED_PNT,
 									 UNSELCTED_PNT,
-									 ClrGray, TEXT_COLR, &g_sFontCm22, "-", 0, 0, 0, 0, BlinkerDelInPrs),
+									 ClrGray, TEXT_COLR, &g_sFontCm22, "-", 0, 0, 0, 0, 0),//BlinkerDelInPrs),
 
 									 RectangularButtonStruct(blinkerBtns+1, 0, blinkerBtns+3,//myCanvacsesAdd+1,
 									 					     &g_sKentec320x240x16_SSD2119, 0, 190, 100, 50,
 									 						 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 									 						UNSELCTED_PNT,
 									 						UNSELCTED_PNT,
-									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, CompPoolPrs),
+									 						ClrGray, TEXT_COLR, &g_sFontCm22, "Comp Pool", 0, 0, 0, 0, 0),//CompPoolPrs),
 
 									RectangularButtonStruct(blinkerBtns+2, 0, blinkerBtns+4,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 100, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, NewCompPrs),
+															ClrGray, TEXT_COLR, &g_sFontCm22, "New Compo", 0, 0, 0, 0, 0),//NewCompPrs),
 
 									RectangularButtonStruct(blinkerBtns+3, 0, 0,//myCanvacsesAdd+1,
 															&g_sKentec320x240x16_SSD2119, 200, 190, 100, 50,
 															CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 															UNSELCTED_PNT,
 															UNSELCTED_PNT,
-															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, EnterTriggerPrs)
+															ClrGray, TEXT_COLR, &g_sFontCm22, "Trigger", 0, 0, 0, 0, 0)//EnterTriggerPrs)
 
 
 
@@ -178,6 +178,7 @@ tPushButtonWidget blinkerBtns[] =
 
 Time_Blinker_Leaf_UI::Time_Blinker_Leaf_UI() {
 	// TODO Auto-generated constructor stub
+	btnSel = 0;
 }
 
 Time_Blinker_Leaf_UI::~Time_Blinker_Leaf_UI() {
@@ -314,21 +315,50 @@ void Time_Blinker_Leaf_UI::QuadEncNotify(int16_t val)
 
 void Time_Blinker_Leaf_UI::Right()
 {
-	if(column < 2) column++;
-	else column = 0;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 5)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column < 2) column++;
+		else column = 0;
+		Paint();
+	}
 }
 
 void Time_Blinker_Leaf_UI::Left()
 {
-	if(column > 0) column--;
-	else column = 2;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=4;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column > 0) column--;
+		else column = 2;
+		Paint();
+	}
 }
 
 void Time_Blinker_Leaf_UI::Grab()
 {
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)BlinkerAddInPrs();
+		if(btnSel == 1)BlinkerDelInPrs();
+		if(btnSel == 2)instPtr->EnterCompoPool();
+		if(btnSel == 3)myRef->NewTrigCompo();
+		if(btnSel == 4)instPtr->EnterTrigCompo();
+	}
+	else
+	{
 
+	}
 }
 
 void Time_Blinker_Leaf_UI::Paint()
@@ -447,3 +477,14 @@ void Time_Blinker_Leaf_UI::DelIn()
 	if((inSel >= myRef->GetAmtOfSlots()) && (inSel > 0))inSel--;
 	Paint();
 }
+
+void Time_Blinker_Leaf_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<5; i++)
+	{
+		blinkerBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)blinkerBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&blinkerBtns);
+}
+

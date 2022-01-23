@@ -34,7 +34,8 @@ public:
 	virtual void Down();
 	virtual void Right();
 	virtual void Left();
-	virtual void Grab() { };
+	virtual void Grab();
+	virtual void RefreshButtons();
 	void Up(int16_t val);
 	void Down(int16_t val);
 
@@ -58,6 +59,7 @@ private:
 	uint16_t inSel;
 	uint16_t column;
 	uint16_t myType;
+	unsigned int btnSel;
 
 };
 

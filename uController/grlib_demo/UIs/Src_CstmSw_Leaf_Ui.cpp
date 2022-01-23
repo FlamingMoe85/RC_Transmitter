@@ -161,6 +161,7 @@ Src_CstmSw_Leaf_Ui::Src_CstmSw_Leaf_Ui() {
 	myRef_C = &myRef;
 	inSel = 0;
 	column = 0;
+	btnSel = 0;
 }
 
 Src_CstmSw_Leaf_Ui::~Src_CstmSw_Leaf_Ui() {
@@ -247,22 +248,48 @@ void Src_CstmSw_Leaf_Ui::QuadEncNotify(int16_t val)
 
 void Src_CstmSw_Leaf_Ui::Right()
 {
-	if(column < 2) column++;
-	else column = 0;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		btnSel++;
+		if(btnSel >= 2)btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column < 2) column++;
+		else column = 0;
+		Paint();
+	}
 }
 
 void Src_CstmSw_Leaf_Ui::Left()
 {
-	if(column > 0) column--;
-	else column = 2;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=1;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column > 0) column--;
+		else column = 2;
+		Paint();
+	}
 }
 
 void Src_CstmSw_Leaf_Ui::Grab()
 {
-	myRef->CycleMode();
-	PaintMode();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)AddIn();
+		if(btnSel == 1)DelIn();
+	}
+	else
+	{
+		myRef->CycleMode();
+		PaintMode();
+	}
 }
 
 void Src_CstmSw_Leaf_Ui::PaintMode()
@@ -408,4 +435,14 @@ void Src_CstmSw_Leaf_Ui::DelIn()
 	myRef->DelChnlPairAt(inSel);
 	if((inSel >= myRef->GetAmtOfPairs()) && (inSel > 0))inSel--;
 	Paint();
+}
+
+void Src_CstmSw_Leaf_Ui::RefreshButtons()
+{
+	for(unsigned int i=0; i<2; i++)
+	{
+		cstmSwBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)cstmSwBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&cstmSwBtns);
 }

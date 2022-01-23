@@ -10,6 +10,7 @@
 
 #include "Ui_Identifier_I.hpp"
 
+
 class Ui_Identifier : public Ui_Identifier_I {
 public:
 	Ui_Identifier();
@@ -19,7 +20,11 @@ public:
 	virtual uint16_t GetActUi();
 	virtual void SetActUi(uint16_t acUi);
 
+	virtual void RotaryDown(unsigned int rotaryPrsState);
+	virtual unsigned int GetRotaryState();
+
 private:
+
 
 	uint16_t myStackPos;
 

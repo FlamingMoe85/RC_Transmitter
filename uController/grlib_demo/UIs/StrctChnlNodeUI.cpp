@@ -49,7 +49,7 @@ tPushButtonWidget sltBtns[] =
 					 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
 					 UNSELCTED_PNT,
 					 SELECTED_PNT,
-					 ClrGray, TEXT_COLR, &g_sFontCm22, " Add Slot ", 0, 0, 0, 0, AddSltPrs)
+					 ClrGray, TEXT_COLR, &g_sFontCm22, " Add Slot ", 0, 0, 0, 0, 0)//AddSltPrs)
 };
 Canvas(sltBtnsCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90, 320, 150, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 
@@ -102,7 +102,29 @@ void Strct_Chnl_Node_UI::ConFcnBtns()
 	WidgetAdd(WIDGET_ROOT, (tWidget *)sltBtns);
 }
 
+void Strct_Chnl_Node_UI::Grab()
+{
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		myRef->AddSltAtEnd();
+	}
+	else
+	{
+		ItemGrab();
+	}
+}
+
 void AddSltPrs(tWidget *psWidget)
 {
 	myRef_C->AddSltAtEnd();
+}
+
+void Strct_Chnl_Node_UI::RefreshButtons()
+{
+	for(unsigned int i=0; i<1; i++)
+	{
+		sltBtns[i].ui32FillColor = UNSELCTED_PNT;
+	}
+	if(GetRotaryState() == ROTARY_IS_DOWN)sltBtns[0].ui32FillColor = SELECTED_PNT;
+	WidgetPaint((tWidget *)&sltBtns);
 }
