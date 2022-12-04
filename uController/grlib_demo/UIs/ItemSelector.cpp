@@ -15,6 +15,10 @@
 #include "./grlib/pushbutton.h"
 #include "./grlib/keyboard.h"
 
+#include "../../../share/CharSelector.hpp"
+
+static CharSelector charSelector;
+
 extern const tDisplay g_sKentec320x240x16_SSD2119;
 
 #define CAN_X_POS	90
@@ -35,6 +39,7 @@ extern void RemBtns_ItmSel();
 extern void ConBtns_ItmSel();
 
 char* namArr;
+char curCharArr[2] = {' ', '\0'};
 uint16_t cursChrPos;
 
 Keyboard(g_sKeyboard, 0, 0, 0,
@@ -80,6 +85,10 @@ tCanvasWidget myCanvacsesItmSel[] =
 Canvas(keyBrdCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 8, 90, 300, 150, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 Canvas(selCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 90, 0, 230, 135, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 
+Canvas(CurChar, 0, 0,0,
+                 &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, 30, CAN_Y_WIDTH,
+				 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
+				 				 UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "", 0, 0);
 tPushButtonWidget itmSelBtns[] =
 {
 		RectangularButtonStruct(0, 0, 0,//myCanvacsesAdd+1,
@@ -99,6 +108,7 @@ ItemSelector::ItemSelector() {
 	myCanvacsesItmSel[3].pcText = counter_1;
 	myCanvacsesItmSel[4].pcText = counter_2;
 	myCanvacsesItmSel[5].pcText = counter_3;
+	DisableNameMode();
 }
 
 ItemSelector::~ItemSelector() {
@@ -118,6 +128,32 @@ void ItemSelector::RmoveNameBtn()
 void ItemSelector::ConctNameBtn()
 {
 	WidgetAdd(WIDGET_ROOT, (tWidget *)itmSelBtns);
+}
+
+void ItemSelector::SetNameSelcted()
+{
+	itmSelBtns[0].ui32FillColor = SELECTED_PNT;
+	itmSelBtns[0].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(itmSelBtns[0]));
+}
+
+void ItemSelector::SetNameUnseclected()
+{
+	itmSelBtns[0].ui32FillColor = UNSELCTED_PNT;
+	itmSelBtns[0].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(itmSelBtns[0]));
+}
+
+void ItemSelector::MarkName()
+{
+	itmSelBtns[0].ui32OutlineColor = ClrRed;
+	WidgetPaint((tWidget *)&(itmSelBtns[0]));
+}
+
+void ItemSelector::UnmarkName()
+{
+	itmSelBtns[0].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(itmSelBtns[0]));
 }
 
 void ItemSelector::SetName(char* n)
@@ -173,6 +209,39 @@ void KeyPrs(tWidget *psWidget, uint32_t ui32Key, uint32_t ui32Event)
 
 	itmSelBtns[0].pcText = namArr;
 	WidgetPaint((tWidget *)&(itmSelBtns[0]));
+}
+
+void ItemSelector::KeyPress(char c, int action)
+{
+	switch(action)
+	{
+		case SHOW_CHAR:
+			curCharArr[0] = c;
+			CurChar.pcText = curCharArr;
+			WidgetPaint((tWidget *)&CurChar);
+			break;
+
+		case REMOVE_CHAR:
+			if(cursChrPos > 0)
+			{
+				namArr[cursChrPos-1] = namArr[cursChrPos];
+				cursChrPos--;
+				itmSelBtns[0].pcText = namArr;
+				WidgetPaint((tWidget *)&(itmSelBtns[0]));
+			}
+			break;
+
+		case ADD_CHAR:
+			if(cursChrPos < (NAME_LENGTH-1))
+			{
+				namArr[cursChrPos+1] = namArr[cursChrPos];
+				namArr[cursChrPos++] = c;
+				itmSelBtns[0].pcText = namArr;
+				WidgetPaint((tWidget *)&(itmSelBtns[0]));
+			}
+			break;
+	};
+
 }
 
 void ItemSelector::ItemSel(uint16_t itmSel, uint16_t cSel)
@@ -262,47 +331,77 @@ void ItemSelector::EscItmSel()
 
 void ItemSelector::ItemUp()
 {
-
-	if(curItem < (myItmLst->Count()-1))
+	if(NameModeActive())
 	{
-		if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, 1);
-		/*
-		nxtItm = CatchWrap(myItmLst->Count(), curItem, 1);
-		tmpItmPtr = myItmLst->At(nxtItm);
-		myItmLst->At(nxtItm) = */
-		curItem++;
-		//if(canSel < 2) canSel++;
+		KeyPress(charSelector.TypeUp(), SHOW_CHAR);
 	}
 	else
 	{
-		if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, 1);
-		curItem = 0;
-	}
+		if(curItem < (myItmLst->Count()-1))
+		{
+			if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, 1);
+			/*
+			nxtItm = CatchWrap(myItmLst->Count(), curItem, 1);
+			tmpItmPtr = myItmLst->At(nxtItm);
+			myItmLst->At(nxtItm) = */
+			curItem++;
+			//if(canSel < 2) canSel++;
+		}
+		else
+		{
+			if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, 1);
+			curItem = 0;
+		}
 
-	ItemSel(curItem, canSel);
+		ItemSel(curItem, canSel);
+	}
 }
 void ItemSelector::ItemDown()
 {
-	if(curItem > 0)
+	if(NameModeActive())
 	{
-		if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, -1);
-		curItem--;
-		//if(canSel > 0) canSel--;
+		KeyPress(charSelector.TypeDown(), SHOW_CHAR);
 	}
 	else
 	{
-		if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, -1);
-		curItem = myItmLst->Count()-1;
+		if(curItem > 0)
+		{
+			if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, -1);
+			curItem--;
+			//if(canSel > 0) canSel--;
+		}
+		else
+		{
+			if(grabMode == 1) myItmLst->MoveItmAtLoc(curItem, -1);
+			curItem = myItmLst->Count()-1;
+		}
+		ItemSel(curItem, canSel);
 	}
-	ItemSel(curItem, canSel);
 }
 void ItemSelector::ItemRight()
 {
-
+	if(NameModeActive())
+	{
+		KeyPress(charSelector.NextChar(), SHOW_CHAR);
+	}
 }
 void ItemSelector::ItemLeft()
 {
+	if(NameModeActive())
+	{
+		KeyPress(charSelector.PrvChar(), SHOW_CHAR);
+	}
+}
 
+void ItemSelector::AddCurChar()
+{
+	KeyPress(charSelector.CurChar(), ADD_CHAR);
+}
+
+
+void ItemSelector::RemoveChar()
+{
+	KeyPress(charSelector.CurChar(), REMOVE_CHAR);
 }
 
 void ItemSelector::ItemGrab()
@@ -334,3 +433,18 @@ uint16_t ItemSelector::GetItmSel()
 	return curItem;
 }
 
+void  ItemSelector::EnableNameMode()
+{
+	nameMode = true;
+	SetNameSelcted();
+	KeyPress(charSelector.CurChar(), SHOW_CHAR);
+}
+void  ItemSelector::DisableNameMode()
+{
+	nameMode = false;
+	SetNameUnseclected();
+}
+bool  ItemSelector::NameModeActive()
+{
+	return nameMode;
+}

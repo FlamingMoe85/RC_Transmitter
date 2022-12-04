@@ -10,6 +10,7 @@ Calc_Addition_Leaf::Calc_Addition_Leaf()
 
 void Calc_Addition_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
     *val += myAddVal_F;
 }
 

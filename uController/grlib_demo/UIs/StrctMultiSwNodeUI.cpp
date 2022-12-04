@@ -110,18 +110,32 @@ void StrctMultiSwNodeUI::SetMultSw_Ref(Strct_MultSw_Node* ref)
 
 void StrctMultiSwNodeUI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Enter(curNode, this->GetItmSel());
-	WidgetRemove((tWidget *)&cmpBtns);
-	WidgetPaint((tWidget *)&cmpBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		AddCurChar();
+	}
+	else
+	{
+		(**curNode).Enter(curNode, this->GetItmSel());
+		WidgetRemove((tWidget *)&cmpBtns);
+		WidgetPaint((tWidget *)&cmpBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void StrctMultiSwNodeUI::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Esc(curNode);
-	WidgetRemove((tWidget *)&cmpBtns);
-	WidgetPaint((tWidget *)&cmpBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		RemoveChar();
+	}
+	else
+	{
+		(**curNode).Esc(curNode);
+		WidgetRemove((tWidget *)&cmpBtns);
+		WidgetPaint((tWidget *)&cmpBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void StrctMultiSwNodeUI::SetCompPool(Strct_PoolOwner_Node* poolOwnRef)
@@ -172,10 +186,10 @@ void StrctMultiSwNodeUI::DelSelItm()
 
 void StrctMultiSwNodeUI::Right()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		btnSel++;
-		if(btnSel >= 5)btnSel=0;
+		if(btnSel >= 6)btnSel=0;
 		RefreshButtons();
 	}
 	else
@@ -185,10 +199,10 @@ void StrctMultiSwNodeUI::Right()
 }
 void StrctMultiSwNodeUI::Left()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		if(btnSel > 0)btnSel--;
-		else btnSel=4;
+		else btnSel=5;
 		RefreshButtons();
 	}
 	else
@@ -198,13 +212,22 @@ void StrctMultiSwNodeUI::Left()
 }
 void StrctMultiSwNodeUI::Grab()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+
+	if(NameModeActive() == true)
+	{
+		DisableNameMode();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
 	{
 		if(btnSel == 0)myRef->AddCompAtEnd();
 		if(btnSel == 1)CompPoolPrs_MultSwNode();
 		if(btnSel == 2)DelPrs();
 		if(btnSel == 3){myRef->GetChildList()->AddEnd((Graph_App_I*)new Strct_Junc_Node()); myRef->Show();}
 		if(btnSel == 4)DelJuncPrs();
+		if(btnSel == 5)
+		{
+			EnableNameMode();
+		}
 	}
 	else
 	{
@@ -219,6 +242,17 @@ void StrctMultiSwNodeUI::RefreshButtons()
 	{
 		cmpBtns[i].ui32FillColor = UNSELCTED_PNT;
 	}
-	if(GetRotaryState() == ROTARY_IS_DOWN)cmpBtns[btnSel].ui32FillColor = SELECTED_PNT;
-	WidgetPaint((tWidget *)&cmpBtns);
+
+	if(btnSel >= 5)
+	{
+		WidgetPaint((tWidget *)&cmpBtns);
+		if(GetRotaryState() == ROTARY_IS_DOWN) MarkName();
+		else UnmarkName();
+	}
+	else
+	{
+		UnmarkName();
+		if(GetRotaryState() == ROTARY_IS_DOWN)cmpBtns[btnSel].ui32FillColor = SELECTED_PNT;
+		WidgetPaint((tWidget *)&cmpBtns);
+	}
 }

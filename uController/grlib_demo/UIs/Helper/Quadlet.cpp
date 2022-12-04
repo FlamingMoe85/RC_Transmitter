@@ -332,16 +332,34 @@ void Quadlet::QuadEncNotify(int16_t val)
 
 void Quadlet::Right()
 {
-	if(column < 3) column++;
-	else column = 0;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel < 1)btnSel++;
+		else btnSel = 0;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column < 3) column++;
+		else column = 0;
+		Paint();
+	}
 }
 
 void Quadlet::Left()
 {
-	if(column > 0) column--;
-	else column = 3;
-	Paint();
+	if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel = 1;
+		RefreshButtons();
+	}
+	else
+	{
+		if(column > 0) column--;
+		else column = 3;
+		Paint();
+	}
 }
 
 

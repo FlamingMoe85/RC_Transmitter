@@ -17,7 +17,7 @@ Ui_Identifier::Ui_Identifier() {
 	// TODO Auto-generated constructor stub
 	myStackPos = uiIdntCntr++;
 	actUi = 0;
-	rotaryState = ROTARY_IS_DOWN;
+	rotaryState = ROTARY_IS_UP;
 }
 
 Ui_Identifier::~Ui_Identifier() {

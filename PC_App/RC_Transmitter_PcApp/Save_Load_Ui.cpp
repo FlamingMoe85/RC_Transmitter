@@ -53,14 +53,18 @@ void Save_Load_Ui::RefreshModelList()
     childItmCnt = availbleMods.Count();
     countDiff = childCnt - childItmCnt;
 
-    for(countDiff; countDiff > 0; countDiff--)
+    //for(countDiff; countDiff > 0; countDiff--)
+    while(countDiff > 0)
     {
         availbleMods.AddWidget((QWidget*)new Compo_Pool_Item());
+        countDiff--;
     }
 
-    for(countDiff; countDiff < 0; countDiff++)
+    //for(countDiff; countDiff < 0; countDiff++)
+    while(countDiff < 0)
     {
         availbleMods.DeleteWidget(availbleMods.Count()-1);
+         countDiff++;
     }
     availbleMods.Resize();
 
@@ -87,5 +91,5 @@ void Save_Load_Ui::Slot_Load(int loadSel)
 
 void Save_Load_Ui::Slot_Delete(int delSel)
 {
-
+    (void)delSel;
 }

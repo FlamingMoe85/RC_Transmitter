@@ -23,13 +23,6 @@ public:
     ~Base_Triplet_Ui();
 
     void SetCurNode(Graph_App_I* cN);
-
-#define C1PAR 0
-#define C2PAR 1
-#define C3PAR 2
-#define CLM1 3
-#define CLM2 4
-#define CLM3 5
     void SetLabelText(unsigned int labelSel, QString txt);
     void SetSpinBoxProps(unsigned int spnBxSel, unsigned int digits, double stepSize, double min, double val);
     Scroll_Triplet* GetScrollArea();
@@ -49,6 +42,15 @@ private:
     Helper_Triplet_Item* curItem;
 
     unsigned int myCurSelItem;
+
+
+
+#define C1PAR 0
+#define C2PAR 1
+#define C3PAR 2
+#define CLM1_TRI 3
+#define CLM2_TRI 4
+#define CLM3_TRI 5
 
 private slots:
     void Slot_Esc();

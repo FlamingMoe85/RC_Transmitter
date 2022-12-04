@@ -29,8 +29,8 @@ public:
 	virtual void DelSelItm();
 
 
-	virtual void Up(){ItemUp();};
-	virtual void Down(){ItemDown();};
+	virtual void Up();
+	virtual void Down();
 	virtual void Right();
 	virtual void Left();
 	virtual void Grab();

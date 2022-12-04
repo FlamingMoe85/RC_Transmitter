@@ -25,22 +25,22 @@ public:
 
     virtual void NewModel();
     void OpenModel(QString name);
-    virtual uint32_t CreateLastModAdr(uint32_t firstMod){ };
-    virtual void InsertModEnd(uint32_t target){ };
-    virtual void DeInsertModAt(uint32_t targAdr){ };
-    virtual uint16_t GetAmtOfModels(){ };
-    virtual void GetNameOfModel(char* namArr, uint16_t modNmbr){ };
+    virtual uint32_t CreateLastModAdr(uint32_t firstMod){(void)firstMod; return 0;};
+    virtual void InsertModEnd(uint32_t target){(void)target; };
+    virtual void DeInsertModAt(uint32_t targAdr){(void)targAdr; };
+    virtual uint16_t GetAmtOfModels(){ return 0;};
+    virtual void GetNameOfModel(char* namArr, uint16_t modNmbr){(void)namArr; (void)modNmbr; };
     virtual void FinalSaveStrobe(){ };
-    virtual uint16_t GetSelctdMod(){ };
-    virtual void DelSelctdMod(uint16_t delMod){ };
-    virtual void SetCurModByNmbr(uint32_t modNmbr){ };
-    virtual uint32_t GetCurModNmbr(){ };
+    virtual uint16_t GetSelctdMod(){ return 0;};
+    virtual void DelSelctdMod(uint16_t delMod){(void)delMod; };
+    virtual void SetCurModByNmbr(uint32_t modNmbr){(void)modNmbr; };
+    virtual uint32_t GetCurModNmbr(){ return 0;};
 
     void Close();
 
-    virtual void PrepForOverwrite(uint32_t modNmbr){ };
-    virtual uint16_t GetAmtUsablelocks(){ };
-    virtual uint16_t GetAmtUsedBlock(){ };
+    virtual void PrepForOverwrite(uint32_t modNmbr){(void)modNmbr; };
+    virtual uint16_t GetAmtUsablelocks(){return 0; };
+    virtual uint16_t GetAmtUsedBlock(){ return 0;};
 
 private:
     QFile file;

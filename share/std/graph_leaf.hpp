@@ -23,6 +23,8 @@ public:
 template <class T>
 int16_t Graph_Leaf<T>::Enter(T** ittsCurNode, uint16_t destLoc)
 {
+    (void)ittsCurNode;
+    (void)destLoc;
     return 1;
 }
 
@@ -41,6 +43,7 @@ List<T*>* Graph_Leaf<T>::GetChildList()
 template <class T>
 int16_t Graph_Leaf<T>::FindLoop(T* candi)
 {
+    (void)candi;
     return 0;
 }
 

@@ -358,5 +358,20 @@ void Ui_Visitor::DispShowCall(Wizard_TwoChnlModl_Leaf* caller)
 {
 	wizardTwoChnlMod_UiRef->SetTwoChnlModl_Ref(caller);
 }
+
+
+
+/*********************************************/
+///////////////////////////////////////////////
+/*********************************************/
+void Ui_Visitor::SetMusicContrl_UiRef(Z_MusicControl_Leaf_Ui* uiRef)
+{
+	musicContrlUiRef = uiRef;
+}
+
+void Ui_Visitor::DispShowCall(Z_MusicControl* caller)
+{
+	musicContrlUiRef->SetMusicControl_Ref(caller);
+}
 #endif
 

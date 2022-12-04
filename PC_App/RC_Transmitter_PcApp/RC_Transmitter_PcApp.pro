@@ -100,7 +100,28 @@ SOURCES += \
     Bluetooth/remoteselector.cpp \
     UIs/Qt_ControlCockpit.cpp \
     UIs/Qt_ControlKnop.cpp \
-    UIs/Helper/Scroll_Quadlet.cpp
+    UIs/Helper/Scroll_Quadlet.cpp \
+    ../../share/Graph_App/Helper/Quadlett.cpp \
+    ../../share/Graph_App/Helper/Source.cpp \
+    ../../share/Graph_App/Machines/Machine_Blinker.cpp \
+    ../../share/Graph_App/Machines/Machine_CstmSw.cpp \
+    ../../share/Graph_App/Machines/Machine_DeadArea.cpp \
+    ../../share/Graph_App/Machines/Machine_DynScale.cpp \
+    ../../share/Graph_App/Machines/Machine_Expo1.cpp \
+    ../../share/Graph_App/Machines/Machine_Integrator.cpp \
+    ../../share/Graph_App/Machines/Machine_InternTrim.cpp \
+    ../../share/Graph_App/Machines/Machine_MinMaxLimit.cpp \
+    ../../share/Graph_App/Machines/Machine_Quantizer.cpp \
+    ../../share/Graph_App/Machines/Machine_ScaleSwitch.cpp \
+    ../../share/Graph_App/Machines/Machine_uCAdc.cpp \
+    ../../share/Graph_App/Machines/MachineRamp.cpp \
+    ../../share/Graph_App/Wizards/Wizard_InternTrim.cpp \
+    ../../share/Graph_App/Wizards/Wizard_TwoChnlModl_Leaf.cpp \
+    ../../share/Graph_App/Clac_DeadArea_Leaf.cpp \
+    ../../share/Graph_App/Calc_Expo1_Leaf.cpp \
+    ../../share/Graph_App/Calc_MinMaxLimit_Leaf.cpp \
+    ../../share/Graph_App/Time_Integrator_Leaf.cpp \
+    ../../share/Graph_App/Calc_DynamicScale_Leaf.cpp
 
     ../../share/UIs/Ui_Visitor.cpp
 
@@ -189,7 +210,32 @@ HEADERS += \
     UIs/Qt_ControlCockpit.h \
     UIs/Qt_ControlKnop.h \
     ../../share/UIs/Ui_Visitor.h \
-    UIs/Helper/Scroll_Quadlet.h
+    UIs/Helper/Scroll_Quadlet.h \
+    ../../share/Graph_App/Helper/I_Quadlet.hpp \
+    ../../share/Graph_App/Helper/Quadlett.h \
+    ../../share/Graph_App/Helper/Source.h \
+    ../../share/Graph_App/Machines/I_Machine.hpp \
+    ../../share/Graph_App/Machines/I_MachineWizard.hpp \
+    ../../share/Graph_App/Machines/Machine_Blinker.h \
+    ../../share/Graph_App/Machines/Machine_CstmSw.h \
+    ../../share/Graph_App/Machines/Machine_DeadArea.h \
+    ../../share/Graph_App/Machines/Machine_DynScale.h \
+    ../../share/Graph_App/Machines/Machine_Expo1.h \
+    ../../share/Graph_App/Machines/Machine_Integrator.h \
+    ../../share/Graph_App/Machines/Machine_InternTrim.h \
+    ../../share/Graph_App/Machines/Machine_Quantizer.h \
+    ../../share/Graph_App/Machines/Machine_ScaleSwitch.h \
+    ../../share/Graph_App/Machines/Machine_uCAdc.h \
+    ../../share/Graph_App/Machines/MachineM_inMaxLimit.h \
+    ../../share/Graph_App/Machines/MachineRamp.h \
+    ../../share/Graph_App/Wizards/I_WizardDeserial.hpp \
+    ../../share/Graph_App/Wizards/Wizard_InternTrim.h \
+    ../../share/Graph_App/Wizards/Wizard_TwoChnlModl_Leaf.h \
+    ../../share/Graph_App/Clac_DeadArea_Leaf.hpp \
+    ../../share/Graph_App/Calc_Expo1_Leaf.h \
+    ../../share/Graph_App/Calc_MinMaxLimit_Leaf.h \
+    ../../share/Graph_App/Time_Integrator_Leaf.h \
+    ../../share/Graph_App/Calc_DynamicScale_Leaf.h
 
 FORMS += \
     Save_Load_Ui.ui \

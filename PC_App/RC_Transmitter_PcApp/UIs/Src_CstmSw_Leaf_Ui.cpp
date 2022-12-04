@@ -7,9 +7,9 @@ Src_CstmSw_Leaf_Ui::Src_CstmSw_Leaf_Ui()
     SetLabelText(C1PAR, "Position");
     SetLabelText(C2PAR, "Input");
     SetLabelText(C3PAR, "Value");
-    SetLabelText(CLM1,"Position");
-    SetLabelText(CLM2, "Input");
-    SetLabelText(CLM3, "Value");
+    SetLabelText(CLM1_TRI,"Position");
+    SetLabelText(CLM2_TRI, "Input");
+    SetLabelText(CLM3_TRI, "Value");
     scrollAreaRef = GetScrollArea();
 
     SetSpinBoxProps(0, 0, 1, 0, 0);
@@ -35,17 +35,18 @@ void Src_CstmSw_Leaf_Ui::RefreshChildArea()
     int childCnt = myRef->GetAmtOfPairs();
     int childItmCnt = scrollAreaRef->Count();
     int countDiff = childCnt - childItmCnt;
-    char* nameArr;
-    QString name;
 
-    for(countDiff; countDiff > 0; countDiff--)
+    //for(countDiff; countDiff > 0; countDiff--)
+    while(countDiff > 0)
     {
         scrollAreaRef->AddWidget((QWidget*)new Helper_Triplet_Item());
+         countDiff--;
     }
 
-    for(countDiff; countDiff < 0; countDiff++)
+    while(countDiff < 0)
     {
         scrollAreaRef->DeleteWidget(scrollAreaRef->Count()-1);
+        countDiff++;
     }
     scrollAreaRef->Resize();
 

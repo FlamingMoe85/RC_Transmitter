@@ -242,12 +242,12 @@ UBRRH_COM = (unsigned char)(0);
 UCSRB_COM = (1<<7)|(1<<4)|(1<<3);//
 /* Set frame format: 8data, 1stop bit */
 #ifdef __AVR_ATmega8__
-UBRRL_COM = (unsigned char)(102);
+UBRRL_COM = (unsigned char)(25);
 UCSRC_COM = 128+6; 
 #endif
 
 #ifdef __AVR_ATmega1284P__
-UBRRL_COM = (unsigned char)(102);
+UBRRL_COM = (unsigned char)(25);
 UCSRC_COM = 6; 
 #endif
 

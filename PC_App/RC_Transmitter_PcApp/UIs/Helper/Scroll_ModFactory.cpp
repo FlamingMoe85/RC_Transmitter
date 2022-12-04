@@ -7,6 +7,7 @@
 
 Scroll_ModFactory::Scroll_ModFactory(QWidget *parent, int orient) : ScrollAreaVert(parent, HORIZONTAL)
 {
+    (void)orient;
     AddModule(ADCuC_TYP);
     AddModule(MULT_TYP);
     AddModule(CSTMSW_TYP);
@@ -25,12 +26,12 @@ void Scroll_ModFactory::AddModule(unsigned int type)
 
 void Scroll_ModFactory::dragEnterEvent(QDragEnterEvent *event)
 {
-
+    (void)event;
 }
 
 void Scroll_ModFactory::dragMoveEvent(QDragMoveEvent *event)
 {
-
+    (void)event;
 }
 
 //! [1]

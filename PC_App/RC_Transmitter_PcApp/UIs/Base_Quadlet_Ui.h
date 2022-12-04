@@ -23,15 +23,6 @@ public:
 
     void SetCurNode(Graph_App_I* cN);
 
-#define C1PAR 0
-#define C2PAR 1
-#define C3PAR 2
-#define C4PAR 3
-#define CLM1 4
-#define CLM2 5
-#define CLM3 6
-#define CLM4 7
-
     void SetLabelText(unsigned int labelSel, QString txt);
     void SetSpinBoxProps(unsigned int spnBxSel, unsigned int digits, double stepSize, double min, double val);
     Scroll_Quadlet* GetScrollArea();
@@ -52,6 +43,17 @@ private:
     Helper_Quadlet_Item* curItem;
 
     unsigned int myCurSelItem;
+
+
+
+#define C1PAR 0
+#define C2PAR 1
+#define C3PAR 2
+#define C4PAR 3
+#define  CLM1_QUAD 4
+#define  CLM2_QUAD 5
+#define  CLM3_QUAD 6
+#define  CLM4_QUAD 7
 
 private slots:
     void Slot_Esc();

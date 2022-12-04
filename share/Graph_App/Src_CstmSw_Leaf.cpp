@@ -24,8 +24,9 @@ Src_CstmSw_Leaf::~Src_CstmSw_Leaf() {
 
 void Src_CstmSw_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
 	float conv;
-	uint16_t actPos, neutChnl, neutPos;
+    uint16_t actPos, neutChnl, neutPos = 0;
 	uint32_t digBitsCopy = digInArrBits;
 	for(actPos=0; actPos<myDigPairs.Count(); actPos++)
 	{

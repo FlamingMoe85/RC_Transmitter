@@ -117,9 +117,11 @@ void Src_InternTrim_Leaf_UI::Down()
 void Src_InternTrim_Leaf_UI::Right()
 {
 	myRef->IncTrim();
+	RepaintVals();
 }
 
 void Src_InternTrim_Leaf_UI::Left()
 {
 	myRef->DecTrim();
+	RepaintVals();
 }

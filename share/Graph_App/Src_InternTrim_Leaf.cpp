@@ -27,6 +27,7 @@ Src_InternTrim_Leaf::~Src_InternTrim_Leaf() {
 
 void Src_InternTrim_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
 	*val += trimValfloat;
 }
 
@@ -43,7 +44,6 @@ UI_Visitor_I* Src_InternTrim_Leaf::GetVisitor()
 
 void Src_InternTrim_Leaf::Serialize(SerializeDest_I* SerDest)
 {
-	uint16_t digPairCnt;
 	SerDest->SaveUint16(INTERN_TRIM_TYP);
 	//digPairCnt = myDigPairs.Count();
 	SerDest->SaveUint16(pairSel);

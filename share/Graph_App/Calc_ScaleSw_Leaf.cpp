@@ -22,8 +22,9 @@ Calc_ScaleSw_Leaf::~Calc_ScaleSw_Leaf() {
 
 void Calc_ScaleSw_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
 	volatile static float conv, tmp;
-	uint16_t actPos, neutChnl, neutPos;
+    uint16_t actPos, neutChnl, neutPos= 0;
 	for(actPos=0; actPos<myDigPairs.Count(); actPos++)
 	{
 		neutChnl = myDigPairs.At(actPos)->chnl;

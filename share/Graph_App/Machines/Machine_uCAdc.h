@@ -18,7 +18,7 @@ public:
     virtual uint16_t GetType();
     virtual char* GetNameArr();
     virtual Graph_App_I* GetInstance();
-    virtual Graph_App_I* GetInstance(uint16_t* desArr){ };
+    virtual Graph_App_I* GetInstance(uint16_t* desArr){(void)desArr; return 0; }
 
 private:
     char nameArr[4];

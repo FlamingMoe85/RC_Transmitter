@@ -6,10 +6,10 @@ Calc_ScaleSw_Leaf_Ui::Calc_ScaleSw_Leaf_Ui()
     SetLabelText(C2PAR, "Input");
     SetLabelText(C3PAR, "ScalePos");
     SetLabelText(C4PAR, "ScaleNeg");
-    SetLabelText(CLM1,"Postion");
-    SetLabelText(CLM2, "Input");
-    SetLabelText(CLM3, "ScalePos");
-    SetLabelText(CLM4, "ScaleNeg");
+    SetLabelText(CLM1_QUAD,"Postion");
+    SetLabelText(CLM2_QUAD, "Input");
+    SetLabelText(CLM3_QUAD, "ScalePos");
+    SetLabelText(CLM4_QUAD, "ScaleNeg");
     scrollAreaRef = GetScrollArea();
 
     SetSpinBoxProps(0, 0, 1, 0, 0);

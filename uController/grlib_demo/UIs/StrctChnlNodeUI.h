@@ -27,15 +27,15 @@ public:
 
 	virtual void Up(){ItemUp();};
 	virtual void Down(){ItemDown();};
-	virtual void Right(){ItemRight();};
-	virtual void Left(){ItemLeft();};
+	virtual void Right();
+	virtual void Left();
 	virtual void Grab();
 	virtual void RefreshButtons();
 
 private:
 	Strct_Chnl_Node* myRef;
 
-	unsigned int secMenStat;
+	unsigned int secMenStat,btnSel;
 };
 
 #endif /* UIS_STRCTCHNLNODEUI_H_ */

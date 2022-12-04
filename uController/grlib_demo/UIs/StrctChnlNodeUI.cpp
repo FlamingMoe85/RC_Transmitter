@@ -56,6 +56,7 @@ Canvas(sltBtnsCov, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 0, 90, 320, 150, CANVA
 Strct_Chnl_Node_UI::Strct_Chnl_Node_UI() {
 	// TODO Auto-generated constructor stub
 	//myRef_C = &myRef;
+	btnSel = 0;
 }
 
 Strct_Chnl_Node_UI::~Strct_Chnl_Node_UI() {
@@ -77,18 +78,32 @@ void Strct_Chnl_Node_UI::SetStrctChnl_Ref(Strct_Chnl_Node *ref)
 
 void Strct_Chnl_Node_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Enter(curNode, this->GetItmSel());
-	WidgetRemove((tWidget *)&sltBtns);
-	WidgetPaint((tWidget *)&sltBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		AddCurChar();
+	}
+	else
+	{
+		(**curNode).Enter(curNode, this->GetItmSel());
+		WidgetRemove((tWidget *)&sltBtns);
+		WidgetPaint((tWidget *)&sltBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Chnl_Node_UI::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Esc(curNode);
-	WidgetRemove((tWidget *)&sltBtns);
-	WidgetPaint((tWidget *)&sltBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		RemoveChar();
+	}
+	else
+	{
+		(**curNode).Esc(curNode);
+		WidgetRemove((tWidget *)&sltBtns);
+		WidgetPaint((tWidget *)&sltBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Chnl_Node_UI::RemFcnBtns()
@@ -104,9 +119,18 @@ void Strct_Chnl_Node_UI::ConFcnBtns()
 
 void Strct_Chnl_Node_UI::Grab()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+
+	if(NameModeActive() == true)
 	{
-		myRef->AddSltAtEnd();
+		DisableNameMode();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		if(btnSel == 0)myRef->AddSltAtEnd();
+		if(btnSel == 1)
+		{
+			EnableNameMode();
+		}
 	}
 	else
 	{
@@ -119,12 +143,52 @@ void AddSltPrs(tWidget *psWidget)
 	myRef_C->AddSltAtEnd();
 }
 
+void Strct_Chnl_Node_UI::Right()
+{
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
+	{
+		if(btnSel < 1)btnSel--;
+		else btnSel=0;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemRight();
+	}
+}
+
+void Strct_Chnl_Node_UI::Left()
+{
+
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
+	{
+		if(btnSel > 0)btnSel--;
+		else btnSel=1;
+		RefreshButtons();
+	}
+	else
+	{
+		ItemLeft();
+	}
+}
+
 void Strct_Chnl_Node_UI::RefreshButtons()
 {
 	for(unsigned int i=0; i<1; i++)
 	{
 		sltBtns[i].ui32FillColor = UNSELCTED_PNT;
 	}
-	if(GetRotaryState() == ROTARY_IS_DOWN)sltBtns[0].ui32FillColor = SELECTED_PNT;
-	WidgetPaint((tWidget *)&sltBtns);
+
+	if(btnSel >= 1)
+	{
+		WidgetPaint((tWidget *)&sltBtns);
+		if(GetRotaryState() == ROTARY_IS_DOWN) MarkName();
+		else UnmarkName();
+	}
+	else
+	{
+		UnmarkName();
+		if(GetRotaryState() == ROTARY_IS_DOWN)sltBtns[btnSel].ui32FillColor = SELECTED_PNT;
+		WidgetPaint((tWidget *)&sltBtns);
+	}
 }

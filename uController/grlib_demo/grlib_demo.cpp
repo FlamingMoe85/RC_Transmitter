@@ -54,6 +54,7 @@
 #include "UIs/Calc_Expo1_Leaf_Ui.h"
 #include "UIs/Calc_DynamicScale_Leaf_Ui.h"
 #include "UIs/Time_Integrator_Leaf_Ui.h"
+#include "UIs/Z_MusicControl_Leaf_Ui.h"
 #include "../../share/Graph_App/Strct_PoolOwner_Node.h"
 
 
@@ -241,7 +242,8 @@ uint16_t nibleCntr, numCntr, msgLength, charCntr, amtRecValsTop;
 char curRecChar;
 
 float fourAdcs[12];
-uint32_t fourAdcsRaw[4];
+uint32_t fourAdcsRawUnsgnd[4];
+int32_t fourAdcsRaw[4];
 uint32_t fourAdcsOffset[8];
 uint16_t externADCs[4];
 uint16_t externADCsBT[4];
@@ -438,12 +440,13 @@ Time_Integrator_Leaf_Ui integrUi;
 Z_Wizard_Node_Ui wizardMenUi;
 Wizard_IntTrim_Ui wizardIntTrimUi;
 Wizard_TwoChnlModl_Leaf_Ui wizTwoChnlModlUi;
+Z_MusicControl_Leaf_Ui musicControlUi;
 
 Ui_Identifier_I* uiIdArr[] = {&chnlMngrUi, &chnlUi, &cmpoNodUi, &addUi, &mulUi, &mltSwUi, &calcFacUi,
 								&poolOwnUi, &uCAdcUi, &srcCstmSwUi, &strctTopMenUi, &strctSaveLoadUi,
 								&srcInternTrimUi, &strctJuncUi, &timeCalcRampUi, &timeBlinkerUi,
 								&scaleSwUi, &quantiUi, &deadSpanUi, &limiterUi, &sysConfUi, &expo1Ui,
-								&dynSclUi, &integrUi, &wizardMenUi, &wizardIntTrimUi, &wizTwoChnlModlUi};
+								&dynSclUi, &integrUi, &wizardMenUi, &wizardIntTrimUi, &wizTwoChnlModlUi, &musicControlUi};
 
 Calc_Addition_Leaf add;
 Calc_Multiplication_Leaf mul;
@@ -458,6 +461,7 @@ Strct_TopMenue_Node topMen;
 Strct_SaveLoad_Node saveLoad;
 Z_SystemConfig_Leaf sysConf;
 Z_Wizard_Node wizardMen;
+Z_MusicControl musicControl;
 
 uint16_t uiSel = 0;
 
@@ -756,6 +760,80 @@ modNmbr = modMan.GetCurModNmbr();
 		modMan.GetNameOfModel(&(dummyName[0]),modMan.GetCurModNmbr());
 		rootNode.Deserialize(&modMan);
 	}
+
+
+}
+
+void BesLoad()
+{
+		Calc_uCAdc_Leaf* adcPtr;
+	Calc_ScaleSw_Leaf* sclSwPtr;
+	Src_CstmSw_Leaf* cstmSwPtr;
+	Src_InternTrim_Leaf* trim;
+	Strct_Compo_Node* compoNode;
+
+	compoNode = new Strct_Compo_Node();
+
+	adcPtr = new Calc_uCAdc_Leaf();
+	compoNode->GetChildList()->AddEnd(adcPtr);
+
+	sclSwPtr = new Calc_ScaleSw_Leaf();
+	sclSwPtr->AddChnlPair();
+	sclSwPtr->AddChnlPair();
+	sclSwPtr->AddChnlPair();
+	sclSwPtr->SetIn(0, 6);
+	sclSwPtr->SetValPos(0, 420);
+	sclSwPtr->SetValNeg(0, 420);
+
+	sclSwPtr->SetIn(1, 0);
+	sclSwPtr->SetValPos(1, 630);
+	sclSwPtr->SetValNeg(1, 630);
+
+	sclSwPtr->SetIn(2, 5);
+	sclSwPtr->SetValPos(2, 850);
+	sclSwPtr->SetValNeg(2, 850);
+
+	compoNode->GetChildList()->AddEnd(sclSwPtr);
+
+	cstmSwPtr = new Src_CstmSw_Leaf();
+	cstmSwPtr->AddChnlPair();
+	cstmSwPtr->SetPairIn(0, 0);
+	compoNode->GetChildList()->AddEnd(cstmSwPtr);
+
+	sclSwPtr = new Calc_ScaleSw_Leaf();
+	sclSwPtr->AddChnlPair();
+	sclSwPtr->AddChnlPair();
+
+	sclSwPtr->SetIn(0, 0);
+	sclSwPtr->SetValPos(0, 0);
+	sclSwPtr->SetValNeg(0, 0);
+	sclSwPtr->SetIn(1, 1);
+	sclSwPtr->SetValPos(1, 1000);
+	sclSwPtr->SetValNeg(1, 1000);
+
+	compoNode->GetChildList()->AddEnd(sclSwPtr);
+
+	rootNode.GetChildList()->At(2)->GetChildList()->AddEnd(compoNode);
+
+	compoNode = new Strct_Compo_Node();
+
+
+	adcPtr = new Calc_uCAdc_Leaf();
+	adcPtr->SetChnlSel(3);
+	compoNode->GetChildList()->AddEnd(adcPtr);
+
+	sclSwPtr = new Calc_ScaleSw_Leaf();
+	sclSwPtr->AddChnlPair();
+	sclSwPtr->SetIn(0, 0);
+	sclSwPtr->SetValPos(0, -650);
+	sclSwPtr->SetValNeg(0, -650);
+	compoNode->GetChildList()->AddEnd(sclSwPtr);
+
+	trim = new Src_InternTrim_Leaf();
+	trim->IncPairSel();trim->IncPairSel();trim->IncPairSel();
+	compoNode->GetChildList()->AddEnd(trim);
+
+	rootNode.GetChildList()->At(3)->GetChildList()->AddEnd(compoNode);
 }
 
 void FormatPrs()
@@ -923,6 +1001,7 @@ main(void)
 	UiVisitor.SetWizard_UiRef(&wizardMenUi);
 	UiVisitor.SetIntTrimWizard_UiRef(&wizardIntTrimUi);
 	UiVisitor.SetIntTrimWizard_UiRef(&wizTwoChnlModlUi);
+	UiVisitor.SetMusicContrl_UiRef(&musicControlUi);
 
 	Graph_App_I* tmpNamingPtr;
 
@@ -953,6 +1032,7 @@ main(void)
 	    topMen.GetChildList()->AddEnd(&saveLoad);
 	    topMen.GetChildList()->AddEnd(&sysConf);
 	    topMen.GetChildList()->AddEnd(&wizardMen);
+	    topMen.GetChildList()->AddEnd(&musicControl);
 
 	    currentNode = &topMen;//rootNode;
  	    currentNode->Show(&UiVisitor);
@@ -978,7 +1058,7 @@ main(void)
 
 		ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	    ROM_GPIODirModeSet(GPIO_PORTG_BASE, GPIO_PIN_0, GPIO_DIR_MODE_IN);
-	    MAP_GPIOPadConfigSet(GPIO_PORTG_BASE, GPIO_PIN_0, GPIO_STRENGTH_6MA, GPIO_PIN_TYPE_STD_WPD);
+	    MAP_GPIOPadConfigSet(GPIO_PORTG_BASE, GPIO_PIN_0, GPIO_STRENGTH_6MA, GPIO_PIN_TYPE_STD_WPU);
 
 	    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
 	    ROM_GPIODirModeSet(GPIO_PORTH_BASE, GPIO_PIN_2 | GPIO_PIN_3, GPIO_DIR_MODE_IN);
@@ -1041,7 +1121,7 @@ main(void)
 	                	                               GPIOPinConfigure(GPIO_PC4_U7RX);
 	                	                               GPIOPinConfigure(GPIO_PC5_U7TX);
 	                	                               ROM_GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5);
-	                	                               ROM_UARTConfigSetExpClk(UART7_BASE, g_ui32SysClock, 115200,
+	                	                               ROM_UARTConfigSetExpClk(UART7_BASE, g_ui32SysClock, 9600,
 	                	                                                       (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
 	                	                                                        UART_CONFIG_PAR_NONE));
 	                               //ROM_IntEnable(INT_UART0);
@@ -1102,6 +1182,10 @@ main(void)
 		//SysCtlResetCauseClear(SYSCTL_CAUSE_SW | SYSCTL_CAUSE_POR);
 		AutoLoad();
 	}
+    else
+    {
+    	BesLoad();
+    }
 /*
 	else if((SysCtlResetCauseGet() & SYSCTL_CAUSE_POR) == SYSCTL_CAUSE_POR)
     {
@@ -1198,6 +1282,7 @@ WidgetMessageQueueProcess();
         	sysTickNoty.Notify();
 #ifdef CONTROLLER
         	rootNode.Run();
+        	musicControl.Run();
 #endif
         	for(uint16_t i=0; i<7; i++)
         	{
@@ -1298,13 +1383,59 @@ WidgetMessageQueueProcess();
                 		}
                 		else
                 		{
-                			ADCSequenceDataGet(ADC0_BASE, 1, fourAdcsRaw);
+                			ADCSequenceDataGet(ADC0_BASE, 1, fourAdcsRawUnsgnd);
                 			static int32_t tmpErg;
                 			uint16_t i;
+                			/*
                 			for(i =0; i<4; i++)
                 			{
                 				fourAdcs[i] = (float)((int32_t)fourAdcsRaw[i] - (int32_t)fourAdcsOffset[i]);
                 			}
+                			*/
+                			/*
+                			fourAdcs[0] = (float)((int32_t)fourAdcsRaw[1] - (int32_t)fourAdcsOffset[1]);
+                			fourAdcs[1] = (float)((int32_t)fourAdcsRaw[0] - (int32_t)fourAdcsOffset[0]);
+                			fourAdcs[2] = (float)((int32_t)fourAdcsRaw[2] - (int32_t)fourAdcsOffset[2]);
+                			fourAdcs[3] = (float)((int32_t)fourAdcsRaw[3] - (int32_t)fourAdcsOffset[3]);
+
+
+
+                			if(fourAdcs[0] > 0.0)fourAdcs[0] = (fourAdcs[0]*(-0.7352941176470588));
+                			else fourAdcs[0] = fourAdcs[0]*(-0.6849315068493151);
+
+                			if(fourAdcs[1] > 0.0)fourAdcs[1] = fourAdcs[1]*(0.7575757575757576);
+                			else fourAdcs[1] = fourAdcs[1]*(0.6944444444444444);
+
+                			if(fourAdcs[2] > 0.0)fourAdcs[0] = fourAdcs[2]*(-0.7518796992481203);
+                			else fourAdcs[2] = fourAdcs[2]*(-0.6944444444444444);
+
+                			if(fourAdcs[3] > 0.0)fourAdcs[0] = fourAdcs[3]*(0.6666666666666667);
+                			else fourAdcs[3] = fourAdcs[3]*(0.7092198581560284);
+*/
+                			for(i =0; i<4; i++)
+                			{
+                				fourAdcsRaw[i] = fourAdcsRawUnsgnd[i];
+                				fourAdcsRaw[i] -= fourAdcsOffset[i];
+                			}
+
+                			if(fourAdcsRaw[0] > 0)fourAdcsRaw[0] = (fourAdcsRaw[0]*(100))/131;
+                			else fourAdcsRaw[0] = fourAdcsRaw[0]*(100)/146;
+
+                			if(fourAdcsRaw[1] > 0)fourAdcsRaw[1] = fourAdcsRaw[1]*(-100)/136;
+                			else fourAdcsRaw[1] = fourAdcsRaw[1]*(-100)/144;
+
+                			if(fourAdcsRaw[2] > 0)fourAdcsRaw[2] = fourAdcsRaw[2]*(-100)/144;
+                			else fourAdcsRaw[2] = fourAdcsRaw[2]*(-100)/133;
+
+                			if(fourAdcsRaw[3] > 0)fourAdcsRaw[3] = fourAdcsRaw[3]*(100)/150;
+                			else fourAdcsRaw[3] = fourAdcsRaw[3]*(100)/141;
+
+                			fourAdcs[0] = (float)(fourAdcsRaw[1]);
+                			fourAdcs[1] = (float)(fourAdcsRaw[0]);
+                			fourAdcs[2] = (float)(fourAdcsRaw[2]);
+                			fourAdcs[3] = (float)(fourAdcsRaw[3]);
+
+
 #ifdef PC
                 			for(i =0; i<4; i++)
                 			{
@@ -1337,20 +1468,18 @@ WidgetMessageQueueProcess();
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5));
                 		                	    //  digInArrBits |= (tmpPins << 1);//7/31
 
-                		                	    tmpPins = (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4));
-                		                	    trimPins = ((tmpPins & 15) << 4);
+                		                	    trimPins = (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4));// PF4 currently free
+                		                	    //trimPins = ((tmpPins & 15) << 4);
                 		                	    //  digInArrBits |= (tmpPins << 7);//12/31
 
-                		                	    tmpPins = (GPIOPinRead(GPIO_PORTG_BASE, GPIO_PIN_0));
+                		                	    menuDigs = 0;
+
+                		                	    tmpPins = (GPIOPinRead(GPIO_PORTG_BASE, GPIO_PIN_0));//different than the others, G is set to pull up
                 		                	    if(tmpPins == 0)
                 		                	    {
-                		                	    	menuDigs = ROTARY_DOWN;
+                		                	    	menuDigs |= ROTARY_DOWN;//down means active
                 		                	    }
-                		                	    else
-                		                	    {
-                		                	    	menuDigs = 0;
-                		                	    }
-                		                	    //different than the others, G is set to pull up
+
                 		                	    //if(!tmpPins) menuDigs |= ROTARY_DOWN;
                 		                	    //else menuDigs &= ~ROTARY_DOWN;
                 		                	    //    digInArrBits |= (tmpPins << 12);//13/31
@@ -1368,9 +1497,11 @@ WidgetMessageQueueProcess();
                 		                	    //    digInArrBits |= (tmpPins << 15);//19/31
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTL_BASE, GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5));
+                		                	    trimPins |= (tmpPins << 2);
+                		                	    /*
                 		                	    trimPins |= (tmpPins >> 2);
                 		                	    //  digInArrBits |= (tmpPins << 17);//23/31
-                		                	    trimPins |= (tmpPins >> 3);
+                		                	    trimPins |= (tmpPins >> 3);*/
 
                 		                	    tmpPins = (GPIOPinRead(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5));
                 		                	    //digInArrBits |= (tmpPins << 20);//26/32
@@ -1387,16 +1518,16 @@ WidgetMessageQueueProcess();
                 	   if(chnlMngrUi.GetActUi() == 12)
                 	   {
                 		   guiRefreshCntr++;
-                		   if(guiRefreshCntr >= 25)
+                		   if(guiRefreshCntr >= 12)
                 		   {
                 			   guiRefreshCntr = 0;
                 			   srcInternTrimUi.RepaintVals();
                 		   }
                 	   }
-                	   if(chnlMngrUi.GetActUi() == 16)
+                	   else if(chnlMngrUi.GetActUi() == 16)
                 	                   	   {
                 	                   		   guiRefreshCntr++;
-                	                   		   if(guiRefreshCntr >= 25)
+                	                   		   if(guiRefreshCntr >= 12)
                 	                   		   {
                 	                   			   guiRefreshCntr = 0;
                 	                   			   scaleSwUi.RepaintVal();
@@ -1511,7 +1642,7 @@ volatile uint16_t retry = RETRYTIME + 1;
 #else
 				extMode = EXT_DIG_REQ;//hier Trigger für BT_Req einbauen
 #endif
-				ROM_UARTCharPutNonBlocking(UART7_BASE, ADC_END);
+				//ROM_UARTCharPutNonBlocking(UART7_BASE, ADC_END);
         		retry = RETRYTIME + 1;
         	}//still End msg
         	else if((uartExtIO & (128+64+32)) == MSG_AMT_REQ_BEG)//msgBegin

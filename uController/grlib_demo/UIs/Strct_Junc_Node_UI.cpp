@@ -93,18 +93,32 @@ void Strct_Junc_Node_UI::SetJunc_Ref(Strct_Junc_Node* ref)
 
 void Strct_Junc_Node_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Enter(curNode, this->GetItmSel());
-	WidgetRemove((tWidget *)&jncBtns);
-	WidgetPaint((tWidget *)&jncBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		AddCurChar();
+	}
+	else
+	{
+		(**curNode).Enter(curNode, this->GetItmSel());
+		WidgetRemove((tWidget *)&jncBtns);
+		WidgetPaint((tWidget *)&jncBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Junc_Node_UI::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Esc(curNode);
-	WidgetRemove((tWidget *)&jncBtns);
-	WidgetPaint((tWidget *)&jncBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		RemoveChar();
+	}
+	else
+	{
+		(**curNode).Esc(curNode);
+		WidgetRemove((tWidget *)&jncBtns);
+		WidgetPaint((tWidget *)&jncBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Junc_Node_UI::SetCompPool(Strct_PoolOwner_Node* poolOwnRef)
@@ -147,13 +161,22 @@ void Strct_Junc_Node_UI::DelSelItm()
 	myRef->Show();
 }
 
+void Strct_Junc_Node_UI::Up()
+{
+	ItemUp();
+}
+
+void Strct_Junc_Node_UI::Down()
+{
+	ItemDown();
+}
 
 void Strct_Junc_Node_UI::Right()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		btnSel++;
-		if(btnSel >= 3)btnSel=0;
+		if(btnSel >= 4)btnSel=0;
 		RefreshButtons();
 	}
 	else
@@ -163,10 +186,10 @@ void Strct_Junc_Node_UI::Right()
 }
 void Strct_Junc_Node_UI::Left()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		if(btnSel > 0)btnSel--;
-		else btnSel=2;
+		else btnSel=3;
 		RefreshButtons();
 	}
 	else
@@ -176,11 +199,19 @@ void Strct_Junc_Node_UI::Left()
 }
 void Strct_Junc_Node_UI::Grab()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if(NameModeActive() == true)
+	{
+		DisableNameMode();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
 	{
 		if(btnSel == 0)myRef->AddCompAtEnd();
 		if(btnSel == 1)CompPoolPrs_JuncNode();
 		if(btnSel == 2)DelPrs();
+		if(btnSel == 3)
+		{
+			EnableNameMode();
+		}
 	}
 	else
 	{
@@ -190,10 +221,21 @@ void Strct_Junc_Node_UI::Grab()
 }
 void Strct_Junc_Node_UI::RefreshButtons()
 {
-	for(unsigned int i=0; i<2; i++)
+	for(unsigned int i=0; i<3; i++)
 	{
 		jncBtns[i].ui32FillColor = UNSELCTED_PNT;
 	}
-	if(GetRotaryState() == ROTARY_IS_DOWN)jncBtns[btnSel].ui32FillColor = SELECTED_PNT;
-	WidgetPaint((tWidget *)&jncBtns);
+
+	if(btnSel >= 3)
+	{
+		WidgetPaint((tWidget *)&jncBtns);
+		if(GetRotaryState() == ROTARY_IS_DOWN) MarkName();
+		else UnmarkName();
+	}
+	else
+	{
+		UnmarkName();
+		if(GetRotaryState() == ROTARY_IS_DOWN)jncBtns[btnSel].ui32FillColor = SELECTED_PNT;
+		WidgetPaint((tWidget *)&jncBtns);
+	}
 }

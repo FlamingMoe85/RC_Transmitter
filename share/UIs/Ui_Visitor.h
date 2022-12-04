@@ -30,10 +30,12 @@
 #include "../../uController/grlib_demo/UIs/Calc_Expo1_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Calc_DynamicScale_Leaf_Ui.h"
 #include "../../uController/grlib_demo/UIs/Time_Integrator_Leaf_Ui.h"
+#include "../../uController/grlib_demo/UIs/Z_MusicControl_Leaf_Ui.h"
 
 #include "../../uController/grlib_demo/UIs/Z_Wizard_Node_Ui.h"
 #include "../../uController/grlib_demo/UIs/Wizards/Wizard_IntTrim_Ui.h"
 #include "../../uController/grlib_demo/UIs/Wizards/Wizard_TwoChnlModl_Leaf_Ui.h"
+
 
 
 
@@ -126,6 +128,9 @@ public:
     void SetIntTrimWizard_UiRef(Wizard_TwoChnlModl_Leaf_Ui* uiRef);
     virtual void DispShowCall(Wizard_TwoChnlModl_Leaf* caller);
 
+    void SetMusicContrl_UiRef(Z_MusicControl_Leaf_Ui* uiRef);
+    virtual void DispShowCall(Z_MusicControl* caller);
+
 
 
 private:
@@ -158,6 +163,7 @@ private:
     Z_Wizard_Node_Ui* wizard_UiRef;
     Wizard_IntTrim_Ui* wizardIntTrim_UiRef;
     Wizard_TwoChnlModl_Leaf_Ui* wizardTwoChnlMod_UiRef;
+    Z_MusicControl_Leaf_Ui* musicContrlUiRef;
 };
 #endif
 

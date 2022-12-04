@@ -7,7 +7,7 @@
 
 #include "Calc_uCAdc_Leaf.h"
 
-extern float fourAdcs[8];
+extern float fourAdcs[12];
 
 Calc_uCAdc_Leaf::Calc_uCAdc_Leaf() {
 	// TODO Auto-generated constructor stub
@@ -19,6 +19,7 @@ Calc_uCAdc_Leaf::Calc_uCAdc_Leaf() {
 
 void Calc_uCAdc_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
 	*val += fourAdcs[myChnl];
 	value = *val;
 }
@@ -40,7 +41,7 @@ Calc_uCAdc_Leaf::~Calc_uCAdc_Leaf() {
 
 void Calc_uCAdc_Leaf::IncChnlVal()
 {
-	if(myChnl < 7)myChnl++;
+	if(myChnl < 11)myChnl++;
 }
 void Calc_uCAdc_Leaf::DecChnlVal()
 {
@@ -59,7 +60,7 @@ float Calc_uCAdc_Leaf::GetAdc()
 
 void Calc_uCAdc_Leaf::SetChnlSel(uint16_t sel)
 {
-    if(sel >= 4) sel = 3;
+    if(sel >= 11) sel = 11;
     myChnl = sel;
 }
 

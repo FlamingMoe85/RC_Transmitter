@@ -5,9 +5,9 @@ Time_Blinker_Leaf_UI::Time_Blinker_Leaf_UI()
     SetLabelText(C1PAR, "Step");
     SetLabelText(C2PAR, "Duration");
     SetLabelText(C3PAR, "Value");
-    SetLabelText(CLM1,"Step");
-    SetLabelText(CLM2, "Duration");
-    SetLabelText(CLM3, "Value");
+    SetLabelText(CLM1_TRI,"Step");
+    SetLabelText(CLM2_TRI, "Duration");
+    SetLabelText(CLM3_TRI, "Value");
     scrollAreaRef = GetScrollArea();
 
     SetSpinBoxProps(0, 0, 1, 0, 0);

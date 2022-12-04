@@ -24,6 +24,10 @@ extern "C"
 #include "driverlib/sysctl.h"
 }
 
+#include "../../../share/CharSelector.hpp"
+
+static CharSelector charSelector;
+
 extern const tDisplay g_sKentec320x240x16_SSD2119;
 extern tCanvasWidget g_psPanels[];
 extern ModelManager modMan;
@@ -54,7 +58,8 @@ void ModKeyPrs(tWidget *psWidget, uint32_t ui32Key, uint32_t ui32Event);
 void ModSetName(char* n);
 char* namArr;
 char name_4[NAME_LENGTH];
-uint16_t cursChrPos;
+uint16_t cursChrPosSL;
+char curCharArrSL[2] = {' ', '\0'};
 static char freeSpaceArr[] = "        ";
 
 Keyboard(ModKeyboard, 0, 0, 0,
@@ -148,8 +153,15 @@ tCanvasWidget myCanvacsesModelSel[] =
 
 //Canvas(selCovPool, 0, 0, 0, &g_sKentec320x240x16_SSD2119, CAN_X_POS, 45, CAN_X_WIDTH, 2*CAN_Y_WIDTH, CANVAS_STYLE_FILL, ClrCrimson, 0, 0, 0, 0, 0, 0);
 
+Canvas(CurCharSL, 0, 0,0,
+                 &g_sKentec320x240x16_SSD2119, CAN_X_POS, 0, 30, CAN_Y_WIDTH,
+				 CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
+				 				 UNSELCTED_PNT, ClrGray, TEXT_COLR, &g_sFontCm22, "", 0, 0);
+
 Strct_SaveLoad_Node_UI::Strct_SaveLoad_Node_UI() {
 	// TODO Auto-generated constructor stub
+	name_4[0] = '\0';
+	/*
 	name_4[0] = 'N';
 	name_4[1] = 'e';
 	name_4[2] = 'w';
@@ -158,9 +170,10 @@ Strct_SaveLoad_Node_UI::Strct_SaveLoad_Node_UI() {
 	name_4[5] = 'o';
 	name_4[6] = 'd';
 	name_4[7] = '\0';
-
+*/
 	curItem = 0;
 	btnSel = 0;
+	cursChrPosSL = 0;
 }
 
 Strct_SaveLoad_Node_UI::~Strct_SaveLoad_Node_UI() {
@@ -176,12 +189,12 @@ void Strct_SaveLoad_Node_UI::ShowFreeSpace()
 
 void ModSetName(char* n)
 {
-	cursChrPos = 0;
+	cursChrPosSL = 0;
 	namArr = n;
 	myCanvacsesModelSel[3].pcText = n;
-	while(n[cursChrPos] != '\0')
+	while(n[cursChrPosSL] != '\0')
 	{
-		cursChrPos++;
+		cursChrPosSL++;
 	}
 }
 
@@ -203,16 +216,16 @@ void ModKeyPrs(tWidget *psWidget, uint32_t ui32Key, uint32_t ui32Event)
 	{
 		if(ui32Key == 8)
 		{
-			if(cursChrPos > 0)
+			if(cursChrPosSL > 0)
 			{
-				namArr[cursChrPos-1] = namArr[cursChrPos];
-				cursChrPos--;
+				namArr[cursChrPosSL-1] = namArr[cursChrPosSL];
+				cursChrPosSL--;
 			}
 		}
-		else if((cursChrPos < (NAME_LENGTH-1)) && (ui32Key != 13))
+		else if((cursChrPosSL < (NAME_LENGTH-1)) && (ui32Key != 13))
 		{
-			namArr[cursChrPos+1] = namArr[cursChrPos];
-			namArr[cursChrPos++] = ui32Key;
+			namArr[cursChrPosSL+1] = namArr[cursChrPosSL];
+			namArr[cursChrPosSL++] = ui32Key;
 		}
 	}
 	if(ui32Event == 2)
@@ -233,6 +246,39 @@ void ModKeyPrs(tWidget *psWidget, uint32_t ui32Key, uint32_t ui32Event)
 
 	myCanvacsesModelSel[3].pcText = namArr;
 	WidgetPaint((tWidget *)&(myCanvacsesModelSel[3]));
+}
+
+void Strct_SaveLoad_Node_UI::KeyPress(char c, int action)
+{
+	switch(action)
+	{
+		case SHOW_CHAR:
+			curCharArrSL[0] = c;
+			CurCharSL.pcText = curCharArrSL;
+			WidgetPaint((tWidget *)&CurCharSL);
+			break;
+
+		case REMOVE_CHAR:
+			if(cursChrPosSL > 0)
+			{
+				name_4[cursChrPosSL-1] = namArr[cursChrPosSL];
+				cursChrPosSL--;
+				saveLoadBtns[3].pcText = name_4;
+				WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+			}
+			break;
+
+		case ADD_CHAR:
+			if(cursChrPosSL < (NAME_LENGTH-1))
+			{
+				name_4[cursChrPosSL+1] = name_4[cursChrPosSL];
+				name_4[cursChrPosSL++] = c;
+				saveLoadBtns[3].pcText = name_4;
+				WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+			}
+			break;
+	};
+
 }
 
 void Strct_SaveLoad_Node_UI::SaveMod()
@@ -276,18 +322,32 @@ ItemSel(GetItmSel(), 1);
 
 void Strct_SaveLoad_Node_UI::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Esc(curNode);
-	WidgetRemove((tWidget *)&saveLoadBtns);
-	WidgetPaint((tWidget *)&svldCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		RemoveChar();
+	}
+	else
+	{
+		(**curNode).Esc(curNode);
+		WidgetRemove((tWidget *)&saveLoadBtns);
+		WidgetPaint((tWidget *)&svldCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_SaveLoad_Node_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Enter(curNode, this->GetItmSel());
-	WidgetRemove((tWidget *)&saveLoadBtns);
-	WidgetPaint((tWidget *)&svldCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		AddCurChar();
+	}
+	else
+	{
+		(**curNode).Enter(curNode, this->GetItmSel());
+		WidgetRemove((tWidget *)&saveLoadBtns);
+		WidgetPaint((tWidget *)&svldCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_SaveLoad_Node_UI::RemFcnBtns()
@@ -303,30 +363,45 @@ void Strct_SaveLoad_Node_UI::ConFcnBtns()
 
 void Strct_SaveLoad_Node_UI::Up()
 {
-	if(curItem < (myRef->GetAmtOfModels()-1))
+	if(NameModeActive())
 	{
-		curItem++;
+		KeyPress(charSelector.TypeUp(), SHOW_CHAR);
 	}
 	else
 	{
-		curItem = 0;
-	}
+		if(curItem < (myRef->GetAmtOfModels()-1))
+		{
+			curItem++;
+		}
+		else
+		{
+			curItem = 0;
+		}
 
-	ItemSel(curItem, canSel);
+		ItemSel(curItem, canSel);
+	}
 }
 
 void Strct_SaveLoad_Node_UI::Down()
 {
-	if(curItem > 0)
+
+	if(NameModeActive())
 	{
-		curItem--;
+		KeyPress(charSelector.TypeUp(), SHOW_CHAR);
 	}
 	else
 	{
-		//curItem = myRef->GetEntry()->GetChildList()->Count()-1;
-		curItem = myRef->GetAmtOfModels()-1;
+		if(curItem > 0)
+		{
+			curItem--;
+		}
+		else
+		{
+			//curItem = myRef->GetEntry()->GetChildList()->Count()-1;
+			curItem = myRef->GetAmtOfModels()-1;
+		}
+		ItemSel(curItem, canSel);
 	}
-	ItemSel(curItem, canSel);
 }
 
 
@@ -386,7 +461,7 @@ uint16_t Strct_SaveLoad_Node_UI::GetItmSel()
 
 void Strct_SaveLoad_Node_UI::Right()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		btnSel++;
 		if(btnSel >= 6)btnSel=0;
@@ -394,12 +469,12 @@ void Strct_SaveLoad_Node_UI::Right()
 	}
 	else
 	{
-
+		KeyPress(charSelector.NextChar(), SHOW_CHAR);
 	}
 }
 void Strct_SaveLoad_Node_UI::Left()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		if(btnSel > 0)btnSel--;
 		else btnSel=5;
@@ -407,18 +482,22 @@ void Strct_SaveLoad_Node_UI::Left()
 	}
 	else
 	{
-
+		KeyPress(charSelector.PrvChar(), SHOW_CHAR);
 	}
 }
 
 void Strct_SaveLoad_Node_UI::Grab()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if(NameModeActive() == true)
+	{
+		DisableNameMode();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
 	{
 		if(btnSel == 0)SavePrs();
 		if(btnSel == 1)LoadPrs();
 		if(btnSel == 2)DelModPrs();
-		if(btnSel == 3)FormatPrs();
+		if(btnSel == 3)EnableNameMode();
 		if(btnSel == 4)ExportPrs();
 		if(btnSel == 5)ImportPrs();
 	}
@@ -431,10 +510,73 @@ void Strct_SaveLoad_Node_UI::Grab()
 
 void Strct_SaveLoad_Node_UI::RefreshButtons()
 {
-	for(unsigned int i=0; i<5; i++)
+	for(unsigned int i=0; i<6; i++)
 	{
-		saveLoadBtns[i].ui32FillColor = UNSELCTED_PNT;
+		if(i != 3)saveLoadBtns[i].ui32FillColor = UNSELCTED_PNT;
 	}
-	if(GetRotaryState() == ROTARY_IS_DOWN)saveLoadBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	if(btnSel == 3)
+	{
+		if(GetRotaryState() == ROTARY_IS_DOWN) MarkName();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
+	{
+		UnmarkName();
+		saveLoadBtns[btnSel].ui32FillColor = SELECTED_PNT;
+	}
 	WidgetPaint((tWidget *)&saveLoadBtns);
 }
+
+void  Strct_SaveLoad_Node_UI::EnableNameMode()
+{
+	nameMode = true;
+	instPtr->newOrOvrwrt = NEW_MOD;
+	SetNameSelcted();
+	KeyPress(charSelector.CurChar(), SHOW_CHAR);
+}
+void  Strct_SaveLoad_Node_UI::DisableNameMode()
+{
+	nameMode = false;
+	SetNameUnseclected();
+}
+bool  Strct_SaveLoad_Node_UI::NameModeActive()
+{
+	return nameMode;
+}
+
+void Strct_SaveLoad_Node_UI::SetNameSelcted()
+{
+	saveLoadBtns[3].ui32FillColor = SELECTED_PNT;
+	saveLoadBtns[3].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+}
+
+void Strct_SaveLoad_Node_UI::SetNameUnseclected()
+{
+	saveLoadBtns[3].ui32FillColor = UNSELCTED_PNT;
+	saveLoadBtns[3].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+}
+
+void Strct_SaveLoad_Node_UI::MarkName()
+{
+	saveLoadBtns[3].ui32OutlineColor = ClrRed;
+	WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+}
+
+void Strct_SaveLoad_Node_UI::UnmarkName()
+{
+	saveLoadBtns[3].ui32OutlineColor = ClrGray;
+	WidgetPaint((tWidget *)&(saveLoadBtns[3]));
+}
+
+void Strct_SaveLoad_Node_UI::AddCurChar()
+{
+	KeyPress(charSelector.CurChar(), ADD_CHAR);
+}
+
+
+void Strct_SaveLoad_Node_UI::RemoveChar()
+{
+	KeyPress(charSelector.CurChar(), REMOVE_CHAR);
+}
+

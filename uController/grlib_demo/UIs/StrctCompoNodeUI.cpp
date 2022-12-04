@@ -115,20 +115,34 @@ void NewCompPress(tWidget *psWidget)
 
 void Strct_Compo_Node_UI::Esc(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Esc(curNode);
-	this->RmoveNameBtn();
-	WidgetRemove((tWidget *)&moduleBtns);
-	WidgetPaint((tWidget *)&modBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		RemoveChar();
+	}
+	else
+	{
+		(**curNode).Esc(curNode);
+		this->RmoveNameBtn();
+		WidgetRemove((tWidget *)&moduleBtns);
+		WidgetPaint((tWidget *)&modBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Compo_Node_UI::Enter(Graph_App_I** curNode, UI_Visitor_I* UiVis)
 {
-	(**curNode).Enter(curNode, this->GetItmSel());
-	this->RmoveNameBtn();
-	WidgetRemove((tWidget *)&moduleBtns);
-	WidgetPaint((tWidget *)&modBtnsCov);
-	(**curNode).Show(UiVis);
+	if(NameModeActive() == true)
+	{
+		AddCurChar();
+	}
+	else
+	{
+		(**curNode).Enter(curNode, this->GetItmSel());
+		this->RmoveNameBtn();
+		WidgetRemove((tWidget *)&moduleBtns);
+		WidgetPaint((tWidget *)&modBtnsCov);
+		(**curNode).Show(UiVis);
+	}
 }
 
 void Strct_Compo_Node_UI::EnterModFac(Graph_App_I** curNode, UI_Visitor_I* UiVis)
@@ -180,10 +194,10 @@ void Strct_Compo_Node_UI::DelSelItm()
 
 void Strct_Compo_Node_UI::Right()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		btnSel++;
-		if(btnSel >= 4)btnSel=0;
+		if(btnSel >= 5)btnSel=0;
 		RefreshButtons();
 	}
 	else
@@ -194,10 +208,10 @@ void Strct_Compo_Node_UI::Right()
 
 void Strct_Compo_Node_UI::Left()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+	if((GetRotaryState() == ROTARY_IS_DOWN) && (NameModeActive() == false))
 	{
 		if(btnSel > 0)btnSel--;
-		else btnSel=3;
+		else btnSel=4;
 		RefreshButtons();
 	}
 	else
@@ -207,12 +221,21 @@ void Strct_Compo_Node_UI::Left()
 }
 void Strct_Compo_Node_UI::Grab()
 {
-	if(GetRotaryState() == ROTARY_IS_DOWN)
+
+	if(NameModeActive() == true)
+	{
+		DisableNameMode();
+	}
+	else if(GetRotaryState() == ROTARY_IS_DOWN)
 	{
 		if(btnSel == 0)AddModPrs();
 		if(btnSel == 1)CompPoolPrs_CompNode();
 		if(btnSel == 2)DelPrs();
 		if(btnSel == 3)myRef->AddCompAtEnd();
+		if(btnSel == 4)
+		{
+			EnableNameMode();
+		}
 	}
 	else
 	{
@@ -227,6 +250,17 @@ void Strct_Compo_Node_UI::RefreshButtons()
 	{
 		moduleBtns[i].ui32FillColor = UNSELCTED_PNT;
 	}
-	if(GetRotaryState() == ROTARY_IS_DOWN)moduleBtns[btnSel].ui32FillColor = SELECTED_PNT;
-	WidgetPaint((tWidget *)&moduleBtns);
+
+	if(btnSel >= 4)
+	{
+		WidgetPaint((tWidget *)&moduleBtns);
+		if(GetRotaryState() == ROTARY_IS_DOWN) MarkName();
+		else UnmarkName();
+	}
+	else
+	{
+		UnmarkName();
+		if(GetRotaryState() == ROTARY_IS_DOWN)moduleBtns[btnSel].ui32FillColor = SELECTED_PNT;
+		WidgetPaint((tWidget *)&moduleBtns);
+	}
 }

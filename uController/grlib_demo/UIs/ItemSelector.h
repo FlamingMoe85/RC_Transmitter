@@ -40,13 +40,29 @@ public:
 	void RmoveNameBtn();
 	void ConctNameBtn();
 
+	void SetNameSelcted();
+	void SetNameUnseclected();
+	void MarkName();
+	void UnmarkName();
+	void AddCurChar();
+	void RemoveChar();
+
+	void EnableNameMode();
+	void DisableNameMode();
+	bool NameModeActive();
+
+	#define SHOW_CHAR	0
+	#define REMOVE_CHAR	1
+	#define ADD_CHAR	2
+	void KeyPress(char c, int action);
+
 private:
 	uint16_t curItem;
 	uint16_t canSel;
 	List<Graph_App_I*>* myItmLst;
 	uint16_t grabMode;
 	char counter_1[3], counter_2[3], counter_3[3];
-
+	bool nameMode;
 
 
 };

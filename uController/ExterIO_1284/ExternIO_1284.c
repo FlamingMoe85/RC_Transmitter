@@ -35,7 +35,8 @@ const char CTS_BUSY = 1;
 #define CTS  0b00001000
 #define RTS 0b00010000
 
-char tmp, switchBits;
+char tmp; 
+unsigned int switchBits;
 
 #ifdef __AVR_ATmega1284P__
 #define UBRRH_COM	UBRR0H
@@ -97,14 +98,14 @@ unsigned int DiffHeadTail(unsigned int headC, unsigned int tailC)
 }
 
 
-unsigned char GetSwitchPins()
+unsigned int GetSwitchPins()
 {
 #ifdef __AVR_ATmega1284P__
-return (unsigned char)(PINC ^ 0b11111111);
+return (((unsigned char)(PINB ^ 0b11111111))<<8) +  ((unsigned char)(PINC ^ 0b11111111));
 #endif
 
 #ifdef __AVR_ATmega8__
-unsigned char tmpC = 0;
+unsigned int tmpC = 0;
 tmpC |= (((PINB ^ 0b11111111) & 0b00111100)<<0);
 tmpC |= (((PIND ^ 0b11111111) & 0b01100000)>>5);
 return tmpC;
@@ -159,7 +160,7 @@ GICR &= ~(1<<INT0);// Int enable
 
 void GetAdcs()
 {
-//#ifdef __AVR_ATmega8__
+#ifdef __AVR_ATmega8__
 ADMUX = 0b01000101;
 ADCSRA = 0b11000111;
 while ((ADCSRA & 64) == 64);
@@ -180,7 +181,30 @@ while ((ADCSRA & 64) == 64);
 adcVal = ADC;
 byteSendArr[4] = (adcVal & 0b0000001111100000)>>5;
 byteSendArr[5] = (adcVal & 0b0000000000011111);
-//#endif
+#endif
+
+#ifdef __AVR_ATmega1284P__
+ADMUX = 0b01000000;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[0] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[1] = (adcVal & 0b0000000000011111);
+
+ADMUX = 0b01000001;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[2] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[3] = (adcVal & 0b0000000000011111);
+
+ADMUX = 0b01000010;
+ADCSRA = 0b11000111;
+while ((ADCSRA & 64) == 64);
+adcVal = ADC;
+byteSendArr[4] = (adcVal & 0b0000001111100000)>>5;
+byteSendArr[5] = (adcVal & 0b0000000000011111);
+#endif
 }
 
 void AddToAmtReq()
@@ -268,6 +292,8 @@ PORTD |= 0b01100000;
 EICRA = 0b00000001;
 DDRD = 0b01000010;//bit 6 LED
 PORTC = 0b11111111;
+DIDR0 = 0b00000111;
+PORTB = 0b00111111;
 #endif
 
 sei(); 
@@ -350,9 +376,10 @@ while(1)
 		{
 			byteSendArr[0] = 0;
 		}
-		byteSendArr[0] |= (switchBits >> 5);
-		byteSendArr[1] = DIG_END;
-		byteSendArr[1] |= (switchBits & 0b00011111);
+		byteSendArr[0] |= ((switchBits & 31744) >> 10);
+		byteSendArr[1] = ((switchBits & 992) >> 5);
+		byteSendArr[2] = DIG_END;
+		byteSendArr[2] |= (switchBits & 0b00011111);
 		Enable_UDREIE();
 	}
 	else if(extMode == EXT_AMT_FILL)
@@ -593,7 +620,7 @@ char tmpTxChar;
 		
 			if(extMode == EXT_DIG_REQ)
 			{
-				if(byteCntr == 2)
+				if(byteCntr == 3)
 				{
 					extMode = EXT_IDLE;
 					Disable_UDREIE();

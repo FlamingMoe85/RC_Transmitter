@@ -5,9 +5,9 @@ Calc_Quantizer_Leaf_UI::Calc_Quantizer_Leaf_UI()
     SetLabelText(C1PAR, "Position");
     SetLabelText(C2PAR, "Level");
     SetLabelText(C3PAR, "Value");
-    SetLabelText(CLM1,"Postion");
-    SetLabelText(CLM2, "Level");
-    SetLabelText(CLM3, "Value");
+    SetLabelText(CLM1_TRI,"Postion");
+    SetLabelText(CLM2_TRI, "Level");
+    SetLabelText(CLM3_TRI, "Value");
     scrollAreaRef = GetScrollArea();
 
     //SetSpinBoxProps(0, 0, 1, 0, 0);

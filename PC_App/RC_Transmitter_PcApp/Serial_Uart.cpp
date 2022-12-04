@@ -104,8 +104,7 @@ void Serial_Uart::SendNumebrs(QList<float>* sendNumList)
 {
     QByteArray byArr;
     byArr.clear();
-    float a, b, c, d;
-    uint32_t tmp32t;
+    float a, b, c;
     uint8_t lower6Bit, upper6Bit;
     IntUint16 valConv;
 

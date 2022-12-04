@@ -47,6 +47,22 @@ public:
 	void ShowFreeSpace();
 	uint16_t newOrOvrwrt;
 
+	void SetNameSelcted();
+	void SetNameUnseclected();
+	void MarkName();
+	void UnmarkName();
+	void AddCurChar();
+	void RemoveChar();
+
+	void EnableNameMode();
+	void DisableNameMode();
+	bool NameModeActive();
+
+	#define SHOW_CHAR	0
+	#define REMOVE_CHAR	1
+	#define ADD_CHAR	2
+	void KeyPress(char c, int action);
+
 private:
 	Strct_SaveLoad_Node* myRef;
 	uint16_t curItem;
@@ -55,9 +71,7 @@ private:
 	char name_2[NAME_LENGTH];
 	char name_3[NAME_LENGTH];
 	unsigned int btnSel;
-
-
-
+	bool nameMode;
 
 };
 

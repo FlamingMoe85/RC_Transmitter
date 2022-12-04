@@ -23,6 +23,7 @@ UI_Visitor_I* Calc_Multiplication_Leaf::GetVisitor()
 
 void Calc_Multiplication_Leaf::Run(float* val, uint32_t itteration)
 {
+    (void)itteration;
      *val = ((*val) * myMulVal_F) / 1000.0;
 }
 
