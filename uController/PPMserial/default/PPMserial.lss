@@ -1,0 +1,454 @@
+
+PPMserial.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000002ba  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000008  00800060  000002ba  0000032e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .debug_aranges 00000020  00000000  00000000  00000336  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 00000028  00000000  00000000  00000356  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   000000d3  00000000  00000000  0000037e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 000000a1  00000000  00000000  00000451  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   000002a2  00000000  00000000  000004f2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000020  00000000  00000000  00000794  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000000a9  00000000  00000000  000007b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    00000013  00000000  00000000  0000085d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	24 c0       	rjmp	.+72     	; 0x4c <__bad_interrupt>
+   4:	23 c0       	rjmp	.+70     	; 0x4c <__bad_interrupt>
+   6:	22 c0       	rjmp	.+68     	; 0x4c <__bad_interrupt>
+   8:	21 c0       	rjmp	.+66     	; 0x4c <__bad_interrupt>
+   a:	20 c0       	rjmp	.+64     	; 0x4c <__bad_interrupt>
+   c:	1f c0       	rjmp	.+62     	; 0x4c <__bad_interrupt>
+   e:	1e c0       	rjmp	.+60     	; 0x4c <__bad_interrupt>
+  10:	1d c0       	rjmp	.+58     	; 0x4c <__bad_interrupt>
+  12:	1c c0       	rjmp	.+56     	; 0x4c <__bad_interrupt>
+  14:	1b c0       	rjmp	.+54     	; 0x4c <__bad_interrupt>
+  16:	1a c0       	rjmp	.+52     	; 0x4c <__bad_interrupt>
+  18:	19 c0       	rjmp	.+50     	; 0x4c <__bad_interrupt>
+  1a:	18 c0       	rjmp	.+48     	; 0x4c <__bad_interrupt>
+  1c:	17 c0       	rjmp	.+46     	; 0x4c <__bad_interrupt>
+  1e:	16 c0       	rjmp	.+44     	; 0x4c <__bad_interrupt>
+  20:	15 c0       	rjmp	.+42     	; 0x4c <__bad_interrupt>
+  22:	14 c0       	rjmp	.+40     	; 0x4c <__bad_interrupt>
+  24:	13 c0       	rjmp	.+38     	; 0x4c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	ea eb       	ldi	r30, 0xBA	; 186
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <.do_copy_data_start>
+
+0000003e <.do_copy_data_loop>:
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+
+00000042 <.do_copy_data_start>:
+  42:	a8 36       	cpi	r26, 0x68	; 104
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <.do_copy_data_loop>
+  48:	02 d0       	rcall	.+4      	; 0x4e <main>
+  4a:	35 c1       	rjmp	.+618    	; 0x2b6 <_exit>
+
+0000004c <__bad_interrupt>:
+  4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
+
+0000004e <main>:
+
+int main(void)
+{ 
+unsigned int tickCntr = 0;
+char tmpPin, allDoneFlags = 15;
+DDRB = 2;
+  4e:	82 e0       	ldi	r24, 0x02	; 2
+  50:	87 bb       	out	0x17, r24	; 23
+TCCR1B = 0b00000010;
+  52:	8e bd       	out	0x2e, r24	; 46
+	if(pulseArr[3] < 1000)pulseArr[3] = 0;
+	else pulseArr[3] -= 1000;
+
+
+	//do the pulses of the 4 channels after another
+	PORTB = 2;
+  54:	62 e0       	ldi	r22, 0x02	; 2
+	TCNT1 = 0;	
+	OCR1A = 400;
+  56:	40 e9       	ldi	r20, 0x90	; 144
+  58:	51 e0       	ldi	r21, 0x01	; 1
+TCCR1B = 0b00000010;
+while(1)
+{
+	
+	
+	PORTB = 0;
+  5a:	18 ba       	out	0x18, r1	; 24
+	pulseArr[0] = 0; 
+  5c:	10 92 61 00 	sts	0x0061, r1
+  60:	10 92 60 00 	sts	0x0060, r1
+	pulseArr[1] = 0; 
+  64:	10 92 63 00 	sts	0x0063, r1
+  68:	10 92 62 00 	sts	0x0062, r1
+	pulseArr[2] = 0; 
+  6c:	10 92 65 00 	sts	0x0065, r1
+  70:	10 92 64 00 	sts	0x0064, r1
+	pulseArr[3] = 0; 
+  74:	10 92 67 00 	sts	0x0067, r1
+  78:	10 92 66 00 	sts	0x0066, r1
+
+	while(1)//wait for all Pins to be high
+	{
+		tmpPin = PINC & 2;
+		if(tmpPin == 2)break; //then all Pins are high	
+  7c:	99 9b       	sbis	0x13, 1	; 19
+  7e:	fe cf       	rjmp	.-4      	; 0x7c <main+0x2e>
+	}
+
+	TCNT1 = 0;
+  80:	1d bc       	out	0x2d, r1	; 45
+  82:	1c bc       	out	0x2c, r1	; 44
+	while(TCNT1 < 100)//avoid possible flickers
+  84:	8c b5       	in	r24, 0x2c	; 44
+  86:	9d b5       	in	r25, 0x2d	; 45
+  88:	84 36       	cpi	r24, 0x64	; 100
+  8a:	91 05       	cpc	r25, r1
+  8c:	d8 f3       	brcs	.-10     	; 0x84 <main+0x36>
+  8e:	3f e0       	ldi	r19, 0x0F	; 15
+	}
+
+	allDoneFlags = 15;
+	while(allDoneFlags != 0)//runs as long until all Pins are low again
+	{
+		tmpPin = PINC & 15;
+  90:	83 b3       	in	r24, 0x13	; 19
+  92:	8f 70       	andi	r24, 0x0F	; 15
+		allDoneFlags &= tmpPin;
+  94:	38 23       	and	r19, r24
+
+		//The "(pulseArr['n'] == 0)" checks are used as a flag that the certain channel is measured
+		// Otherwise it gets permanently overwritten 
+		if(((tmpPin & 1) == 0) && (pulseArr[0] == 0))pulseArr[0] = TCNT1;
+  96:	28 2f       	mov	r18, r24
+  98:	80 fd       	sbrc	r24, 0
+  9a:	0c c0       	rjmp	.+24     	; 0xb4 <main+0x66>
+  9c:	80 91 60 00 	lds	r24, 0x0060
+  a0:	90 91 61 00 	lds	r25, 0x0061
+  a4:	89 2b       	or	r24, r25
+  a6:	31 f4       	brne	.+12     	; 0xb4 <main+0x66>
+  a8:	8c b5       	in	r24, 0x2c	; 44
+  aa:	9d b5       	in	r25, 0x2d	; 45
+  ac:	90 93 61 00 	sts	0x0061, r25
+  b0:	80 93 60 00 	sts	0x0060, r24
+		if(((tmpPin & 2) == 0) && (pulseArr[1] == 0))pulseArr[1] = TCNT1;
+  b4:	21 fd       	sbrc	r18, 1
+  b6:	0c c0       	rjmp	.+24     	; 0xd0 <main+0x82>
+  b8:	80 91 62 00 	lds	r24, 0x0062
+  bc:	90 91 63 00 	lds	r25, 0x0063
+  c0:	89 2b       	or	r24, r25
+  c2:	31 f4       	brne	.+12     	; 0xd0 <main+0x82>
+  c4:	8c b5       	in	r24, 0x2c	; 44
+  c6:	9d b5       	in	r25, 0x2d	; 45
+  c8:	90 93 63 00 	sts	0x0063, r25
+  cc:	80 93 62 00 	sts	0x0062, r24
+		if(((tmpPin & 4) == 0) && (pulseArr[2] == 0))pulseArr[2] = TCNT1;
+  d0:	22 fd       	sbrc	r18, 2
+  d2:	0c c0       	rjmp	.+24     	; 0xec <main+0x9e>
+  d4:	80 91 64 00 	lds	r24, 0x0064
+  d8:	90 91 65 00 	lds	r25, 0x0065
+  dc:	89 2b       	or	r24, r25
+  de:	31 f4       	brne	.+12     	; 0xec <main+0x9e>
+  e0:	8c b5       	in	r24, 0x2c	; 44
+  e2:	9d b5       	in	r25, 0x2d	; 45
+  e4:	90 93 65 00 	sts	0x0065, r25
+  e8:	80 93 64 00 	sts	0x0064, r24
+		if(((tmpPin & 8) == 0) && (pulseArr[3] == 0))pulseArr[3] = TCNT1;
+  ec:	23 fd       	sbrc	r18, 3
+  ee:	0c c0       	rjmp	.+24     	; 0x108 <main+0xba>
+  f0:	80 91 66 00 	lds	r24, 0x0066
+  f4:	90 91 67 00 	lds	r25, 0x0067
+  f8:	89 2b       	or	r24, r25
+  fa:	31 f4       	brne	.+12     	; 0x108 <main+0xba>
+  fc:	8c b5       	in	r24, 0x2c	; 44
+  fe:	9d b5       	in	r25, 0x2d	; 45
+ 100:	90 93 67 00 	sts	0x0067, r25
+ 104:	80 93 66 00 	sts	0x0066, r24
+	while(TCNT1 < 100)//avoid possible flickers
+	{
+	}
+
+	allDoneFlags = 15;
+	while(allDoneFlags != 0)//runs as long until all Pins are low again
+ 108:	33 23       	and	r19, r19
+ 10a:	11 f6       	brne	.-124    	; 0x90 <main+0x42>
+		if(((tmpPin & 8) == 0) && (pulseArr[3] == 0))pulseArr[3] = TCNT1;
+		// Pssst... (honestly here is (at least technically) some jitter going on)
+	}
+
+	// subtract the 1ms offset from the 1.5 ms signal
+	if(pulseArr[0] < 1000)pulseArr[0] = 0;
+ 10c:	80 91 60 00 	lds	r24, 0x0060
+ 110:	90 91 61 00 	lds	r25, 0x0061
+ 114:	88 5e       	subi	r24, 0xE8	; 232
+ 116:	93 40       	sbci	r25, 0x03	; 3
+ 118:	28 f4       	brcc	.+10     	; 0x124 <main+0xd6>
+ 11a:	10 92 61 00 	sts	0x0061, r1
+ 11e:	10 92 60 00 	sts	0x0060, r1
+ 122:	0a c0       	rjmp	.+20     	; 0x138 <main+0xea>
+	else pulseArr[0] -= 1000;
+ 124:	80 91 60 00 	lds	r24, 0x0060
+ 128:	90 91 61 00 	lds	r25, 0x0061
+ 12c:	88 5e       	subi	r24, 0xE8	; 232
+ 12e:	93 40       	sbci	r25, 0x03	; 3
+ 130:	90 93 61 00 	sts	0x0061, r25
+ 134:	80 93 60 00 	sts	0x0060, r24
+
+	if(pulseArr[1] < 1000)pulseArr[1] = 0;
+ 138:	80 91 62 00 	lds	r24, 0x0062
+ 13c:	90 91 63 00 	lds	r25, 0x0063
+ 140:	88 5e       	subi	r24, 0xE8	; 232
+ 142:	93 40       	sbci	r25, 0x03	; 3
+ 144:	28 f4       	brcc	.+10     	; 0x150 <main+0x102>
+ 146:	10 92 63 00 	sts	0x0063, r1
+ 14a:	10 92 62 00 	sts	0x0062, r1
+ 14e:	0a c0       	rjmp	.+20     	; 0x164 <main+0x116>
+	else pulseArr[1] -= 1000;
+ 150:	80 91 62 00 	lds	r24, 0x0062
+ 154:	90 91 63 00 	lds	r25, 0x0063
+ 158:	88 5e       	subi	r24, 0xE8	; 232
+ 15a:	93 40       	sbci	r25, 0x03	; 3
+ 15c:	90 93 63 00 	sts	0x0063, r25
+ 160:	80 93 62 00 	sts	0x0062, r24
+
+	if(pulseArr[2] < 1000)pulseArr[2] = 0;
+ 164:	80 91 64 00 	lds	r24, 0x0064
+ 168:	90 91 65 00 	lds	r25, 0x0065
+ 16c:	88 5e       	subi	r24, 0xE8	; 232
+ 16e:	93 40       	sbci	r25, 0x03	; 3
+ 170:	28 f4       	brcc	.+10     	; 0x17c <main+0x12e>
+ 172:	10 92 65 00 	sts	0x0065, r1
+ 176:	10 92 64 00 	sts	0x0064, r1
+ 17a:	0a c0       	rjmp	.+20     	; 0x190 <main+0x142>
+	else pulseArr[2] -= 1000;
+ 17c:	80 91 64 00 	lds	r24, 0x0064
+ 180:	90 91 65 00 	lds	r25, 0x0065
+ 184:	88 5e       	subi	r24, 0xE8	; 232
+ 186:	93 40       	sbci	r25, 0x03	; 3
+ 188:	90 93 65 00 	sts	0x0065, r25
+ 18c:	80 93 64 00 	sts	0x0064, r24
+
+	if(pulseArr[3] < 1000)pulseArr[3] = 0;
+ 190:	80 91 66 00 	lds	r24, 0x0066
+ 194:	90 91 67 00 	lds	r25, 0x0067
+ 198:	88 5e       	subi	r24, 0xE8	; 232
+ 19a:	93 40       	sbci	r25, 0x03	; 3
+ 19c:	28 f4       	brcc	.+10     	; 0x1a8 <main+0x15a>
+ 19e:	10 92 67 00 	sts	0x0067, r1
+ 1a2:	10 92 66 00 	sts	0x0066, r1
+ 1a6:	0a c0       	rjmp	.+20     	; 0x1bc <main+0x16e>
+	else pulseArr[3] -= 1000;
+ 1a8:	80 91 66 00 	lds	r24, 0x0066
+ 1ac:	90 91 67 00 	lds	r25, 0x0067
+ 1b0:	88 5e       	subi	r24, 0xE8	; 232
+ 1b2:	93 40       	sbci	r25, 0x03	; 3
+ 1b4:	90 93 67 00 	sts	0x0067, r25
+ 1b8:	80 93 66 00 	sts	0x0066, r24
+
+
+	//do the pulses of the 4 channels after another
+	PORTB = 2;
+ 1bc:	68 bb       	out	0x18, r22	; 24
+	TCNT1 = 0;	
+ 1be:	1d bc       	out	0x2d, r1	; 45
+ 1c0:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = 400;
+ 1c2:	5b bd       	out	0x2b, r21	; 43
+ 1c4:	4a bd       	out	0x2a, r20	; 42
+	TIFR |= 0b00010000;
+ 1c6:	88 b7       	in	r24, 0x38	; 56
+ 1c8:	80 61       	ori	r24, 0x10	; 16
+ 1ca:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 1cc:	08 b6       	in	r0, 0x38	; 56
+ 1ce:	04 fe       	sbrs	r0, 4
+ 1d0:	fd cf       	rjmp	.-6      	; 0x1cc <main+0x17e>
+	PORTB = 0;
+ 1d2:	18 ba       	out	0x18, r1	; 24
+	TCNT1 = 0;	
+ 1d4:	1d bc       	out	0x2d, r1	; 45
+ 1d6:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = pulseArr[0]+600;
+ 1d8:	80 91 60 00 	lds	r24, 0x0060
+ 1dc:	90 91 61 00 	lds	r25, 0x0061
+ 1e0:	88 5a       	subi	r24, 0xA8	; 168
+ 1e2:	9d 4f       	sbci	r25, 0xFD	; 253
+ 1e4:	9b bd       	out	0x2b, r25	; 43
+ 1e6:	8a bd       	out	0x2a, r24	; 42
+	TIFR |= 0b00010000;
+ 1e8:	88 b7       	in	r24, 0x38	; 56
+ 1ea:	80 61       	ori	r24, 0x10	; 16
+ 1ec:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 1ee:	08 b6       	in	r0, 0x38	; 56
+ 1f0:	04 fe       	sbrs	r0, 4
+ 1f2:	fd cf       	rjmp	.-6      	; 0x1ee <main+0x1a0>
+
+	PORTB = 2;
+ 1f4:	68 bb       	out	0x18, r22	; 24
+	TCNT1 = 0;	
+ 1f6:	1d bc       	out	0x2d, r1	; 45
+ 1f8:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = 400;
+ 1fa:	5b bd       	out	0x2b, r21	; 43
+ 1fc:	4a bd       	out	0x2a, r20	; 42
+	TIFR |= 0b00010000;
+ 1fe:	88 b7       	in	r24, 0x38	; 56
+ 200:	80 61       	ori	r24, 0x10	; 16
+ 202:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 204:	08 b6       	in	r0, 0x38	; 56
+ 206:	04 fe       	sbrs	r0, 4
+ 208:	fd cf       	rjmp	.-6      	; 0x204 <main+0x1b6>
+	PORTB = 0;
+ 20a:	18 ba       	out	0x18, r1	; 24
+	TCNT1 = 0;	
+ 20c:	1d bc       	out	0x2d, r1	; 45
+ 20e:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = pulseArr[1]+600;
+ 210:	80 91 62 00 	lds	r24, 0x0062
+ 214:	90 91 63 00 	lds	r25, 0x0063
+ 218:	88 5a       	subi	r24, 0xA8	; 168
+ 21a:	9d 4f       	sbci	r25, 0xFD	; 253
+ 21c:	9b bd       	out	0x2b, r25	; 43
+ 21e:	8a bd       	out	0x2a, r24	; 42
+	TIFR |= 0b00010000;
+ 220:	88 b7       	in	r24, 0x38	; 56
+ 222:	80 61       	ori	r24, 0x10	; 16
+ 224:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 226:	08 b6       	in	r0, 0x38	; 56
+ 228:	04 fe       	sbrs	r0, 4
+ 22a:	fd cf       	rjmp	.-6      	; 0x226 <main+0x1d8>
+
+	PORTB = 2;
+ 22c:	68 bb       	out	0x18, r22	; 24
+	TCNT1 = 0;	
+ 22e:	1d bc       	out	0x2d, r1	; 45
+ 230:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = 400;
+ 232:	5b bd       	out	0x2b, r21	; 43
+ 234:	4a bd       	out	0x2a, r20	; 42
+	TIFR |= 0b00010000;
+ 236:	88 b7       	in	r24, 0x38	; 56
+ 238:	80 61       	ori	r24, 0x10	; 16
+ 23a:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 23c:	08 b6       	in	r0, 0x38	; 56
+ 23e:	04 fe       	sbrs	r0, 4
+ 240:	fd cf       	rjmp	.-6      	; 0x23c <main+0x1ee>
+	PORTB = 0;
+ 242:	18 ba       	out	0x18, r1	; 24
+	TCNT1 = 0;	
+ 244:	1d bc       	out	0x2d, r1	; 45
+ 246:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = pulseArr[2]+600;
+ 248:	80 91 64 00 	lds	r24, 0x0064
+ 24c:	90 91 65 00 	lds	r25, 0x0065
+ 250:	88 5a       	subi	r24, 0xA8	; 168
+ 252:	9d 4f       	sbci	r25, 0xFD	; 253
+ 254:	9b bd       	out	0x2b, r25	; 43
+ 256:	8a bd       	out	0x2a, r24	; 42
+	TIFR |= 0b00010000;
+ 258:	88 b7       	in	r24, 0x38	; 56
+ 25a:	80 61       	ori	r24, 0x10	; 16
+ 25c:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 25e:	08 b6       	in	r0, 0x38	; 56
+ 260:	04 fe       	sbrs	r0, 4
+ 262:	fd cf       	rjmp	.-6      	; 0x25e <main+0x210>
+
+	PORTB = 2;
+ 264:	68 bb       	out	0x18, r22	; 24
+	TCNT1 = 0;	
+ 266:	1d bc       	out	0x2d, r1	; 45
+ 268:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = 400;
+ 26a:	5b bd       	out	0x2b, r21	; 43
+ 26c:	4a bd       	out	0x2a, r20	; 42
+	TIFR |= 0b00010000;
+ 26e:	88 b7       	in	r24, 0x38	; 56
+ 270:	80 61       	ori	r24, 0x10	; 16
+ 272:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 274:	08 b6       	in	r0, 0x38	; 56
+ 276:	04 fe       	sbrs	r0, 4
+ 278:	fd cf       	rjmp	.-6      	; 0x274 <main+0x226>
+	PORTB = 0;
+ 27a:	18 ba       	out	0x18, r1	; 24
+	TCNT1 = 0;	
+ 27c:	1d bc       	out	0x2d, r1	; 45
+ 27e:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = pulseArr[3]+600;
+ 280:	80 91 66 00 	lds	r24, 0x0066
+ 284:	90 91 67 00 	lds	r25, 0x0067
+ 288:	88 5a       	subi	r24, 0xA8	; 168
+ 28a:	9d 4f       	sbci	r25, 0xFD	; 253
+ 28c:	9b bd       	out	0x2b, r25	; 43
+ 28e:	8a bd       	out	0x2a, r24	; 42
+	TIFR |= 0b00010000;
+ 290:	88 b7       	in	r24, 0x38	; 56
+ 292:	80 61       	ori	r24, 0x10	; 16
+ 294:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 296:	08 b6       	in	r0, 0x38	; 56
+ 298:	04 fe       	sbrs	r0, 4
+ 29a:	fd cf       	rjmp	.-6      	; 0x296 <main+0x248>
+
+	// "Stop token"
+	PORTB = 2;
+ 29c:	68 bb       	out	0x18, r22	; 24
+	TCNT1 = 0;	
+ 29e:	1d bc       	out	0x2d, r1	; 45
+ 2a0:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = 400;
+ 2a2:	5b bd       	out	0x2b, r21	; 43
+ 2a4:	4a bd       	out	0x2a, r20	; 42
+	TIFR |= 0b00010000;
+ 2a6:	88 b7       	in	r24, 0x38	; 56
+ 2a8:	80 61       	ori	r24, 0x10	; 16
+ 2aa:	88 bf       	out	0x38, r24	; 56
+	while(!(TIFR & 0b00010000));
+ 2ac:	08 b6       	in	r0, 0x38	; 56
+ 2ae:	04 fe       	sbrs	r0, 4
+ 2b0:	fd cf       	rjmp	.-6      	; 0x2ac <main+0x25e>
+	PORTB = 0;
+ 2b2:	18 ba       	out	0x18, r1	; 24
+ 2b4:	d2 ce       	rjmp	.-604    	; 0x5a <main+0xc>
+
+000002b6 <_exit>:
+ 2b6:	f8 94       	cli
+
+000002b8 <__stop_program>:
+ 2b8:	ff cf       	rjmp	.-2      	; 0x2b8 <__stop_program>

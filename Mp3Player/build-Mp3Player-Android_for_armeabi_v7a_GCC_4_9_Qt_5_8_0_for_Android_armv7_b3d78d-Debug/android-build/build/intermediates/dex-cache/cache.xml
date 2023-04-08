@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\libs\QtMultimedia-bundled.jar"
+        jumboMode="false"
+        revision="25.0.0"
+        sha1="384bced96fcb56aaf2b5ef25f20ba12d3b318776">
+        <dex dex="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\build\intermediates\pre-dexed\debug\QtMultimedia-bundled-254e3921dcbae51314d8c1dc0b0c81b2916ac1e7.jar" />
+    </item>
+    <item
+        jar="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\libs\QtSensors-bundled.jar"
+        jumboMode="false"
+        revision="25.0.0"
+        sha1="77e1770d4231f9e04d9b43ce0c47e81f48b30d44">
+        <dex dex="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\build\intermediates\pre-dexed\debug\QtSensors-bundled-6a1af15c3ff4f024499676762391218e6bfd0d2c.jar" />
+    </item>
+    <item
+        jar="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\libs\QtAndroidBearer-bundled.jar"
+        jumboMode="false"
+        revision="25.0.0"
+        sha1="3a3eeb3dd8e6cc57d40ea6c283b2c21ad9cca012">
+        <dex dex="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\build\intermediates\pre-dexed\debug\QtAndroidBearer-bundled-9360373de1ace1ff21d092521ea48660124e5fe0.jar" />
+    </item>
+    <item
+        jar="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\libs\QtAndroidBluetooth-bundled.jar"
+        jumboMode="false"
+        revision="25.0.0"
+        sha1="b31cc20b831570c77ff4c9e7cbe6651509184c5b">
+        <dex dex="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\build\intermediates\pre-dexed\debug\QtAndroidBluetooth-bundled-1d66d556e9da76a63ba875eb547f7069c57db1cc.jar" />
+    </item>
+    <item
+        jar="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\libs\QtAndroid-bundled.jar"
+        jumboMode="false"
+        revision="25.0.0"
+        sha1="bdff9a5bf372d6b765fb2f7637768f8e1db81a72">
+        <dex dex="C:\RC_Transmitter\Mp3Player\build-Mp3Player-Android_for_armeabi_v7a_GCC_4_9_Qt_5_8_0_for_Android_armv7_b3d78d-Debug\android-build\build\intermediates\pre-dexed\debug\QtAndroid-bundled-61120f4dab046799354bc042f882c3d8269f101c.jar" />
+    </item>
+
+</items>

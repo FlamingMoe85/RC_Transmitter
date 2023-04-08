@@ -1,0 +1,322 @@
+
+SiebenSeg.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001ec  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000000a  00800060  000001ec  00000280  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000017  0080006a  0080006a  0000028a  2**0
+                  ALLOC
+  3 .debug_aranges 00000020  00000000  00000000  0000028a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_pubnames 00000098  00000000  00000000  000002aa  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000014c  00000000  00000000  00000342  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000089  00000000  00000000  0000048e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000172  00000000  00000000  00000517  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000030  00000000  00000000  0000068c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000000dc  00000000  00000000  000006bc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	2a c0       	rjmp	.+84     	; 0x58 <__bad_interrupt>
+   4:	29 c0       	rjmp	.+82     	; 0x58 <__bad_interrupt>
+   6:	28 c0       	rjmp	.+80     	; 0x58 <__bad_interrupt>
+   8:	27 c0       	rjmp	.+78     	; 0x58 <__bad_interrupt>
+   a:	a2 c0       	rjmp	.+324    	; 0x150 <__vector_5>
+   c:	25 c0       	rjmp	.+74     	; 0x58 <__bad_interrupt>
+   e:	24 c0       	rjmp	.+72     	; 0x58 <__bad_interrupt>
+  10:	23 c0       	rjmp	.+70     	; 0x58 <__bad_interrupt>
+  12:	22 c0       	rjmp	.+68     	; 0x58 <__bad_interrupt>
+  14:	21 c0       	rjmp	.+66     	; 0x58 <__bad_interrupt>
+  16:	20 c0       	rjmp	.+64     	; 0x58 <__bad_interrupt>
+  18:	1f c0       	rjmp	.+62     	; 0x58 <__bad_interrupt>
+  1a:	1e c0       	rjmp	.+60     	; 0x58 <__bad_interrupt>
+  1c:	1d c0       	rjmp	.+58     	; 0x58 <__bad_interrupt>
+  1e:	1c c0       	rjmp	.+56     	; 0x58 <__bad_interrupt>
+  20:	1b c0       	rjmp	.+54     	; 0x58 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d1 e0       	ldi	r29, 0x01	; 1
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	ec ee       	ldi	r30, 0xEC	; 236
+  36:	f1 e0       	ldi	r31, 0x01	; 1
+  38:	02 c0       	rjmp	.+4      	; 0x3e <.do_copy_data_start>
+
+0000003a <.do_copy_data_loop>:
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+
+0000003e <.do_copy_data_start>:
+  3e:	aa 36       	cpi	r26, 0x6A	; 106
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <.do_copy_data_loop>
+
+00000044 <__do_clear_bss>:
+  44:	10 e0       	ldi	r17, 0x00	; 0
+  46:	aa e6       	ldi	r26, 0x6A	; 106
+  48:	b0 e0       	ldi	r27, 0x00	; 0
+  4a:	01 c0       	rjmp	.+2      	; 0x4e <.do_clear_bss_start>
+
+0000004c <.do_clear_bss_loop>:
+  4c:	1d 92       	st	X+, r1
+
+0000004e <.do_clear_bss_start>:
+  4e:	a1 38       	cpi	r26, 0x81	; 129
+  50:	b1 07       	cpc	r27, r17
+  52:	e1 f7       	brne	.-8      	; 0x4c <.do_clear_bss_loop>
+  54:	02 d0       	rcall	.+4      	; 0x5a <main>
+  56:	c8 c0       	rjmp	.+400    	; 0x1e8 <_exit>
+
+00000058 <__bad_interrupt>:
+  58:	d3 cf       	rjmp	.-90     	; 0x0 <__vectors>
+
+0000005a <main>:
+							0b00010011,
+							0b01111111,
+							0b00111111};
+
+int main(void)
+{
+  5a:	0f 93       	push	r16
+  5c:	1f 93       	push	r17
+  5e:	cf 93       	push	r28
+  60:	df 93       	push	r29
+
+TCCR1B = 0b00000001;
+  62:	81 e0       	ldi	r24, 0x01	; 1
+  64:	8e bd       	out	0x2e, r24	; 46
+TIMSK1 = 0b00100000; // Input Capture Interrupt
+  66:	80 e2       	ldi	r24, 0x20	; 32
+  68:	8c b9       	out	0x0c, r24	; 12
+sei(); 
+  6a:	78 94       	sei
+DDRA = segs[8];
+  6c:	20 91 68 00 	lds	r18, 0x0068
+  70:	2a bb       	out	0x1a, r18	; 26
+{
+
+pulseLength = 1850;
+	//if(periodCnt != periodCntOld)
+	//{
+		if(pulseLength > 1900){DDRA = segs[9];}
+  72:	00 91 69 00 	lds	r16, 0x0069
+		else if(pulseLength > 1800){DDRA = segs[8];}
+		else if(pulseLength > 1700){DDRA = segs[7];}
+  76:	10 91 67 00 	lds	r17, 0x0067
+		else if(pulseLength > 1600){DDRA = segs[6];}
+  7a:	b0 91 66 00 	lds	r27, 0x0066
+		else if(pulseLength > 1500){DDRA = segs[5];}
+  7e:	a0 91 65 00 	lds	r26, 0x0065
+		else if(pulseLength > 1400){DDRA = segs[4];}
+  82:	f0 91 64 00 	lds	r31, 0x0064
+		else if(pulseLength > 1300){DDRA = segs[3];}
+  86:	e0 91 63 00 	lds	r30, 0x0063
+		else if(pulseLength > 1200){DDRA = segs[2];}
+  8a:	70 91 62 00 	lds	r23, 0x0062
+		else if(pulseLength > 1100){DDRA = segs[1];}
+  8e:	60 91 61 00 	lds	r22, 0x0061
+		else {DDRA = segs[0];}
+  92:	30 91 60 00 	lds	r19, 0x0060
+DDRA = segs[8];
+//PORTA = segs[8];
+while(1)
+{
+
+pulseLength = 1850;
+  96:	4a e3       	ldi	r20, 0x3A	; 58
+  98:	57 e0       	ldi	r21, 0x07	; 7
+  9a:	50 93 6f 00 	sts	0x006F, r21
+  9e:	40 93 6e 00 	sts	0x006E, r20
+	//if(periodCnt != periodCntOld)
+	//{
+		if(pulseLength > 1900){DDRA = segs[9];}
+  a2:	c0 91 6e 00 	lds	r28, 0x006E
+  a6:	d0 91 6f 00 	lds	r29, 0x006F
+  aa:	cd 56       	subi	r28, 0x6D	; 109
+  ac:	d7 40       	sbci	r29, 0x07	; 7
+  ae:	10 f0       	brcs	.+4      	; 0xb4 <main+0x5a>
+  b0:	0a bb       	out	0x1a, r16	; 26
+  b2:	49 c0       	rjmp	.+146    	; 0x146 <main+0xec>
+		else if(pulseLength > 1800){DDRA = segs[8];}
+  b4:	c0 91 6e 00 	lds	r28, 0x006E
+  b8:	d0 91 6f 00 	lds	r29, 0x006F
+  bc:	c9 50       	subi	r28, 0x09	; 9
+  be:	d7 40       	sbci	r29, 0x07	; 7
+  c0:	10 f0       	brcs	.+4      	; 0xc6 <main+0x6c>
+  c2:	2a bb       	out	0x1a, r18	; 26
+  c4:	40 c0       	rjmp	.+128    	; 0x146 <main+0xec>
+		else if(pulseLength > 1700){DDRA = segs[7];}
+  c6:	c0 91 6e 00 	lds	r28, 0x006E
+  ca:	d0 91 6f 00 	lds	r29, 0x006F
+  ce:	c5 5a       	subi	r28, 0xA5	; 165
+  d0:	d6 40       	sbci	r29, 0x06	; 6
+  d2:	10 f0       	brcs	.+4      	; 0xd8 <main+0x7e>
+  d4:	1a bb       	out	0x1a, r17	; 26
+  d6:	37 c0       	rjmp	.+110    	; 0x146 <main+0xec>
+		else if(pulseLength > 1600){DDRA = segs[6];}
+  d8:	c0 91 6e 00 	lds	r28, 0x006E
+  dc:	d0 91 6f 00 	lds	r29, 0x006F
+  e0:	c1 54       	subi	r28, 0x41	; 65
+  e2:	d6 40       	sbci	r29, 0x06	; 6
+  e4:	10 f0       	brcs	.+4      	; 0xea <main+0x90>
+  e6:	ba bb       	out	0x1a, r27	; 26
+  e8:	2e c0       	rjmp	.+92     	; 0x146 <main+0xec>
+		else if(pulseLength > 1500){DDRA = segs[5];}
+  ea:	c0 91 6e 00 	lds	r28, 0x006E
+  ee:	d0 91 6f 00 	lds	r29, 0x006F
+  f2:	cd 5d       	subi	r28, 0xDD	; 221
+  f4:	d5 40       	sbci	r29, 0x05	; 5
+  f6:	10 f0       	brcs	.+4      	; 0xfc <main+0xa2>
+  f8:	aa bb       	out	0x1a, r26	; 26
+  fa:	25 c0       	rjmp	.+74     	; 0x146 <main+0xec>
+		else if(pulseLength > 1400){DDRA = segs[4];}
+  fc:	c0 91 6e 00 	lds	r28, 0x006E
+ 100:	d0 91 6f 00 	lds	r29, 0x006F
+ 104:	c9 57       	subi	r28, 0x79	; 121
+ 106:	d5 40       	sbci	r29, 0x05	; 5
+ 108:	10 f0       	brcs	.+4      	; 0x10e <main+0xb4>
+ 10a:	fa bb       	out	0x1a, r31	; 26
+ 10c:	1c c0       	rjmp	.+56     	; 0x146 <main+0xec>
+		else if(pulseLength > 1300){DDRA = segs[3];}
+ 10e:	c0 91 6e 00 	lds	r28, 0x006E
+ 112:	d0 91 6f 00 	lds	r29, 0x006F
+ 116:	c5 51       	subi	r28, 0x15	; 21
+ 118:	d5 40       	sbci	r29, 0x05	; 5
+ 11a:	10 f0       	brcs	.+4      	; 0x120 <main+0xc6>
+ 11c:	ea bb       	out	0x1a, r30	; 26
+ 11e:	13 c0       	rjmp	.+38     	; 0x146 <main+0xec>
+		else if(pulseLength > 1200){DDRA = segs[2];}
+ 120:	c0 91 6e 00 	lds	r28, 0x006E
+ 124:	d0 91 6f 00 	lds	r29, 0x006F
+ 128:	c1 5b       	subi	r28, 0xB1	; 177
+ 12a:	d4 40       	sbci	r29, 0x04	; 4
+ 12c:	10 f0       	brcs	.+4      	; 0x132 <main+0xd8>
+ 12e:	7a bb       	out	0x1a, r23	; 26
+ 130:	0a c0       	rjmp	.+20     	; 0x146 <main+0xec>
+		else if(pulseLength > 1100){DDRA = segs[1];}
+ 132:	c0 91 6e 00 	lds	r28, 0x006E
+ 136:	d0 91 6f 00 	lds	r29, 0x006F
+ 13a:	cd 54       	subi	r28, 0x4D	; 77
+ 13c:	d4 40       	sbci	r29, 0x04	; 4
+ 13e:	10 f0       	brcs	.+4      	; 0x144 <main+0xea>
+ 140:	6a bb       	out	0x1a, r22	; 26
+ 142:	01 c0       	rjmp	.+2      	; 0x146 <main+0xec>
+		else {DDRA = segs[0];}
+ 144:	3a bb       	out	0x1a, r19	; 26
+		periodCntOld = periodCnt;
+ 146:	80 91 71 00 	lds	r24, 0x0071
+ 14a:	80 93 72 00 	sts	0x0072, r24
+ 14e:	a5 cf       	rjmp	.-182    	; 0x9a <main+0x40>
+
+00000150 <__vector_5>:
+}
+
+}
+
+SIGNAL (TIMER1_CAPT_vect)
+{
+ 150:	1f 92       	push	r1
+ 152:	0f 92       	push	r0
+ 154:	0f b6       	in	r0, 0x3f	; 63
+ 156:	0f 92       	push	r0
+ 158:	11 24       	eor	r1, r1
+ 15a:	2f 93       	push	r18
+ 15c:	3f 93       	push	r19
+ 15e:	8f 93       	push	r24
+ 160:	9f 93       	push	r25
+	if((TCCR1B & 64) == 64)//rising edge
+ 162:	0e b4       	in	r0, 0x2e	; 46
+ 164:	06 fe       	sbrs	r0, 6
+ 166:	09 c0       	rjmp	.+18     	; 0x17a <__stack+0x1b>
+	{
+		ticksStart = TCNT1;
+ 168:	8c b5       	in	r24, 0x2c	; 44
+ 16a:	9d b5       	in	r25, 0x2d	; 45
+ 16c:	90 93 6d 00 	sts	0x006D, r25
+ 170:	80 93 6c 00 	sts	0x006C, r24
+		TCCR1B = 0b00000001;
+ 174:	81 e0       	ldi	r24, 0x01	; 1
+ 176:	8e bd       	out	0x2e, r24	; 46
+ 178:	2e c0       	rjmp	.+92     	; 0x1d6 <__stack+0x77>
+	}
+	else // falling edge
+	{
+		TCCR1B = 0b01000001;
+ 17a:	81 e4       	ldi	r24, 0x41	; 65
+ 17c:	8e bd       	out	0x2e, r24	; 46
+		ticksEnd = TCNT1;
+ 17e:	8c b5       	in	r24, 0x2c	; 44
+ 180:	9d b5       	in	r25, 0x2d	; 45
+ 182:	90 93 6b 00 	sts	0x006B, r25
+ 186:	80 93 6a 00 	sts	0x006A, r24
+		if(ticksEnd > ticksStart)
+ 18a:	20 91 6a 00 	lds	r18, 0x006A
+ 18e:	30 91 6b 00 	lds	r19, 0x006B
+ 192:	80 91 6c 00 	lds	r24, 0x006C
+ 196:	90 91 6d 00 	lds	r25, 0x006D
+ 19a:	82 17       	cp	r24, r18
+ 19c:	93 07       	cpc	r25, r19
+ 19e:	58 f4       	brcc	.+22     	; 0x1b6 <__stack+0x57>
+		{
+			pulseLength = ticksEnd - ticksStart;
+ 1a0:	80 91 6a 00 	lds	r24, 0x006A
+ 1a4:	90 91 6b 00 	lds	r25, 0x006B
+ 1a8:	20 91 6c 00 	lds	r18, 0x006C
+ 1ac:	30 91 6d 00 	lds	r19, 0x006D
+ 1b0:	82 1b       	sub	r24, r18
+ 1b2:	93 0b       	sbc	r25, r19
+ 1b4:	0c c0       	rjmp	.+24     	; 0x1ce <__stack+0x6f>
+		}
+		else
+		{
+			pulseLength = 65535 - ticksStart + ticksEnd;
+ 1b6:	80 91 6c 00 	lds	r24, 0x006C
+ 1ba:	90 91 6d 00 	lds	r25, 0x006D
+ 1be:	20 91 6a 00 	lds	r18, 0x006A
+ 1c2:	30 91 6b 00 	lds	r19, 0x006B
+ 1c6:	80 95       	com	r24
+ 1c8:	90 95       	com	r25
+ 1ca:	82 0f       	add	r24, r18
+ 1cc:	93 1f       	adc	r25, r19
+ 1ce:	90 93 6f 00 	sts	0x006F, r25
+ 1d2:	80 93 6e 00 	sts	0x006E, r24
+			channel[pulseCntr] = pulseLength;
+			pulseCntr++;
+		}
+		*/
+	}
+}
+ 1d6:	9f 91       	pop	r25
+ 1d8:	8f 91       	pop	r24
+ 1da:	3f 91       	pop	r19
+ 1dc:	2f 91       	pop	r18
+ 1de:	0f 90       	pop	r0
+ 1e0:	0f be       	out	0x3f, r0	; 63
+ 1e2:	0f 90       	pop	r0
+ 1e4:	1f 90       	pop	r1
+ 1e6:	18 95       	reti
+
+000001e8 <_exit>:
+ 1e8:	f8 94       	cli
+
+000001ea <__stop_program>:
+ 1ea:	ff cf       	rjmp	.-2      	; 0x1ea <__stop_program>
